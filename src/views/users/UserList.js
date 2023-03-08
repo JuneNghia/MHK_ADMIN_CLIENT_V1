@@ -1,7 +1,6 @@
 import React from 'react';
 import { Row, Col, Card, Pagination } from 'react-bootstrap';
 import BTable from 'react-bootstrap/Table';
-
 import styled from 'styled-components';
 
 import { GlobalFilter } from './GlobalFilter';
@@ -69,11 +68,12 @@ function Table({ columns, data }) {
     usePagination
   );
 
+
   return (
     <>
       <Row>
-        <Col className="d-flex align-items-center">
-          Show
+        <Col className="ml-2 mb-3 mt-3 d-flex align-items-center">
+          Hiển thị
           <select
             className="form-control w-auto mx-2"
             value={pageSize}
@@ -87,9 +87,9 @@ function Table({ columns, data }) {
               </option>
             ))}
           </select>
-          entries
+          kết quả
         </Col>
-        <Col>
+        <Col className='mr-2 mb-3 mt-3'>
           <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
         </Col>
       </Row>
@@ -134,13 +134,13 @@ function Table({ columns, data }) {
       </BTable>
       <Row className="justify-content-between">
         <Col>
-          <span className="d-flex align-items-center">
-            Page{' '}
+          <span className="ml-2 d-flex align-items-center">
+            Trang{' '}
             <strong>
               {' '}
-              {pageIndex + 1} of {pageOptions.length}{' '}
+              {pageIndex + 1} trên {pageOptions.length}{' '}
             </strong>{' '}
-            | Go to page:{' '}
+            | Đến trang:{' '}
             <input
               type="number"
               className="form-control ml-2"
@@ -154,7 +154,7 @@ function Table({ columns, data }) {
           </span>
         </Col>
         <Col>
-          <Pagination className="justify-content-end">
+          <Pagination className="mr-2 justify-content-end">
             <Pagination.First onClick={() => gotoPage(0)} disabled={!canPreviousPage} />
             <Pagination.Prev onClick={() => previousPage()} disabled={!canPreviousPage} />
             <Pagination.Next onClick={() => nextPage()} disabled={!canNextPage} />
@@ -170,32 +170,32 @@ const UserList = () => {
   const columns = React.useMemo(
     () => [
       {
-        Header: 'Name',
+        Header: 'Tên nhân viên',
         accessor: 'name'
       },
       {
-        Header: 'Position',
+        Header: 'Số điện thoại',
         accessor: 'position'
       },
       {
-        Header: 'Office',
+        Header: 'Email',
         accessor: 'office'
       },
       {
-        Header: 'Age',
+        Header: 'Trạng thái',
         accessor: 'age'
       },
       {
-        Header: 'Date',
+        Header: 'Vai trò',
         accessor: 'date'
       },
       {
-        Header: 'Salary',
+        Header: 'Ngày tạo',
         accessor: 'salary'
       },
       {
-        Header: 'Status',
-        accessor: 'status'
+        Header: 'Cấu hình',
+        accessor: 'setting'
       }
     ],
     []

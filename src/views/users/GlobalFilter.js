@@ -8,7 +8,7 @@ export const GlobalFilter = ({ filter, setFilter }) => {
   }, 1000);
   return (
     <span className="d-flex align-items-center justify-content-end">
-      Search:{' '}
+      Tìm kiếm:{' '}
       <input
         className="form-control ml-2 w-auto"
         value={value || ''}

@@ -115,13 +115,23 @@ const routes = [
       },
       {
         exact: true,
+        path: '/app/sell-management/orders/create',
+        component: lazy(() => import('./views/sell-management/orders/create'))
+      },
+      {
+        exact: true,
         path: '/app/sell-management/customers',
-        component: lazy(() => import('./views/sell-management/customers'))
+        component: lazy(() => import('./views/sell-management/customers/list'))
       },
       {
         exact: true,
         path: '/app/sell-management/customers/create',
-        component: lazy(() => import('./views/sell-management/customers/createCustomer'))
+        component: lazy(() => import('./views/sell-management/customers/create'))
+      },
+      {
+        exact: true,
+        path: '/app/sell-management/customers/detail',
+        component: lazy(() => import('./views/sell-management/customers/detail'))
       },
       {
         exact: true,
@@ -135,7 +145,7 @@ const routes = [
       },
       {
         exact: true,
-        path: '/users/user-list',
+        path: '/app/sell-management/users/list',
         component: lazy(() => import('./views/users/UserList'))
       },
       {
@@ -163,7 +173,6 @@ const routes = [
         path: '/task/task-detail',
         component: lazy(() => import('./views/applications/task/TaskDetails'))
       },
-
       {
         path: '*',
         exact: true,

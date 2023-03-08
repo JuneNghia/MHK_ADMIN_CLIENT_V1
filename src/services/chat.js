@@ -824,7 +824,6 @@ services.onPost('/api/friend/chat/add').reply((config) => {
       return chats.friend_id === parseInt(id);
     });
 
-    console.log(messages);
 
     return [200, { messages }];
   } catch (err) {

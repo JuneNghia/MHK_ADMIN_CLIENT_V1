@@ -1,5 +1,5 @@
 import namor from 'namor';
-import React from 'react';
+import React, { useState } from 'react';
 
 const images = require.context('../assets/images/user', true);
 
@@ -14,6 +14,7 @@ const range = (len) => {
 const randomDate = (start, end) => {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toDateString();
 };
+
 
 const GetName = () => {
   const name = namor.generate({ words: 1, saltLength: 0 });
@@ -33,6 +34,7 @@ const GetName = () => {
 };
 
 const newPerson = () => {
+
   const statusChance = Math.random();
   return {
     name: <GetName />,
@@ -41,10 +43,10 @@ const newPerson = () => {
     age: Math.floor(Math.random() * 60 + 18),
     date: randomDate(new Date(2012, 0, 1), new Date()),
     salary: Math.floor(Math.random() * 100 * 1000),
-    status:
+    setting:
       statusChance > 0.66 ? (
         <div>
-          <span className="badge badge-light-success">Active</span>
+          {/* <span className="badge badge-light-success">Active</span> */}
           <div className="overlay-edit">
             <button type="button" className="btn btn-icon btn-success">
               <i className="feather icon-check-circle">
@@ -61,7 +63,7 @@ const newPerson = () => {
         </div>
       ) : statusChance > 0.33 ? (
         <div>
-          <span className="badge badge-light-danger">Inactive</span>
+          {/* <span className="badge badge-light-danger">Inactive</span> */}
           <div className="overlay-edit">
             <button type="button" className="btn btn-icon btn-success">
               <i className="feather icon-check-circle">
@@ -78,7 +80,7 @@ const newPerson = () => {
         </div>
       ) : (
         <div>
-          <span className="badge badge-light-warning">In Process</span>
+          {/* <span className="badge badge-light-warning">In Process</span> */}
           <div className="overlay-edit">
             <button type="button" className="btn btn-icon btn-success">
               <i className="feather icon-check-circle">

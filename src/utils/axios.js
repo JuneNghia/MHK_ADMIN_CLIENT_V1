@@ -1,12 +1,11 @@
 import axios from 'axios';
-const request = axios.create({
-  baseURL: '...'
+const axiosServices = axios.create({
+  baseURL: 'http://localhost:5000/mhk-api/v1/'
 });
 
-export const get = async (path, options = {}) => {
-  const response = await request.get(path, options);
-  return response;
-}
+axiosServices.interceptors.response.use(
+  (response) => response,
+  (error) => Promise.reject((error.response && error.response.data) || 'Wrong Services')
+);
 
-
-export default request;
+export default axiosServices;

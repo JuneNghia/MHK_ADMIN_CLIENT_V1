@@ -39,7 +39,7 @@ const menuItems = {
               id: 'alert',
               title: 'Tạo đơn và giao hàng',
               type: 'item',
-              url: '/basic/alert'
+              url: '/app/sell-management/orders/create'
             },
             {
               id: 'alert',
@@ -56,7 +56,7 @@ const menuItems = {
           ]
         },
         {
-          id: 'orders',
+          id: 'delievery',
           title: 'Vận chuyển',
           type: 'collapse',
           icon: 'feather icon-users',
@@ -94,7 +94,7 @@ const menuItems = {
           ]
         },
         {
-          id: 'orders',
+          id: 'products',
           title: 'Sản phẩm',
           type: 'collapse',
           icon: 'feather icon-box',
@@ -150,7 +150,7 @@ const menuItems = {
           ]
         },
         {
-          id: 'orders',
+          id: 'cash-book',
           title: 'Sổ quỹ',
           type: 'collapse',
           icon: 'feather icon-monitor',
@@ -194,6 +194,13 @@ const menuItems = {
               url: '/basic/alert'
             }
           ]
+        },
+        {
+          id: 'users',
+          title: 'Nhân viên',
+          type: 'item',
+          icon: 'feather icon-users',
+          url:'/app/sell-management/users/list'
         }
       ]
     }

@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Row, Col, Card, Form, Button, InputGroup, FormControl, DropdownButton, Dropdown } from 'react-bootstrap';
-import * as request from '../../../utils/axios'
+import axios from 'axios';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+import { ButtonLoading } from '../../../components/Button/LoadButton'
 
 const FormsElements = () => {
   const [validated, setValidated] = useState(false);
@@ -9,15 +12,81 @@ const FormsElements = () => {
   const [supportedRadio, setSupportedRadio] = useState(false);
   const [supportedSelect, setSupportedSelect] = useState(0);
   const [supportedFile, setSupportedFile] = useState(0);
+  const [showLoader, setShowLoader] = useState(false)
 
-  const handleSubmit = (event) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
+  const [data, setData] = useState(
+    {
+      user_name: '',
+      user_type: '',
+      user_code: '',
+      user_group: '',
+      user_phone: '',
+      user_email: '',
+      user_password: '',
+      user_region: '',
+      user_commune: '',
+      user_address: '',
+      createdAt: '',
+      updatedAt: ''
     }
-    setValidated(true);
+  )
+  
+
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setData({
+      ...data,
+      [e.target.name]: value
+    });
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const customerData = {
+      user_name: data.user_name,
+      user_type: data.user_type,
+      user_code: data.user_code,
+      user_group: data.user_group,
+      user_phone: data.user_phone,
+      user_email: data.user_email,
+      user_password: data.user_password,
+      user_region: data.user_region,
+      user_commune: data.user_commune,
+      user_address: data.user_address,
+      createdAt: data.createdAt,
+      updatedAt: data.updatedAt
+    };
+    axios.post('http://localhost:5000/mhk-api/v1/user/create-customer', customerData).then((response) => {
+    setData({
+      user_name: '',
+      user_type: '',
+      user_code: '',
+      user_group: '',
+      user_phone: '',
+      user_email: '',
+      user_password: '',
+      user_region: '',
+      user_commune: '',
+      user_address: '',
+      createdAt: '',
+      updatedAt: ''
+    });
+    setShowLoader(true);
+    setTimeout(()=> {
+      setShowLoader(false);
+      sweetSuccessAlert()
+    },3000) 
+    })
+  };
+
+  // const handleSubmit = (event) => {
+  //   const form = event.currentTarget;
+  //   if (form.checkValidity() === false) {
+  //     event.preventDefault();
+  //     event.stopPropagation();
+  //   }
+  //   setValidated(true);
+  // };
 
   const handleSubmitTooltip = (event) => {
     const form = event.currentTarget;
@@ -36,6 +105,12 @@ const FormsElements = () => {
     setSupportedFile(!!event.target.value);
   };
 
+  const sweetSuccessAlert = () => {
+    const MySwal = withReactContent(Swal);
+    MySwal.fire('','Lưu khách hàng mới thành công','success')
+  }
+
+
   return (
     <React.Fragment>
       <Button variant="danger" className="mb-3" href="/app/sell-management/customers">
@@ -46,7 +121,10 @@ const FormsElements = () => {
         <Col sm={12} lg={8}>
           <Card>
             <Card.Header>
-              <Card.Title as="h5">Thông tin chung</Card.Title>
+              <Card.Title as="h5">
+                Thông tin cá nhân
+                
+              </Card.Title>
             </Card.Header>
             <Card.Body>
               <Row>
@@ -54,22 +132,22 @@ const FormsElements = () => {
                   <Form>
                     <Form.Group controlId="nameCustomer">
                       <Form.Label>Tên khách hàng</Form.Label>
-                      <Form.Control type="text" placeholder="Nhập tên khách hàng" />
+                      <Form.Control name="user_name" value={data.user_name} onChange={handleChange} type="text" placeholder="Nhập tên khách hàng" />
                     </Form.Group>
                   </Form>
                 </Col>
                 <Col md={6}>
                   <Form.Group controlId="idCustomer">
                     <Form.Label>Mã khách hàng</Form.Label>
-                    <Form.Control onChange={(e) => console.log(e.target.value) } type="text" placeholder="Nhập mã khách hàng" />
+                    <Form.Control name="user_code" value={data.user_code} onChange={handleChange} type="text" placeholder="Nhập mã khách hàng" />
                   </Form.Group>
                   <Form.Group controlId="phoneCustomer">
                     <Form.Label>Số điện thoại</Form.Label>
-                    <Form.Control type="text" placeholder="Nhập số điện thoại" />
+                    <Form.Control name="user_phone" value={data.user_phone} onChange={handleChange} type="text" placeholder="Nhập số điện thoại" />
                   </Form.Group>
                   <Form.Group controlId="exampleForm.ControlSelect1">
                     <Form.Label>Khu vực</Form.Label>
-                    <Form.Control as="select">
+                    <Form.Control name="user_region" value={data.user_region} onChange={handleChange} as="select">
                       <option>Chọn Tỉnh/Thành phố - Quận/Huyện</option>
                       <option>2</option>
                       <option>3</option>
@@ -81,7 +159,7 @@ const FormsElements = () => {
                 <Col md={6}>
                   <Form.Group controlId="exampleForm.ControlSelect1">
                     <Form.Label>Nhóm khách hàng</Form.Label>
-                    <Form.Control as="select">
+                    <Form.Control name="user_group" value={data.user_group} onChange={handleChange} as="select">
                       <option>Chọn nhóm khách hàng</option>
                       <option>2</option>
                       <option>3</option>
@@ -91,11 +169,11 @@ const FormsElements = () => {
                   </Form.Group>
                   <Form.Group controlId="emailCustomer">
                     <Form.Label>Email</Form.Label>
-                    <Form.Control type="email" placeholder="Nhập địa chỉ email" />
+                    <Form.Control name="user_email" value={data.user_email} onChange={handleChange} type="email" placeholder="Nhập địa chỉ email" />
                   </Form.Group>
                   <Form.Group controlId="strictCustomer">
                     <Form.Label>Phường xã</Form.Label>
-                    <Form.Control as="select">
+                    <Form.Control name="user_commune" value={data.user_commune} onChange={handleChange} as="select">
                       <option>Chọn Phường/Xã</option>
                       <option>2</option>
                       <option>3</option>
@@ -107,7 +185,7 @@ const FormsElements = () => {
                 <Col sm={12} lg={12}>
                   <Form.Group controlId="addressCustomer">
                     <Form.Label>Địa chỉ</Form.Label>
-                    <Form.Control as="textarea" rows="3" />
+                    <Form.Control name="user_address" value={data.user_address} onChange={handleChange} as="textarea" rows="3" />
                   </Form.Group>
                 </Col>
               </Row>
@@ -225,8 +303,10 @@ const FormsElements = () => {
               </Form>
             </Card.Body>
           </Card>
-          <Button onClick={(e) => handleSubmit(e)}>Lưu khách hàng mới</Button>
+          <ButtonLoading text={'Lưu khách hàng mới'} loading={showLoader} type="submit" onSubmit={handleSubmit} disabled={showLoader}></ButtonLoading>
+          {/* <Button onClick={(e) => handleSubmit(e)}>Lưu khách hàng mới</Button> */}
         </Col>
+      
       </Row>
     </React.Fragment>
   );
