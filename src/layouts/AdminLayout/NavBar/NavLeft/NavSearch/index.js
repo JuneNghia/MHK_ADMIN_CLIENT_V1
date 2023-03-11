@@ -11,7 +11,7 @@ const NavSearch = (props) => {
       document.querySelector('#navbar-right').classList.add('d-none');
     }
     setIsOpen(true);
-    setSearchString('400px');
+    setSearchString('300px');
   };
 
   const searchOffHandler = () => {
@@ -34,7 +34,7 @@ const NavSearch = (props) => {
       <div id="main-search" className={searchClass.join(' ')}>
         <div className="input-group">
           <input type="text" id="m-search" className="form-control" placeholder="Tìm kiếm..." style={{ width: searchString }} />
-          <Link to="#" className="input-group-append search-close" onClick={searchOffHandler}>
+          <Link to="#" className="input-group-append search-close mr-2" onClick={searchOffHandler}>
             <i className="feather icon-x input-group-text" />
           </Link>
           <span className="input-group-append search-btn btn btn-primary" onClick={searchOnHandler}>

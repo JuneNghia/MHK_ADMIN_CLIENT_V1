@@ -3,8 +3,8 @@ import { NavLink } from 'react-router-dom';
 
 import Breadcrumb from '../../../layouts/AdminLayout/Breadcrumb';
 import back4 from '../../../assets/images/bg-images/bg4.jpg';
+import JWTLogin from '../signin/JWTLogin'
 
-import FirebaseLogin from './FirebaseLogin';
 
 const Signin = () => {
   return (
@@ -33,7 +33,7 @@ const Signin = () => {
               <div className="mb-4">
                 <i className="feather icon-unlock auth-icon" />
               </div>
-              <FirebaseLogin/>
+              <JWTLogin/>
               <p className="mb-2 text-muted">
                 Quên mật khẩu? <NavLink to="/auth/reset-password">Đặt lại</NavLink>
               </p>

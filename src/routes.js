@@ -8,6 +8,7 @@ import GuestGuard from './components/Auth/GuestGuard';
 import AuthGuard from './components/Auth/AuthGuard';
 
 import { BASE_URL } from './config/constant';
+import NotFound404 from './views/errors/NotFound404';
 
 export const renderRoutes = (routes = []) => (
   <Suspense fallback={<Loader />}>
@@ -42,7 +43,7 @@ const routes = [
     component: lazy(() => import('./views/auth/signin/SignIn'))
   },
   {
-    exact: true,
+    exact: true, 
     path: '/404',
     component: lazy(() => import('./views/errors/NotFound404'))
   },
@@ -104,7 +105,7 @@ const routes = [
     component: lazy(() => import('./views/auth/Subscribe'))
   },
   {
-    path: '*',
+    path: '/',
     layout: AdminLayout,
     guard: AuthGuard,
     routes: [
@@ -116,22 +117,37 @@ const routes = [
       {
         exact: true,
         path: '/app/sell-management/orders/create',
-        component: lazy(() => import('./views/sell-management/orders/create'))
+        component: lazy(() => import('./views/sell-management/orders-M/Create'))
       },
       {
         exact: true,
         path: '/app/sell-management/customers',
-        component: lazy(() => import('./views/sell-management/customers/list'))
+        component: lazy(() => import('./views/sell-management/customers-M/customers'))
       },
       {
         exact: true,
         path: '/app/sell-management/customers/create',
-        component: lazy(() => import('./views/sell-management/customers/create'))
+        component: lazy(() => import('./views/sell-management/customers-M/customers/Create'))
       },
       {
         exact: true,
-        path: '/app/sell-management/customers/detail',
-        component: lazy(() => import('./views/sell-management/customers/detail'))
+        path: '/app/sell-management/customers/:id',
+        component: lazy(() => import('./views/sell-management/customers-M/customers/Detail'))
+      },
+      {
+        exact: true,
+        path: '/app/sell-management/customer_groups/create',
+        component: lazy(() => import('./views/sell-management/customers-M/customer_groups/Create'))
+      },
+      {
+        exact: true,
+        path: '/app/sell-management/products',
+        component: lazy(() => import('./views/sell-management/products-M/products'))
+      },
+      {
+        exact: true,
+        path: '/app/sell-management/products/:id',
+        component: lazy(() => import('./views/sell-management/products-M/products/Detail'))
       },
       {
         exact: true,
@@ -174,10 +190,10 @@ const routes = [
         component: lazy(() => import('./views/applications/task/TaskDetails'))
       },
       {
-        path: '*',
         exact: true,
-        component: () => <Redirect to={BASE_URL} />
-      }
+        path: '*',
+        component: () => <Redirect to={BASE_URL}/>
+      }, 
     ]
   }
 ];

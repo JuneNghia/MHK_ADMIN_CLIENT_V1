@@ -7,11 +7,11 @@ export const CONFIG = {
   subLayout: '', // null, layout-2, layout-2-2, layout-3, layout-4, layout-4-2, layout-6, layout-8
   collapseMenu: false, // mini-menu
   layoutType: 'menu-dark', // menu-dark, menu-light, dark
-  navIconColor: true,
+  navIconColor: false,
   headerBackColor: 'header-default', // header-default, header-blue, header-red, header-purple, header-lightblue, header-dark
   navBackColor: 'navbar-default', // navbar-default, navbar-blue, navbar-red, navbar-purple, navbar-lightblue, navbar-dark
   navBrandColor: 'brand-default', // brand-default, brand-blue, brand-red, brand-purple, brand-lightblue, brand-dark
-  navBackImage: false, // false, navbar-image-1, navbar-image-2, navbar-image-3, navbar-image-4, navbar-image-5
+  navBackImage: 'false', // false, navbar-image-1, navbar-image-2, navbar-image-3, navbar-image-4, navbar-image-5
   rtlLayout: false,
   navFixedLayout: true, // only for vertical layouts
   headerFixedLayout: false, // only for vertical layouts

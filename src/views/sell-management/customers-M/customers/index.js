@@ -3,28 +3,28 @@ import { Row, Col, Card, Pagination, Button } from 'react-bootstrap';
 import BTable from 'react-bootstrap/Table';
 import { useTable, usePagination, useGlobalFilter } from 'react-table';
 
-import ModuleNotification from '../../../components/Widgets/Statistic/Notification';
-import { GlobalFilter } from '../../users/GlobalFilter';
+import ModuleNotification from '../../../../components/Widgets/Statistic/Notification';
+import { GlobalFilter } from '../../../users/GlobalFilter';
 import axios from 'axios';
-
-
+import { Link, useHistory } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 function Table({ columns, data }) {
-  
   // Use the state and functions returned from useTable to build your UI
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
+    rows,
     prepareRow,
     page, // Instead of using 'rows', we'll use page,
     // which has only the rows for the active page
-  
+
     globalFilter,
     setGlobalFilter,
-  
+
     // The rest of these things are super handy, too ;)
-  
+
     canPreviousPage,
     canNextPage,
     pageOptions,
@@ -34,19 +34,31 @@ function Table({ columns, data }) {
     previousPage,
     setPageSize,
     state: { pageIndex, pageSize }
-  } =  useTable(
+  } = useTable(
     {
       columns,
       data,
-      initialState: { pageIndex: 0 }
+      initialState: { pageIndex: 0, hiddenColumns: ['id'] }
     },
     useGlobalFilter,
     usePagination
   );
-  
+
+  const history = useHistory();
+
+  const handleRowClick = async (row) => {
+    const customerId = row.values.id;
+    // const response = await axios.get(`http://localhost:5000/mhk-api/v1/user/get-by-id/${customerId}`);
+    // const customerData = response.data;
+    history.push(`/app/sell-management/customers/${customerId}`);
+  };
+
   // Render the UI for your table
   return (
     <>
+      <Helmet>
+        <title>Danh sách khách hàng</title>
+      </Helmet>
       <Row className="mb-3">
         <Col className="d-flex align-items-center">
           Hiển thị
@@ -83,10 +95,12 @@ function Table({ columns, data }) {
           {page.map((row, i) => {
             prepareRow(row);
             return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map((cell) => {
-                  return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
-                })}
+              <tr onClick={() => handleRowClick(row)} {...row.getRowProps()}>
+                <Link style={{ display: 'contents' }}>
+                  {row.cells.map((cell) => {
+                    return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
+                  })}
+                </Link>
               </tr>
             );
           })}
@@ -96,7 +110,7 @@ function Table({ columns, data }) {
         <Col sm={12} md={6}>
           <span className="d-flex align-items-center">
             Trang{' '}
-            <strong className='ml-1'>
+            <strong className="ml-1">
               {' '}
               {pageIndex + 1} trên tổng {pageOptions.length}{' '}
             </strong>{' '}
@@ -127,21 +141,24 @@ function Table({ columns, data }) {
 }
 
 function App() {
+  const [listCustomer, setListCustomer] = useState([]);
 
-  const [listCustomer, setListCustomer] = useState([])
-
-  useEffect(()=> {
+  useEffect(() => {
     (async () => {
-      const result = await axios.get('http://localhost:5000/mhk-api/v1/user/get-all-db');
-      setListCustomer(result.data)
+      const result = await axios.get('http://localhost:5000/mhk-api/v1/user/get-all-customer');
+      setListCustomer(result.data);
     })();
-  }, [])
+  }, []);
 
   const columns = React.useMemo(
     () => [
       {
-        Header: 'Mã khách hàng',
+        Header: 'STT',
         accessor: 'id'
+      },
+      {
+        Header: 'Mã khách hàng',
+        accessor: 'user_code'
       },
       {
         Header: 'Tên khách hàng',
@@ -155,15 +172,17 @@ function App() {
     []
   );
 
-
   return (
     <React.Fragment>
       <Row>
         <Col>
           <Card>
-            <Card.Header className='css-list-customer'>
+            <Card.Header className="flex-between">
               <Card.Title as="h5">Danh sách khách hàng</Card.Title>
-              <Button href="/app/sell-management/customers/create">Thêm khách hàng</Button>{' '}
+              <Button style={{ margin: 0 }} href="/app/sell-management/customers/create">
+                <i className="feather icon-plus-circle mr-2"></i>
+                Thêm khách hàng
+              </Button>{' '}
             </Card.Header>
             <Card.Body>
               <Table columns={columns} data={listCustomer} />

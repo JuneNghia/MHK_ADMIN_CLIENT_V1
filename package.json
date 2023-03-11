@@ -2,7 +2,6 @@
   "name": "datta-able-react-hook-reactstrap-js",
   "version": "17.1.0",
   "private": true,
-  "homepage": "https://codedthemes.com/demos/admin-templates/datta-able/react/default/",
   "dependencies": {
     "@amcharts/amcharts5": "^5.1.8",
     "@amcharts/amcharts5-geodata": "^5.0.2",
@@ -74,6 +73,7 @@
     "react-flot": "^1.3.0",
     "react-google-charts": "^4.0.0",
     "react-google-maps": "^9.4.5",
+    "react-helmet": "^6.1.0",
     "react-icons": "^4.3.1",
     "react-image-video-lightbox": "2.0.1",
     "react-image-zoom-hook": "^0.1.13",

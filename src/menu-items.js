@@ -36,19 +36,19 @@ const menuItems = {
           icon: 'feather icon-clipboard',
           children: [
             {
-              id: 'alert',
+              id: 'order-create',
               title: 'Tạo đơn và giao hàng',
               type: 'item',
               url: '/app/sell-management/orders/create'
             },
             {
-              id: 'alert',
+              id: 'order-list',
               title: 'Danh sách đơn hàng',
               type: 'item',
               url: '/basic/alert'
             },
             {
-              id: 'alert',
+              id: 'order-return',
               title: 'Khách trả hàng',
               type: 'item',
               url: '/basic/alert'
@@ -100,16 +100,16 @@ const menuItems = {
           icon: 'feather icon-box',
           children: [
             {
-              id: 'alert',
+              id: 'product-list',
               title: 'Danh sách sản phẩm',
               type: 'item',
-              url: '/basic/alert'
+              url: '/app/sell-management/products'
             },
             {
               id: 'alert',
               title: 'Quản lý kho',
               type: 'item',
-              url: '/basic/alert'
+              url: '/app/sell-management'
             },
             {
               id: 'alert',
@@ -178,22 +178,9 @@ const menuItems = {
         {
           id: 'customers',
           title: 'Khách hàng',
-          type: 'collapse',
+          type: 'item',
           icon: 'feather icon-users',
-          children: [
-            {
-              id: 'list-customer',
-              title: 'Danh sách khách hàng',
-              type: 'item',
-              url: '/app/sell-management/customers'
-            },
-            {
-              id: 'alert',
-              title: 'Nhóm khách hàng',
-              type: 'item',
-              url: '/basic/alert'
-            }
-          ]
+          url: '/app/sell-management/customers'
         },
         {
           id: 'users',

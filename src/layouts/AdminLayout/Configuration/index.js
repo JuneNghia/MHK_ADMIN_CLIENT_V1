@@ -28,14 +28,14 @@ const Configuration = () => {
           </Link>
         </div>
         <div className="style-block">
-          <h5 className="mb-2">Live Menu Customizer</h5>
+          <h5 className="mb-2">Cài đặt giao diện</h5>
           <hr />
           <div className="m-style-scroller">
             <Layout />
-            <PreBuiltLayout />
+            {/* <PreBuiltLayout /> */}
 
             {/* icon colored */}
-            <div className="form-group mb-3">
+            <div style={{marginBottom: '1.5rem', marginTop: '1.5rem'}} className="form-group">
               <div className="switch switch-primary d-inline m-r-10">
                 <input
                   type="checkbox"
@@ -45,7 +45,7 @@ const Configuration = () => {
                 />
                 <label htmlFor="icon-colored" className="cr" />
               </div>
-              <label>Icon Color</label>
+              <label>Màu sắc Icon (mặc định: <span className='text-c-red'>Bật</span>)</label>
             </div>
 
             <TabConfig />

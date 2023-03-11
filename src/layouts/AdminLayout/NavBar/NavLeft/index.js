@@ -33,17 +33,17 @@ const NavLeft = () => {
               <Dropdown.Menu>
                 <li>
                   <Link to="#" className="dropdown-item">
-                    Action
+                    Chi nhánh 1
                   </Link>
                 </li>
                 <li>
                   <Link to="#" className="dropdown-item">
-                    Another action
+                    Chi nhánh 2
                   </Link>
                 </li>
                 <li>
                   <Link to="#" className="dropdown-item">
-                    Something else here
+                    Chi nhánh 3
                   </Link>
                 </li>
               </Dropdown.Menu>

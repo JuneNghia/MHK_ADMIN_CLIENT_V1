@@ -15,7 +15,7 @@ const TabConfig = () => {
   let defaultActive;
   if (layout !== 'horizontal') {
     layoutTab = (
-      <Tab eventKey="layout" title="LAYOUT">
+      <Tab eventKey="layout" title="GIAO DIỆN">
         <LayoutOptions />
       </Tab>
     );
@@ -24,7 +24,7 @@ const TabConfig = () => {
   if (subLayout !== 'layout-8') {
     defaultActive = 'color';
     colorTab = (
-      <Tab eventKey="color" title="COLOR">
+      <Tab eventKey="color" title="MÀU SẮC">
         <ColorOptions />
       </Tab>
     );
@@ -37,7 +37,7 @@ const TabConfig = () => {
       <Tabs variant="pills" defaultActiveKey={defaultActive} id="pills-custom-tab" className="mb-2">
         {colorTab}
         {layoutTab}
-        <Tab eventKey="extra" title="EXTRA">
+        <Tab eventKey="extra" title="NÂNG CAO">
           <MenuOptions />
         </Tab>
       </Tabs>

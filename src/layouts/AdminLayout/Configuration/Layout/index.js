@@ -11,7 +11,7 @@ const Layout = () => {
 
   return (
     <React.Fragment>
-      <h6>Layouts</h6>
+      <h6>Giao diện</h6>
       <div className="theme-color layout-type">
         <Link
           to="#"
@@ -74,7 +74,7 @@ const Layout = () => {
           className={layoutType === 'reset' ? 'active' : ''}
           data-value="reset"
         >
-          Reset to Default
+          Khôi phục
         </Link>
       </div>
     </React.Fragment>

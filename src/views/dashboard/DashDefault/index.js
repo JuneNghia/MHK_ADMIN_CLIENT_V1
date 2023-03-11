@@ -8,10 +8,14 @@ import AmChartStatistics6 from './chart/AmChartStatistics6';
 import avatar1 from '../../../assets/images/user/avatar-1.jpg';
 import avatar2 from '../../../assets/images/user/avatar-2.jpg';
 import avatar3 from '../../../assets/images/user/avatar-3.jpg';
+import { Helmet } from 'react-helmet';
 
 const DashDefault = () => {
   return (
     <React.Fragment>
+      <Helmet>
+        <title>Trang chủ</title>
+      </Helmet>
       <Row>
         <Col md={6} xl={4}>
           <Card>

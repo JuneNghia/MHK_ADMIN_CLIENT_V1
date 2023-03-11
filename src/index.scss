@@ -248,6 +248,10 @@ body.datta-rtl .pcoded-navbar.theme-horizontal .pcoded-inner-navbar > li.active:
   }
 }
 
+select.form-control:not([size]):not([multiple]){
+  height: calc(1.5em + 0.75rem + 4px);
+}
+
 .form-control{
   background-color: white;
   padding: 7px 7px;
@@ -415,8 +419,50 @@ td {
   z-index: 20 !important;
  }
  
-.css-list-customer{
+.flex-between{
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
+.box-dash{
+  border: dashed 1px #0F1824;
+  padding: 9px;
+}
+
+.strong-title{
+  font-weight: 600;
+}
+
+.item-center{
+  display: flex;
+  align-items: center;
+}
+
+.mb-0{
+  margin-bottom: 0
+}
+
+.text-normal{
+  color: #0F1824 
+}
+
+.tabs-menu{
+  border-bottom: 2px solid #04a9f5;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+  box-shadow: none;
+}
+
+.row-has-detail{
+  cursor: pointer;
+  color:#0F1824 !important;
+  background-color: transparent !important;
+}
+
+.row-has-detail:hover{
+  color:#04a9f5 !important;
+  background-color:rgba(0, 0, 0, 0.05) !important;
+}
+
