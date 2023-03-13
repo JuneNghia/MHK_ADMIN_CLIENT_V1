@@ -5,9 +5,9 @@ import { useTable, usePagination, useGlobalFilter, useRowSelect } from 'react-ta
 
 import ModuleNotification from '../../../../components/Widgets/Statistic/Notification';
 import { GlobalFilter } from '../../../users/GlobalFilter';
-import axios from 'axios';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import services from '../../../../utils/axios';
 
 function Table({ columns, data }) {
   const {
@@ -64,7 +64,7 @@ function Table({ columns, data }) {
     setSelectedRows(selectedRows);
   }, [selectedFlatRows]);
 
-  console.log(selectedRows)
+  console.log(selectedRows);
 
   const history = useHistory();
 
@@ -114,23 +114,23 @@ function Table({ columns, data }) {
           {page.map((row, i) => {
             prepareRow(row);
             return (
-              <tr className='row-has-detail' key={row.values.id} {...row.getRowProps()}>
-                <div style={{display: 'contents'}}>
+              <tr className="row-has-detail" key={row.values.id} {...row.getRowProps()}>
+                <div style={{ display: 'contents' }}>
                   {row.cells.map((cell) => {
-                   return (cell.column.id === 'selection' ? (
-                    <td {...cell.getCellProps()}>
-                      <input {...row.getToggleRowSelectedProps()} type="checkbox" {...cell.getCellProps()} />
-                    </td>
-                  ) : (
-                    <td
-                      onClick={() => {
-                        handleRowClick(row);
-                      }}
-                      {...cell.getCellProps()}
-                    >
-                      {cell.render('Cell')}
-                    </td>
-                  )) 
+                    return cell.column.id === 'selection' ? (
+                      <td {...cell.getCellProps()}>
+                        <input {...row.getToggleRowSelectedProps()} type="checkbox" {...cell.getCellProps()} />
+                      </td>
+                    ) : (
+                      <td
+                        onClick={() => {
+                          handleRowClick(row);
+                        }}
+                        {...cell.getCellProps()}
+                      >
+                        {cell.render('Cell')}
+                      </td>
+                    );
                   })}
                 </div>
               </tr>
@@ -218,22 +218,22 @@ function App() {
     }
   ];
 
-  //   useEffect(() => {
-  //     (async () => {
-  //       const result = await axios.get('http://localhost:5000/mhk-api/v1/user/get-all-customer');
-  //       setListCustomer(result.data);
-  //     })();
-  //   }, []);
+  useEffect(() => {
+    (async () => {
+      const result = await services.get('/product/get-all');
+      setListProducts(result.data);
+    })();
+  }, []);
 
   const columns = React.useMemo(
     () => [
       {
         Header: 'ID',
-        accessor: 'id'
+        accessor: 'product_sku'
       },
-      {
-        Header: 'Ảnh',
-        accessor: 'image'
+      { 
+        Header: 'Tên sản phẩm',
+        accessor: 'product_name'
       },
       {
         Header: 'Sản phẩm',

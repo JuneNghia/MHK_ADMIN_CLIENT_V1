@@ -27,18 +27,5 @@ export const CONFIG = {
   jwt: {
     secret: 'SECRET-KEY',
     timeout: '1 days'
-  },
-  firebase: {
-    apiKey: 'AIzaSyAlA-jy7dpv4SxGD_6Ka1i5l6YOJANVyJU',
-    authDomain: 'datta-able-react-hook.firebaseapp.com',
-    projectId: 'datta-able-react-hook',
-    storageBucket: 'datta-able-react-hook.appspot.com',
-    messagingSenderId: '194472541027',
-    appId: '1:194472541027:web:462efb7a5035da914ef156',
-    measurementId: 'G-M4PFJDM1EZ'
-  },
-  auth0: {
-    client_id: 'CLhKXoEUbSlJSF8RrKB8oDX15pfZ2E1F',
-    domain: 'dev-w0-vxep3.us.auth0.com'
   }
 };

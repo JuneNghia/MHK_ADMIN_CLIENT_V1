@@ -2,9 +2,9 @@ import React, { createContext, useEffect, useReducer } from 'react';
 import jwtDecode from 'jwt-decode';
 
 import { ACCOUNT_INITIALISE, LOGIN, LOGOUT } from '../store/actions';
-import axios from '../services/axios';
 import accountReducer from '../store/accountReducer';
 import Loader from '../components/Loader/Loader';
+import services from '../utils/axios'
 
 const initialState = {
   isLoggedIn: false,
@@ -24,10 +24,10 @@ const verifyToken = (serviceToken) => {
 const setSession = (serviceToken) => {
   if (serviceToken) {
     localStorage.setItem('serviceToken', serviceToken);
-    axios.defaults.headers.common.Authorization = `Bearer ${serviceToken}`;
+    // services.defaults.headers.common.Authorization = `${serviceToken}`;
   } else {
     localStorage.removeItem('serviceToken');
-    delete axios.defaults.headers.common.Authorization;
+    // delete services.defaults.headers.common.Authorization;
   }
 };
 
@@ -41,9 +41,9 @@ export const JWTProvider = ({ children }) => {
   const [state, dispatch] = useReducer(accountReducer, initialState);
 
   const login = async (email, password) => {
-    const response = await axios.post('/api/account/login', { email, password });
-    const { serviceToken, user } = response.data;
-    setSession(serviceToken);
+    const response = await services.post('/auth/login', { email, password });
+    const {token, user} = response.data;
+    setSession(token);
     dispatch({
       type: LOGIN,
       payload: {
@@ -63,13 +63,13 @@ export const JWTProvider = ({ children }) => {
         const serviceToken = window.localStorage.getItem('serviceToken');
         if (serviceToken && verifyToken(serviceToken)) {
           setSession(serviceToken);
-          const response = await axios.get('/api/account/me');
-          const { user } = response.data;
+          // const response = await services.get('');
+          // const { user } = response.data;
           dispatch({
             type: ACCOUNT_INITIALISE,
             payload: {
               isLoggedIn: true,
-              user
+              user: "user"
             }
           });
         } else {
@@ -82,7 +82,6 @@ export const JWTProvider = ({ children }) => {
           });
         }
       } catch (err) {
-        console.error(err);
         dispatch({
           type: ACCOUNT_INITIALISE,
           payload: {

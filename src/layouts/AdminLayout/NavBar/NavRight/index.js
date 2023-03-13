@@ -11,6 +11,8 @@ import avatar1 from '../../../../assets/images/user/avatar-1.jpg';
 import avatar2 from '../../../../assets/images/user/avatar-2.jpg';
 import avatar3 from '../../../../assets/images/user/avatar-3.jpg';
 import avatar4 from '../../../../assets/images/user/avatar-4.jpg';
+import withReactContent from 'sweetalert2-react-content';
+import Swal from 'sweetalert2';
 
 const NavRight = () => {
   const configContext = useContext(ConfigContext);
@@ -18,6 +20,25 @@ const NavRight = () => {
   const { rtlLayout } = configContext.state;
 
   const [listOpen, setListOpen] = useState(false);
+
+  const handleSubmitLogOut = () => {
+    const MySwal = withReactContent(Swal);
+    MySwal.fire({
+      title: 'Bạn có chắc chắn muốn đăng xuất ?',
+      type: 'warning',
+      icon: 'question',
+      confirmButtonText: 'Đồng ý',
+      confirmButtonColor: 'red',
+      cancelButtonText: 'Quay lại',
+      showCancelButton: true
+    }).then((willExit) => {
+      if (willExit.isConfirmed) {
+        handleLogout();
+      } else {
+        return;
+      }
+    });
+  };
 
   const handleLogout = async () => {
     try {
@@ -137,7 +158,7 @@ const NavRight = () => {
             <Dropdown.Menu alignRight className="profile-notification">
               <div className="pro-head">
                 <img src={avatar1} className="img-radius" alt="User Profile" />
-                <span>John Doe</span>
+                <span>MHK</span>
                 <Link to="#" className="dud-logout" title="Logout">
                   <i className="feather icon-log-out" />
                 </Link>
@@ -145,27 +166,27 @@ const NavRight = () => {
               <ListGroup as="ul" bsPrefix=" " variant="flush" className="pro-body">
                 <ListGroup.Item as="li" bsPrefix=" ">
                   <Link to="#" className="dropdown-item">
-                    <i className="feather icon-settings" /> Settings
+                    <i className="feather icon-settings" /> Cài đặt
+                  </Link>
+                </ListGroup.Item>
+                <ListGroup.Item as="li" bsPrefix=" ">
+                  <Link to="/users/user-profile" className="dropdown-item">
+                    <i className="feather icon-user" /> Thông tin cá nhân
                   </Link>
                 </ListGroup.Item>
                 <ListGroup.Item as="li" bsPrefix=" ">
                   <Link to="#" className="dropdown-item">
-                    <i className="feather icon-user" /> Profile
+                    <i className="feather icon-mail" /> Tin nhắn
                   </Link>
                 </ListGroup.Item>
                 <ListGroup.Item as="li" bsPrefix=" ">
                   <Link to="#" className="dropdown-item">
-                    <i className="feather icon-mail" /> My Messages
+                    <i className="feather icon-lock" /> Khoá màn hình
                   </Link>
                 </ListGroup.Item>
                 <ListGroup.Item as="li" bsPrefix=" ">
-                  <Link to="#" className="dropdown-item">
-                    <i className="feather icon-lock" /> Lock Screen
-                  </Link>
-                </ListGroup.Item>
-                <ListGroup.Item as="li" bsPrefix=" ">
-                  <Link to="#" className="dropdown-item" onClick={handleLogout}>
-                    <i className="feather icon-log-out" /> Logout
+                  <Link to="#" className="dropdown-item" onClick={handleSubmitLogOut}>
+                    <i className="feather icon-log-out" /> Đăng xuất
                   </Link>
                 </ListGroup.Item>
               </ListGroup>

@@ -8,7 +8,6 @@ import GuestGuard from './components/Auth/GuestGuard';
 import AuthGuard from './components/Auth/AuthGuard';
 
 import { BASE_URL } from './config/constant';
-import NotFound404 from './views/errors/NotFound404';
 
 export const renderRoutes = (routes = []) => (
   <Suspense fallback={<Loader />}>
@@ -105,7 +104,7 @@ const routes = [
     component: lazy(() => import('./views/auth/Subscribe'))
   },
   {
-    path: '/',
+    path: '*',
     layout: AdminLayout,
     guard: AuthGuard,
     routes: [
@@ -161,8 +160,13 @@ const routes = [
       },
       {
         exact: true,
-        path: '/app/sell-management/users/list',
+        path: '/app/sell-management/users',
         component: lazy(() => import('./views/users/UserList'))
+      },
+      {
+        exact: true,
+        path: '/app/sell-management/users/:id',
+        component: lazy(() => import('./views/users/Detail'))
       },
       {
         exact: true,

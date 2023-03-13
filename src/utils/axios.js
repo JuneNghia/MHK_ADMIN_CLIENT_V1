@@ -1,12 +1,18 @@
 import axios from 'axios';
 
-const axiosServices = axios.create({
-  baseURL: 'http://localhost:5000/mhk-api/v1/'
+const token = localStorage.getItem('serviceToken');
+
+const services = axios.create({
+  baseURL: 'http://localhost:5000/mhk-api/v1/',
+  headers: {
+    'token': `${token}`
+  }
 });
 
-axiosServices.interceptors.response.use(
-  (response) => response,
-  (error) => Promise.reject((error.response && error.response.data) || 'Wrong Services')
-);
 
-export default axiosServices;
+// axiosServices.interceptors.response.use(
+//   (response) => response,
+//   (error) => Promise.reject((error.response && error.response.data) || 'Wrong Services')
+// );
+
+export default services;

@@ -187,7 +187,7 @@ const menuItems = {
           title: 'Nhân viên',
           type: 'item',
           icon: 'feather icon-users',
-          url:'/app/sell-management/users/list'
+          url:'/app/sell-management/users'
         }
       ]
     }

@@ -9,37 +9,45 @@ const JWTLogin = ({ className, ...rest }) => {
   const { login } = useAuth();
   const scriptedRef = useScriptRef();
 
+  const handleSubmit = (values, { setErrors, setStatus, setSubmitting }) => {
+    setTimeout( async () => {
+      try {
+        await login(values.email, values.password);
+
+        if (scriptedRef.current) {
+          setStatus({ success: true });
+          setSubmitting(false);
+        }
+      } catch (err) {
+        if (scriptedRef.current) {
+          setStatus({ success: false });
+          setErrors({ submit: err.message });
+          setSubmitting(false);
+        }
+      }
+    }, 1000)
+  }
+
   return (
     <Formik
       initialValues={{
-        email: 'demo@gmail.com',
-        password: '123456',
+        email: 'admin1@gmail.com',
+        password: 'admin123',
         submit: null
       }}
       validationSchema={Yup.object().shape({
-        email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-        password: Yup.string().max(255).required('Password is required')
+        email: Yup.string().email('Địa chỉ email không hợp lệ').max(255).required('Email không được bỏ trống'),
+        password: Yup.string().max(255).required('Mật khẩu không được bỏ trống')
       })}
-      onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-        try {
-          await login(values.email, values.password);
-
-          if (scriptedRef.current) {
-            setStatus({ success: true });
-            setSubmitting(false);
-          }
-        } catch (err) {
-          console.error(err);
-          if (scriptedRef.current) {
-            setStatus({ success: false });
-            setErrors({ submit: err.message });
-            setSubmitting(false);
-          }
-        }
-      }}
+      onSubmit={handleSubmit}
     >
       {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
         <form noValidate onSubmit={handleSubmit} className={className} {...rest}>
+          {errors.submit && (
+            <Col sm={12}>
+              <Alert className="text-c-red">Tài khoản hoặc mật khẩu không chính xác</Alert>
+            </Col>
+          )}
           <div className="form-group mb-3">
             <input
               className="form-control"
@@ -70,20 +78,14 @@ const JWTLogin = ({ className, ...rest }) => {
           <div className="custom-control custom-checkbox  text-left mb-4 mt-2">
             <input type="checkbox" className="custom-control-input" id="customCheck1" />
             <label className="custom-control-label" htmlFor="customCheck1">
-              Save credentials.
+              Nhớ mật khẩu
             </label>
           </div>
-
-          {errors.submit && (
-            <Col sm={12}>
-              <Alert>{errors.submit}</Alert>
-            </Col>
-          )}
 
           <Row>
             <Col mt={2}>
               <Button className="btn-block mb-4" color="primary" disabled={isSubmitting} size="large" type="submit" variant="primary">
-                Signin
+                {isSubmitting ? "Đang đăng nhập..." : "Đăng nhập"}
               </Button>
             </Col>
           </Row>

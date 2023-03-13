@@ -144,7 +144,7 @@ const FormsElements = () => {
         <title>Tạo đơn hàng</title>
       </Helmet>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Button onClick={sweetConfirmAlert} variant="danger" className="mr-0" style={{ marginBottom: 15 }}>
+        <Button onClick={sweetConfirmAlert} variant="outline-primary" className="mr-0" style={{ marginBottom: 15 }}>
           <i className="feather icon-arrow-left"></i>
           Thoát
         </Button>

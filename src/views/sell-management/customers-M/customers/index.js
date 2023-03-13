@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Pagination, Button } from 'react-bootstrap';
 import BTable from 'react-bootstrap/Table';
-import { useTable, usePagination, useGlobalFilter } from 'react-table';
-
-import ModuleNotification from '../../../../components/Widgets/Statistic/Notification';
+import { useTable, usePagination, useGlobalFilter, useRowSelect } from 'react-table';
+import { useHistory } from 'react-router-dom';
 import { GlobalFilter } from '../../../users/GlobalFilter';
-import axios from 'axios';
-import { Link, useHistory } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import services from '../../../../utils/axios';
+import moment from 'moment';
 
 function Table({ columns, data }) {
-  // Use the state and functions returned from useTable to build your UI
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
     prepareRow,
     page, // Instead of using 'rows', we'll use page,
     // which has only the rows for the active page
@@ -24,7 +21,7 @@ function Table({ columns, data }) {
     setGlobalFilter,
 
     // The rest of these things are super handy, too ;)
-
+    selectedFlatRows,
     canPreviousPage,
     canNextPage,
     pageOptions,
@@ -41,23 +38,42 @@ function Table({ columns, data }) {
       initialState: { pageIndex: 0, hiddenColumns: ['id'] }
     },
     useGlobalFilter,
-    usePagination
+    usePagination,
+    useRowSelect,
+    (hooks) => {
+      hooks.visibleColumns.push((columns) => [
+        {
+          id: 'selection',
+          Header: ({ getToggleAllRowsSelectedProps }) => (
+            <div style={{width: '25px', textAlign: 'center'}}>
+              <input  type="checkbox" {...getToggleAllRowsSelectedProps()} />
+            </div>
+          )
+        },
+        ...columns
+      ]);
+    }
   );
+
+  const [selectedRows, setSelectedRows] = useState([]); //Mản lưu các dòng được chọn
+
+  useEffect(() => {
+    //selectedFlatRows biến của React-Table lưu dòng đang được chọn
+    const selectedRows = selectedFlatRows.map((d) => d.original);
+    setSelectedRows(selectedRows);
+  }, [selectedFlatRows]);
 
   const history = useHistory();
 
-  const handleRowClick = async (row) => {
-    const customerId = row.values.id;
-    // const response = await axios.get(`http://localhost:5000/mhk-api/v1/user/get-by-id/${customerId}`);
-    // const customerData = response.data;
-    history.push(`/app/sell-management/customers/${customerId}`);
+  const handleRowClick = (row) => {
+    const id = row.values.id;
+    history.push(`/app/sell-management/customers/${id}`);
   };
 
-  // Render the UI for your table
   return (
     <>
       <Helmet>
-        <title>Danh sách khách hàng</title>
+        <title>Danh sách sản phẩm</title>
       </Helmet>
       <Row className="mb-3">
         <Col className="d-flex align-items-center">
@@ -95,12 +111,26 @@ function Table({ columns, data }) {
           {page.map((row, i) => {
             prepareRow(row);
             return (
-              <tr onClick={() => handleRowClick(row)} {...row.getRowProps()}>
-                <Link style={{ display: 'contents' }}>
+              <tr className="row-has-detail" key={row.values.id} {...row.getRowProps()}>
+                <div style={{ display: 'contents' }}>
                   {row.cells.map((cell) => {
-                    return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
+                    return cell.column.id === 'selection' ? (
+                      <td style={{width: '50px', textAlign: 'center'}} {...cell.getCellProps()}>
+                        <input {...row.getToggleRowSelectedProps()} type="checkbox" {...cell.getCellProps()} />
+                      </td>
+                    ) 
+                     : (
+                      <td
+                        onClick={() => {
+                          handleRowClick(row);
+                        }}
+                        {...cell.getCellProps()}
+                      >
+                        {cell.render('Cell')}
+                      </td>
+                    );
                   })}
-                </Link>
+                </div>
               </tr>
             );
           })}
@@ -145,29 +175,33 @@ function App() {
 
   useEffect(() => {
     (async () => {
-      const result = await axios.get('http://localhost:5000/mhk-api/v1/user/get-all-customer');
-      setListCustomer(result.data);
+      await services.get('/user/get-all-customer')
+      .then((response) => {
+        setListCustomer(response.data);
+      }).catch(error => {
+        console.log(error)
+      });
     })();
   }, []);
 
   const columns = React.useMemo(
     () => [
       {
-        Header: 'STT',
+        Header: 'ID',
         accessor: 'id'
-      },
-      {
-        Header: 'Mã khách hàng',
-        accessor: 'user_code'
       },
       {
         Header: 'Tên khách hàng',
         accessor: 'user_name'
       },
       {
+        Header: 'Mã khách hàng',
+        accessor: 'user_code'
+      },
+      {
         Header: 'Số điện thoại',
         accessor: 'user_phone'
-      }
+      },
     ],
     []
   );
@@ -179,7 +213,7 @@ function App() {
           <Card>
             <Card.Header className="flex-between">
               <Card.Title as="h5">Danh sách khách hàng</Card.Title>
-              <Button style={{ margin: 0 }} href="/app/sell-management/customers/create">
+              <Button style={{ marginRight: 0 }} href="/app/sell-management/customers/create">
                 <i className="feather icon-plus-circle mr-2"></i>
                 Thêm khách hàng
               </Button>{' '}

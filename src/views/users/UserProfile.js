@@ -64,7 +64,7 @@ const UserProfile = () => {
                 <Dropdown.Menu>
                   <Dropdown.Item as={Link} to="#">
                     <i className="feather icon-upload-cloud mr-2" />
-                    upload new
+                    Đăng tin mới
                   </Dropdown.Item>
                   <Dropdown.Item as={Link} to="#">
                     <i className="feather icon-image mr-2" />
@@ -94,63 +94,63 @@ const UserProfile = () => {
                         <div className="position-relative d-inline-block">
                           <img className="img-radius img-fluid wid-100" src={avatar5} alt="User" />
                         </div>
-                        <div className="overlay">
-                          <span>change</span>
+                        <div style={{cursor: "pointer"}} className="overlay">
+                          <span>Thay đổi</span>
                         </div>
                       </div>
-                      <div className="certificated-badge">
+                      {/* <div className="certificated-badge">
                         <i className="fas fa-certificate text-c-blue bg-icon" />
                         <i className="fas fa-check front-icon text-white" />
-                      </div>
+                      </div> */}
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                       <Dropdown.Item as={Link} to="#">
                         <i className="feather icon-upload-cloud mr-2" />
-                        upload new
+                        Đăng bài viết
                       </Dropdown.Item>
                       <Dropdown.Item as={Link} to="#">
                         <i className="feather icon-image mr-2" />
-                        from photos
+                        Chọn từ ảnh
                       </Dropdown.Item>
                       <Dropdown.Item as={Link} to="#">
                         <i className="feather icon-film mr-2" />
-                        upload video
+                        Đăng tải Video
                       </Dropdown.Item>
                       <Dropdown.Item as={Link} to="#">
                         <i className="feather icon-trash-2 mr-2" />
-                        remove
+                        Xoá tài khoản
                       </Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
-                <h5 className="mb-1">Lary Doe</h5>
-                <p className="mb-2 text-muted">UI/UX Designer</p>
+                <h5 className="mb-1">Nguyễn Minh Trung Nghĩa</h5>
+                <p className="mb-2 text-muted">Kỹ thuật viên</p>
               </Col>
               <Col md={8} className="mt-md-4">
                 <Row>
                   <Col>
                     <Link to="#" className="mb-1 text-muted d-flex align-items-end text-h-primary">
                       <i className="feather icon-globe mr-2 f-18" />
-                      www.codedthemescom
+                      www.mhk.vn
                     </Link>
                     <div className="clearfix" />
                     <a href="mailto:demo@domain.com" className="mb-1 text-muted d-flex align-items-end text-h-primary">
                       <i className="feather icon-mail mr-2 f-18" />
-                      demo@domain.com
+                      admin@mhktech.com
                     </a>
                     <div className="clearfix" />
                     <Link to="#" className="mb-1 text-muted d-flex align-items-end text-h-primary">
                       <i className="feather icon-phone mr-2 f-18" />
-                      +1 9999-999-999
+                      +84 934 945 803
                     </Link>
                   </Col>
                   <Col>
                     <div className="media">
                       <i className="feather icon-map-pin mr-2 mt-1 f-18" />
                       <div className="media-body">
-                        <p className="mb-0 text-muted">4289 Calvin Street</p>
-                        <p className="mb-0 text-muted">Baltimore, near MD Tower Maryland,</p>
-                        <p className="mb-0 text-muted">Maryland (21201)</p>
+                        <p className="mb-0 text-muted">44 đường B</p>
+                        <p className="mb-0 text-muted">Phường An Bình, Thị Xã Dĩ An</p>
+                        <p className="mb-0 text-muted">Bình Dương (820000)</p>
                       </div>
                     </div>
                   </Col>
@@ -166,7 +166,7 @@ const UserProfile = () => {
                       id="home-tab"
                     >
                       <i className="feather icon-home mr-2" />
-                      Home
+                      Trang chủ
                     </Link>
                   </li>
                   <li className="nav-item">
@@ -179,7 +179,7 @@ const UserProfile = () => {
                       id="profile-tab"
                     >
                       <i className="feather icon-user mr-2" />
-                      Profile
+                      Thông tin cá nhân
                     </Link>
                   </li>
                   <li className="nav-item">
@@ -192,7 +192,7 @@ const UserProfile = () => {
                       id="contact-tab"
                     >
                       <i className="feather icon-phone mr-2" />
-                      My Contacts
+                      Liên lạc
                     </Link>
                   </li>
                   <li className="nav-item">
@@ -205,7 +205,7 @@ const UserProfile = () => {
                       id="gallery-tab"
                     >
                       <i className="feather icon-image mr-2" />
-                      Gallery
+                      Thư viện ảnh
                     </Link>
                   </li>
                 </ul>
@@ -951,7 +951,7 @@ const UserProfile = () => {
         <Col md={4} className="order-md-1">
           <Card>
             <Card.Header className="d-flex align-items-center justify-content-between">
-              <h5 className="mb-0">Friends</h5>
+              <h5 className="mb-0">Bạn bè</h5>
               <span className="badge badge-light-primary float-right">100+</span>
             </Card.Header>
             <Card.Body>
@@ -1001,7 +1001,7 @@ const UserProfile = () => {
           </Card>
           <Card className="new-cust-card">
             <Card.Header>
-              <Card.Title as="h5">Message</Card.Title>
+              <Card.Title as="h5">Tin nhắn</Card.Title>
             </Card.Header>
             <div style={{ height: '415px' }}>
               <PerfectScrollbar>

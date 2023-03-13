@@ -14,7 +14,7 @@ const NotFound404 = () => {
               <div>
                 <img src={Background404} alt="404 - Page Not Found" />
               </div>
-              <h5 className="mt-4">Oops! Page not found!</h5>
+              <h5 className="mt-4">Trang không tồn tại</h5>
               <p className="text-muted">
                 illustration by
                 <Button variant="link" href="https://undraw.co/search" target="_blank" className="p-1 shadow-none">

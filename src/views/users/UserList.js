@@ -1,41 +1,13 @@
-import React from 'react';
-import { Row, Col, Card, Pagination } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Row, Col, Card, Pagination, Button } from 'react-bootstrap';
 import BTable from 'react-bootstrap/Table';
-import styled from 'styled-components';
-
+import { useTable, usePagination, useGlobalFilter, useRowSelect } from 'react-table';
 import { GlobalFilter } from './GlobalFilter';
-
-import { useTable, useSortBy, usePagination, useGlobalFilter } from 'react-table';
-import makeData from '../../data/userListData';
-
-const Styles = styled.div`
-  padding: 0;
-
-  table {
-    border-spacing: 0;
-    border: 1px solid black;
-
-    tr {
-      :last-child {
-        td {
-          border-bottom: 0;
-        }
-      }
-    }
-
-    th,
-    td {
-      margin: 0;
-      padding: 0.5rem;
-      border-bottom: 1px solid black;
-      border-right: 1px solid black;
-
-      :last-child {
-        border-right: 0;
-      }
-    }
-  }
-`;
+import { useHistory } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
+import services from '../../utils/axios';
+import moment from 'moment';
+import NoPermission from '../errors/NoPermission';
 
 function Table({ columns, data }) {
   const {
@@ -43,11 +15,14 @@ function Table({ columns, data }) {
     getTableBodyProps,
     headerGroups,
     prepareRow,
+    page, // Instead of using 'rows', we'll use page,
+    // which has only the rows for the active page
 
     globalFilter,
     setGlobalFilter,
 
-    page,
+    // The rest of these things are super handy, too ;)
+    selectedFlatRows,
     canPreviousPage,
     canNextPage,
     pageOptions,
@@ -61,18 +36,48 @@ function Table({ columns, data }) {
     {
       columns,
       data,
-      initialState: { pageIndex: 0, pageSize: 10 }
+      initialState: { pageIndex: 0, hiddenColumns: ['id'] }
     },
     useGlobalFilter,
-    useSortBy,
-    usePagination
+    usePagination,
+    useRowSelect,
+    (hooks) => {
+      hooks.visibleColumns.push((columns) => [
+        {
+          id: 'selection',
+          Header: ({ getToggleAllRowsSelectedProps }) => (
+            <div>
+              <input type="checkbox" {...getToggleAllRowsSelectedProps()} />
+            </div>
+          )
+        },
+        ...columns
+      ]);
+    }
   );
 
+  const [selectedRows, setSelectedRows] = useState([]);
+
+  useEffect(() => {
+    //selectedFlatRows biến của React-Table lưu dòng đang được chọn
+    const selectedRows = selectedFlatRows.map((d) => d.original);
+    setSelectedRows(selectedRows);
+  }, [selectedFlatRows]);
+
+  const history = useHistory();
+
+  const handleRowClick = (row) => {
+    const id = row.values.id;
+    history.push(`/app/sell-management/users/${id}`);
+  };
 
   return (
     <>
-      <Row>
-        <Col className="ml-2 mb-3 mt-3 d-flex align-items-center">
+      <Helmet>
+        <title>Danh sách sản phẩm</title>
+      </Helmet>
+      <Row className="mb-3">
+        <Col className="d-flex align-items-center">
           Hiển thị
           <select
             className="form-control w-auto mx-2"
@@ -89,7 +94,7 @@ function Table({ columns, data }) {
           </select>
           kết quả
         </Col>
-        <Col className='mr-2 mb-3 mt-3'>
+        <Col>
           <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
         </Col>
       </Row>
@@ -98,23 +103,7 @@ function Table({ columns, data }) {
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
-                // Add the sorting props to control sorting. For this example
-                // we can add them into the header props
-                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                  {column.render('Header')}
-                  {/* Add a sort direction indicator */}
-                  <span>
-                    {column.isSorted ? (
-                      column.isSortedDesc ? (
-                        <span className="feather icon-arrow-down text-muted" />
-                      ) : (
-                        <span className="feather icon-arrow-up text-muted" />
-                      )
-                    ) : (
-                      ''
-                    )}
-                  </span>
-                </th>
+                <th {...column.getHeaderProps()}>{column.render('Header')}</th>
               ))}
             </tr>
           ))}
@@ -123,22 +112,37 @@ function Table({ columns, data }) {
           {page.map((row, i) => {
             prepareRow(row);
             return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map((cell) => {
-                  return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
-                })}
+              <tr className="row-has-detail" key={row.values.id} {...row.getRowProps()}>
+                <div style={{ display: 'contents' }}>
+                  {row.cells.map((cell) => {
+                    return cell.column.id === 'selection' ? (
+                      <td {...cell.getCellProps()}>
+                        <input {...row.getToggleRowSelectedProps()} type="checkbox" {...cell.getCellProps()} />
+                      </td>
+                    ) : (
+                      <td
+                        onClick={() => {
+                          handleRowClick(row);
+                        }}
+                        {...cell.getCellProps()}
+                      >
+                        {cell.render('Cell')}
+                      </td>
+                    );
+                  })}
+                </div>
               </tr>
             );
           })}
         </tbody>
       </BTable>
-      <Row className="justify-content-between">
-        <Col>
-          <span className="ml-2 d-flex align-items-center">
+      <Row className="justify-content-between mt-3">
+        <Col sm={12} md={6}>
+          <span className="d-flex align-items-center">
             Trang{' '}
-            <strong>
+            <strong className="ml-1">
               {' '}
-              {pageIndex + 1} trên {pageOptions.length}{' '}
+              {pageIndex + 1} trên tổng {pageOptions.length}{' '}
             </strong>{' '}
             | Đến trang:{' '}
             <input
@@ -153,8 +157,8 @@ function Table({ columns, data }) {
             />
           </span>
         </Col>
-        <Col>
-          <Pagination className="mr-2 justify-content-end">
+        <Col sm={12} md={6}>
+          <Pagination className="justify-content-end">
             <Pagination.First onClick={() => gotoPage(0)} disabled={!canPreviousPage} />
             <Pagination.Prev onClick={() => previousPage()} disabled={!canPreviousPage} />
             <Pagination.Next onClick={() => nextPage()} disabled={!canNextPage} />
@@ -166,58 +170,90 @@ function Table({ columns, data }) {
   );
 }
 
-const UserList = () => {
+function App() {
+  const [listEmployees, setListEmployees] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      await services
+        .get('/user/get-all-db')
+        .then((response) => {
+          const employees = response.data.filter((user) => user.user_type === 'employee');
+          setListEmployees(employees);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          setError(error);
+          setIsLoading(false);
+        });
+    })();
+  }, []);
+
   const columns = React.useMemo(
     () => [
       {
+        Header: 'ID',
+        accessor: 'id'
+      },
+      {
         Header: 'Tên nhân viên',
-        accessor: 'name'
-      },
-      {
-        Header: 'Số điện thoại',
-        accessor: 'position'
-      },
-      {
-        Header: 'Email',
-        accessor: 'office'
-      },
-      {
-        Header: 'Trạng thái',
-        accessor: 'age'
+        accessor: 'user_name'
       },
       {
         Header: 'Vai trò',
-        accessor: 'date'
+        accessor: 'user_type'
       },
       {
-        Header: 'Ngày tạo',
-        accessor: 'salary'
+        Header: 'Số điện thoại',
+        accessor: 'user_phone'
       },
       {
-        Header: 'Cấu hình',
-        accessor: 'setting'
+        Header: 'Email',
+        accessor: 'user_email'
+      },
+      {
+        Header: 'Trạng thái',
+        accessor: 'user_region'
+      },
+      {
+        Header: 'Ngày khởi tạo',
+        accessor: 'createdAt',
+        Cell: ({ value }) => moment(value).utcOffset(7).format('DD/MM/YYYY')
       }
     ],
     []
   );
 
-  const data = React.useMemo(() => makeData(100), []);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
+  if (error) {
+    // handle error
+    return <NoPermission/>
+  }
   return (
     <React.Fragment>
       <Row>
-        <Col sm={12}>
-          <Card className="user-profile-list">
-            <Card.Body className="p-0">
-              <Styles>
-                <Table columns={columns} data={data} />
-              </Styles>
+        <Col>
+          <Card>
+            <Card.Header className="flex-between">
+              <Card.Title as="h5">Danh sách nhân viên</Card.Title>
+              <Button style={{ marginRight: 0 }} href="/app/sell-management/customers/create">
+                <i className="feather icon-plus-circle mr-2"></i>
+                Thêm nhân viên
+              </Button>{' '}
+            </Card.Header>
+            <Card.Body>
+              <Table columns={columns} data={listEmployees} />
             </Card.Body>
           </Card>
         </Col>
       </Row>
     </React.Fragment>
   );
-};
+}
 
-export default UserList;
+export default App;

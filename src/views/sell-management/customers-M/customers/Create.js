@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Row, Col, Card, Form, Button, InputGroup, FormControl, DropdownButton, Dropdown } from 'react-bootstrap';
-import axios from 'axios';
+import services from '../../../../utils/axios';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { ButtonLoading } from '../../../../components/Button/LoadButton';
@@ -56,8 +56,8 @@ const FormsElements = () => {
       createdAt: data.createdAt,
       updatedAt: data.updatedAt
     };
-    axios
-      .post('http://localhost:5000/mhk-api/v1/user/create-customer', customerData)
+    services
+      .post('/user/create-customer', customerData)
       .then((response) => {
         setData({
           user_name: '',
@@ -148,7 +148,7 @@ const FormsElements = () => {
       <Helmet>
         <title>Thêm mới khách hàng</title>
       </Helmet>
-      <Button onClick={sweetConfirmAlert} variant="danger" className="mr-0" style={{ marginBottom: 15 }}>
+      <Button onClick={sweetConfirmAlert} variant="outline-dark" className="mr-0" style={{ marginBottom: 15 }}>
         <i className="feather icon-arrow-left"></i>
         Quay lại danh sách khách hàng
       </Button>

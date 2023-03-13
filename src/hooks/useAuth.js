@@ -1,9 +1,7 @@
 import { useContext } from 'react';
 
-import FirebaseContext from '../contexts/FirebaseContext';
-//import JWTContext from '../contexts/JWTContext';
-//import Auth0Context from '../contexts/Auth0Context';
+import JWTContext from '../contexts/JWTContext';
 
-const useAuth = () => useContext(FirebaseContext);
+const useAuth = () => useContext(JWTContext);
 
 export default useAuth;

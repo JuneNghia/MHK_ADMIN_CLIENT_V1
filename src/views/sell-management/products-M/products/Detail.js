@@ -17,7 +17,7 @@ import { ButtonLoading } from '../../../../components/Button/LoadButton';
 import { useHistory, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
-const UserDetails = () => {
+const ProductDetails = () => {
   const [validated, setValidated] = useState(false);
   const [validatedTooltip, setValidatedTooltip] = useState(false);
   const [supportedCheckbox, setSupportedCheckbox] = useState(false);
@@ -146,9 +146,9 @@ const UserDetails = () => {
         <title>Chi tiết khách hàng</title>
       </Helmet>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Button onClick={() => history.push('/app/sell-management/customers')} variant="danger" className="mr-0" style={{ marginBottom: 15 }}>
+        <Button onClick={() => history.push('/app/sell-management/customers')} variant="outline-primary" className="mr-0" style={{ marginBottom: 15 }}>
           <i className="feather icon-arrow-left"></i>
-          Quay lại danh sách khách hàng
+          Quay lại danh sách sản phẩm
         </Button>
         
         <ButtonLoading
@@ -462,4 +462,4 @@ const UserDetails = () => {
   );
 };
 
-export default UserDetails;
+export default ProductDetails;
