@@ -159,7 +159,12 @@ const UserDetails = () => {
           <title>Chi tiết nhân viên</title>
         </Helmet>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Button onClick={() => history.push('/app/sell-management/users')} variant="outline-primary" className="mr-0" style={{ marginBottom: 15 }}>
+          <Button
+            onClick={() => history.push('/app/sell-management/users')}
+            variant="outline-primary"
+            className="mr-0"
+            style={{ marginBottom: 15 }}
+          >
             <i className="feather icon-arrow-left"></i>
             Quay lại danh sách nhân viên
           </Button>
@@ -179,11 +184,11 @@ const UserDetails = () => {
               variant="primary"
             ></ButtonLoading>
             <Button style={{ margin: '0 0 15px 0' }} onClick={handleDelete} type="submit" variant="outline-danger" className="mr-0">
-            <span style={{ fontWeight: 600 }}>
-              <i className="feather icon-trash-2 mr-2"></i>
-              Xoá nhân viên
-            </span>
-          </Button>
+              <span style={{ fontWeight: 600 }}>
+                <i className="feather icon-trash-2 mr-2"></i>
+                Xoá nhân viên
+              </span>
+            </Button>
           </span>
         </div>
         <Row>
@@ -194,9 +199,7 @@ const UserDetails = () => {
                   <Card.Header>
                     <Card.Title as="h5">
                       <span>
-                        <h4 style={{ display: 'inline-block', fontWeight: 600, fontSize: 22 }}>
-                          {data.user_name}
-                        </h4>
+                        <h4 style={{ display: 'inline-block', fontWeight: 600, fontSize: 22 }}>{data.user_name}</h4>
                         <span>
                           {data.user_state === 'Đã nghỉ việc' ? (
                             <Badge style={{ fontSize: 15, marginLeft: 15, padding: 11 }} key="process" pill variant="danger">
@@ -214,54 +217,56 @@ const UserDetails = () => {
                   <Card.Body>
                     <Row>
                       <Col sm={12} lg={12}>
-                        <Col sm={12} lg={6}>
-                          <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
-                            <Form.Label column>Số điện thoại</Form.Label>
-                            <Col sm={10} lg={6}>
-                              <FormLabel className="text-normal" column>
-                                : {data.user_phone ? data.user_phone : '---'}
+                        <Row>
+                          <Col sm={12} lg={6}>
+                            <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
+                              <Form.Label column>Số điện thoại</Form.Label>
+                              <Col sm={10} lg={6}>
+                                <FormLabel className="text-normal" column>
+                                  : {data.user_phone ? data.user_phone : '---'}
+                                </FormLabel>
+                              </Col>
+                            </Form.Group>
+                            <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
+                              <Form.Label column>Email</Form.Label>
+                              <Col sm={10} lg={6}>
+                                <FormLabel className="text-normal" column>
+                                  : {data.user_email ? data.user_email : '---'}
+                                </FormLabel>
+                              </Col>
+                            </Form.Group>
+                            <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
+                              <Form.Label column>Ngày sinh</Form.Label>
+                              <Col sm={10} lg={6}>
+                                <FormLabel className="text-normal" column>
+                                  : {data.user_dob ? data.user_dob : '---'}
+                                </FormLabel>
+                              </Col>
+                            </Form.Group>
+                            <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
+                              <Form.Label column>Địa chỉ</Form.Label>
+                              <Col sm={10} lg={6}>
+                                <FormLabel className="text-normal" column>
+                                  : {data.user_address ? data.user_address : '---'}
+                                </FormLabel>
+                              </Col>
+                            </Form.Group>
+                          </Col>
+                          <Col lg={12}>
+                            <p className="mt-2 text-normal">
+                              <em>
+                                Để cập nhật thông tin nhân viên, bạn vui lòng báo nhân viên vào “Tài khoản của tôi” trong trang quản trị MHK
+                                hoặc truy cập đường dẫn <a href="https://profiles.mhk.vn">https://profiles.mhk.vn </a>
+                              </em>{' '}
+                            </p>
+                            <FormGroup>
+                              <FormLabel className="text-normal">
+                                <em>Ghi chú</em>
                               </FormLabel>
-                            </Col>
-                          </Form.Group>
-                          <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
-                            <Form.Label column>Email</Form.Label>
-                            <Col sm={10} lg={6}>
-                              <FormLabel className="text-normal" column>
-                                : {data.user_email ? data.user_email : '---'}
-                              </FormLabel>
-                            </Col>
-                          </Form.Group>
-                          <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
-                            <Form.Label column>Ngày sinh</Form.Label>
-                            <Col sm={10} lg={6}>
-                              <FormLabel className="text-normal" column>
-                                : {data.user_dob ? data.user_dob : '---'}
-                              </FormLabel>
-                            </Col>
-                          </Form.Group>
-                          <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
-                            <Form.Label column>Địa chỉ</Form.Label>
-                            <Col sm={10} lg={6}>
-                              <FormLabel className="text-normal" column>
-                                : {data.user_address ? data.user_address : '---'}
-                              </FormLabel>
-                            </Col>
-                          </Form.Group>
-                        </Col>
-                        <Col lg={12}>
-                          <p className="mt-2 text-normal">
-                            <em>
-                              Để cập nhật thông tin nhân viên, bạn vui lòng báo nhân viên vào “Tài khoản của tôi” trong trang quản trị MHK
-                              hoặc truy cập đường dẫn <a href="https://profiles.mhk.vn">https://profiles.mhk.vn </a>
-                            </em>{' '}
-                          </p>
-                          <FormGroup>
-                            <FormLabel className="text-normal">
-                              <em>Ghi chú</em>
-                            </FormLabel>
-                            <FormControl type="text"></FormControl>
-                          </FormGroup>
-                        </Col>
+                              <FormControl type="text"></FormControl>
+                            </FormGroup>
+                          </Col>
+                        </Row>
                       </Col>
                     </Row>
                   </Card.Body>
@@ -288,7 +293,7 @@ const UserDetails = () => {
                           <Col lg={5}>
                             <Form.Group controlId="nameCustomer">
                               <Form.Label className="text-normal">
-                                Vai trò <span className="text-c-red">*</span>
+                                Chi nhánh <span className="text-c-red">*</span>
                               </Form.Label>
                               <Select></Select>
                             </Form.Group>
@@ -313,30 +318,22 @@ const UserDetails = () => {
                   <Card.Body>
                     <Row>
                       <Col sm={12} lg={6}>
-                      <Form.Group controlId="formBasicEmail">
-                    <div className="switch switch-primary d-inline m-r-10">
-                      <input
-                        type="checkbox"
-                        id="price_import"
-                       
-                      />
-                      <label htmlFor="price_import" className="cr" />
-                    </div>
-                    <Form.Label>Cho phép nhân viên xem giá vốn, giá nhập</Form.Label>
-                  </Form.Group>
+                        <Form.Group controlId="formBasicEmail">
+                          <div className="switch switch-primary d-inline m-r-10">
+                            <input type="checkbox" id="price_import" />
+                            <label htmlFor="price_import" className="cr" />
+                          </div>
+                          <Form.Label>Cho phép nhân viên xem giá vốn, giá nhập</Form.Label>
+                        </Form.Group>
                       </Col>
                       <Col sm={12} lg={6}>
-                      <Form.Group controlId="formBasicEmail">
-                    <div className="switch switch-primary d-inline m-r-10">
-                      <input
-                        type="checkbox"
-                        id="price_delievery"
-                       
-                      />
-                      <label htmlFor="price_delievery" className="cr" />
-                    </div>
-                    <Form.Label>Cho phép nhân viên xem giá chuyển hàng</Form.Label>
-                  </Form.Group>
+                        <Form.Group controlId="formBasicEmail">
+                          <div className="switch switch-primary d-inline m-r-10">
+                            <input type="checkbox" id="price_delievery" />
+                            <label htmlFor="price_delievery" className="cr" />
+                          </div>
+                          <Form.Label>Cho phép nhân viên xem giá chuyển hàng</Form.Label>
+                        </Form.Group>
                       </Col>
                     </Row>
                   </Card.Body>

@@ -1,5 +1,19 @@
 import React, { useState } from 'react';
-import { Row, Col, Card, Form, Button, InputGroup, FormControl, DropdownButton, Dropdown, FormLabel } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  Card,
+  Form,
+  Button,
+  InputGroup,
+  FormControl,
+  DropdownButton,
+  Dropdown,
+  FormLabel,
+  Table,
+  Tabs,
+  Tab
+} from 'react-bootstrap';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -7,6 +21,7 @@ import { useHistory } from 'react-router-dom';
 import { ButtonLoading } from '../../../components/Button/LoadButton';
 import Select from 'react-select';
 import { Helmet } from 'react-helmet';
+import GiftIcon from '../../../assets/icon/gift.svg';
 
 const FormsElements = () => {
   const [validated, setValidated] = useState(false);
@@ -168,7 +183,7 @@ const FormsElements = () => {
 
       <Row>
         <Col sm={12} lg={8}>
-          <Card>
+          <Card style={{height: 498}}>
             <Card.Header>
               <Card.Title as="h5">Thông tin khách hàng</Card.Title>
               <Card.Title style={{ margin: 0 }}>
@@ -360,22 +375,128 @@ const FormsElements = () => {
                 </span>
               </div>
               <Row>
-                <Col>
+                <Col sm={12} lg={12}>
                   <Form.Group style={{ marginTop: '20px', marginBottom: 0 }} controlId="nameCustomer">
-                    
-                    <Form.Control
-                      name="user_name"
-                      value={data.id}
-                      onChange={handleChange}
-                      type="text"
-                      placeholder="Tìm theo tên, mã SKU, hoặc quét mã Barcode..."
-                    />
+                    <Row className="flex-between">
+                      <Col sm={6} lg={9}>
+                        <Form.Control
+                          name="user_name"
+                          value={data.id}
+                          onChange={handleChange}
+                          type="text"
+                          placeholder="Tìm theo tên, mã SKU, hoặc quét mã Barcode..."
+                        />
+                      </Col>
+                      <Col sm={6} lg={3}>
+                        <Button variant="outline-dark" className="button-under-input">
+                          Chọn nhanh
+                        </Button>
+                        <Button variant="outline-dark" className="button-under-input">
+                          Chọn nhanh
+                        </Button>
+                        <Button variant="outline-dark" className="button-under-input">
+                          Chọn nhanh
+                        </Button>
+                      </Col>
+                    </Row>
                   </Form.Group>
                 </Col>
               </Row>
             </Card.Header>
             <Card.Body>
-              <Row></Row>
+              <Row>
+                <Col sm={12} lg={12}>
+                  <Table>
+                    <thead>
+                      <th>STT</th>
+                      <th>Ảnh</th>
+                      <th>Tên sản phẩm</th>
+                      <th>Số lượng</th>
+                      <th>Đơn giá</th>
+                      <th>Chiết khấu</th>
+                      <th>Thành tiền</th>
+                    </thead>
+                    <tbody>
+                      <td>1</td>
+                      <td>1</td>
+                      <td>1</td>
+                      <td>1</td>
+                      <td>1</td>
+                      <td>1</td>
+                      <td>1</td>
+                    </tbody>
+                  </Table>
+                </Col>
+                <Col sm={12} lg={12} className="flex-between dashed-tb">
+                  <Button style={{ margin: '10px 0' }}>
+                    <i className="feather icon-plus-square"></i>Thêm dịch vụ khác
+                  </Button>
+                  <Button className="flex-between">
+                    <img style={{ width: '7%' }} src={GiftIcon}></img>
+                    <span>Áp dụng chương trình khuyến mãi</span>
+                  </Button>
+                </Col>
+                <Col className="mt-3" sm={12} lg={12}>
+                  <Row>
+                    <Col className="text-normal" sm={12} lg={3}>
+                      <Form.Group>
+                        <FormLabel>Tags</FormLabel>
+                        <FormControl as="textarea" rows="3"></FormControl>
+                      </Form.Group>
+                      <Form.Group>
+                        <FormLabel>Ghi chú đơn hàng</FormLabel>
+                        <FormControl as="textarea" rows="3" placeholder="VD: Hàng tặng gói riêng"></FormControl>
+                      </Form.Group>
+                    </Col>
+                    <Col sm={12} lg={6}></Col>
+                    <Col className="text-normal" sm={12} lg={3}>
+                      <div className="flex-between">
+                        <p>Tổng tiền (0 sản phẩm)</p>
+                        <span>0</span>
+                      </div>
+                      <div className="flex-between">
+                        <p>Chiết khấu </p>
+                        <span>0</span>
+                      </div>
+                      <div className="flex-between">
+                        <p>
+                          <a href="#">Phí giao hàng</a>
+                        </p>
+                        <span>0</span>
+                      </div>
+                      <div className="flex-between">
+                        <p>
+                          {' '}
+                          <a href="#">Mã giảm giá</a>
+                        </p>
+                        <span>0</span>
+                      </div>
+                      <div className="flex-between">
+                        <p className="strong-title">Khách phải trả</p>
+                        <span>0</span>
+                      </div>
+                      <div className="dashed-tb">
+                        <div className="flex-between">
+                          <p className="strong-title" style={{ margin: '10px 0' }}>
+                            Khách đã trả
+                          </p>
+                          <span>0</span>
+                        </div>
+                        <a href="#">
+                          <i className="feather icon-plus-circle mr-2"></i>
+                          Chọn phương thức
+                        </a>
+                      </div>
+                      <div className="flex-between">
+                        <p className="strong-title" style={{ margin: '10px 0' }}>
+                          Còn phải trả
+                        </p>
+                        <span>0</span>
+                      </div>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
             </Card.Body>
           </Card>
         </Col>
@@ -384,50 +505,8 @@ const FormsElements = () => {
         <Col sm={12} lg={12}>
           <Card>
             <Card.Header>
-              <Card.Title as="h5">Thông tin bổ sung</Card.Title>
+              <Card.Title as="h5">Đóng gói và giao hàng</Card.Title>
             </Card.Header>
-            <Card.Body>
-              <Row>
-                <Col md={6}>
-                  <Form>
-                    <Form.Group controlId="dobCustomer">
-                      <Form.Label>Ngày sinh</Form.Label>
-                      <Form.Control type="date" />
-                    </Form.Group>
-                    <Form.Group controlId="faxCustomer">
-                      <Form.Label>Số fax</Form.Label>
-                      <Form.Control type="text" placeholder="Nhập số fax" />
-                    </Form.Group>
-                    <Form.Group controlId="websiteCustomer">
-                      <Form.Label>Website</Form.Label>
-                      <Form.Control type="text" placeholder="Nhập tên miền Website" />
-                    </Form.Group>
-                    <Form.Group controlId="websiteCustomer">
-                      <Form.Label>Tổng chi tiêu</Form.Label>
-                      <Form.Control type="text" placeholder="Nhập tổng chi tiêu" />
-                    </Form.Group>
-                  </Form>
-                </Col>
-                <Col md={6}>
-                  <Form.Group controlId="sexCustomer">
-                    <Form.Label>Giới tính</Form.Label>
-                    <Form.Control as="select">
-                      <option>Khác</option>
-                      <option>Nam</option>
-                      <option>Nữ</option>
-                    </Form.Control>
-                  </Form.Group>
-                  <Form.Group controlId="taxIdCustomer">
-                    <Form.Label>Mã số thuế</Form.Label>
-                    <Form.Control type="text" placeholder="Nhập mã số thuế" />
-                  </Form.Group>
-                  <Form.Group controlId="taxIdCustomer">
-                    <Form.Label>Công nợ</Form.Label>
-                    <Form.Control type="text" placeholder="Nhập công nợ khách hàng" />
-                  </Form.Group>
-                </Col>
-              </Row>
-            </Card.Body>
           </Card>
         </Col>
       </Row>

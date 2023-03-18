@@ -45,7 +45,7 @@ const menuItems = {
               id: 'order-list',
               title: 'Danh sách đơn hàng',
               type: 'item',
-              url: '/basic/alert'
+              url: '/app/sell-management/orders/'
             },
             {
               id: 'order-return',
@@ -188,6 +188,13 @@ const menuItems = {
           type: 'item',
           icon: 'feather icon-users',
           url:'/app/sell-management/users'
+        },
+        {
+          id: 'locations',
+          title: 'Quản lý chi nhánh',
+          type: 'item',
+          icon: 'feather icon-map-pin',
+          url:'/app/settings/branchs'
         }
       ]
     }

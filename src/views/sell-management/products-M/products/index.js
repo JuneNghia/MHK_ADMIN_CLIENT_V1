@@ -229,7 +229,7 @@ function App() {
     () => [
       {
         Header: 'ID',
-        accessor: 'product_sku'
+        accessor: 'id'
       },
       { 
         Header: 'Tên sản phẩm',

@@ -5,10 +5,6 @@ import {
   Card,
   Form,
   Button,
-  InputGroup,
-  FormControl,
-  DropdownButton,
-  Dropdown,
   FormLabel,
   Badge,
   Tabs,
@@ -16,7 +12,6 @@ import {
 } from 'react-bootstrap';
 import services from '../../../../utils/axios';
 import Swal from 'sweetalert2';
-import Notification from '../../../../components/Widgets/Statistic/Notification';
 import withReactContent from 'sweetalert2-react-content';
 import { ButtonLoading } from '../../../../components/Button/LoadButton';
 import { useHistory, useParams } from 'react-router-dom';
@@ -34,43 +29,24 @@ const UserDetails = () => {
 
   const { id } = useParams();
   const [customerData, setCustomer] = useState(null);
+  const [addressCustomer, setAddressCustomer] = useState('');
 
   useEffect(() => {
     async function fetchCustomer() {
-      const response = await services.get(`/user/get-by-id/${id}`);
-      setCustomer(response.data);
+      const response = await services.get(`/customer/get-by-id/${id}`);
+      setCustomer(response.data.data);
+      const address = [response.customer_address, response.customer_commune, response.customer_region].join(", ");
+      setAddressCustomer(address);
     }
     fetchCustomer();
   }, [id]);
 
-  const [data, setData] = useState({
-    user_name: '',
-    user_type: '',
-    user_code: '',
-    user_group: '',
-    user_phone: '',
-    user_email: '',
-    user_password: '',
-    user_region: '',
-    user_commune: '',
-    user_address: '',
-    createdAt: '',
-    updatedAt: ''
-  });
-
-  const handleChange = (e) => {
-    const value = e.target.value;
-    setData({
-      ...data,
-      [e.target.name]: value
-    });
-  };
 
   const handleDelete = () => {
     const MySwal = withReactContent(Swal);
     MySwal.fire({
       title: 'Xoá khách hàng',
-      text: `Bạn có chắc chắn muốn xoá khách hàng ${customerData.user_name} ? Thao tác này không thể khôi phục`,
+      text: `Bạn có chắc chắn muốn xoá khách hàng ${customerData.customer_name} ? Thao tác này không thể khôi phục`,
       type: 'warning',
       icon: 'warning',
       confirmButtonText: 'Xoá',
@@ -80,13 +56,12 @@ const UserDetails = () => {
     }).then((willExit) => {
       if (willExit.isConfirmed) {
         services
-          .delete(`/user/delete-by-id/${id}`)
+          .delete(`/customer/delete-by-id/${id}`)
           .then((response) => {
             sweetSuccessAlert();
           })
           .catch((error) => {
-            alert('Xoá khách hàng thất bại');
-            alert('hello');
+            sweetSuccessAlert();
           });
       } else {
         return;
@@ -137,7 +112,7 @@ const UserDetails = () => {
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Button
             onClick={() => history.push('/app/sell-management/customers')}
-            variant="outline-dark"
+            variant="outline-primary"
             className="mr-0"
             style={{ marginBottom: 15 }}
           >
@@ -158,13 +133,12 @@ const UserDetails = () => {
                 <Card>
                   <Card.Header>
                     <Card.Title as="h5">
-                      <span>Thông tin cá nhân khách hàng : </span>
                       <span>
                         <h4 style={{ display: 'inline-block', fontWeight: 600, fontSize: 22 }}>
-                          {customerData.user_name}
+                          {customerData.customer_name}
                         </h4>
                         <span>
-                          {customerData.user_state === 'Ngừng giao dịch' ? (
+                          {customerData.customer_state === 'Ngừng giao dịch' ? (
                             <Badge style={{ fontSize: 15, marginLeft: 15, padding: 11 }} key="process" pill variant="danger">
                               Ngừng giao dịch
                             </Badge>
@@ -182,63 +156,66 @@ const UserDetails = () => {
                       <Col sm={12} lg={6}>
                         <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
                           <Form.Label column>Ngày sinh</Form.Label>
-                          <Col sm={10} lg={6}>
+                          <Col sm={10} lg={7}>
                             <FormLabel className="text-normal" column>
-                              : {customerData.user_name ? customerData.user_name : '---'}
+                              : {customerData.customer_name ? customerData.customer_name : '---'}
                             </FormLabel>
                           </Col>
                         </Form.Group>
                         <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
                           <Form.Label column>Giới tính</Form.Label>
-                          <Col sm={10} lg={6}>
+                          <Col sm={10} lg={7}>
                             <FormLabel className="text-normal" column>
-                              : {customerData.user_sex ? customerData.user_sex : '---'}
+                              : {customerData.customer_sex ? customerData.customer_sex : '---'}
                             </FormLabel>
                           </Col>
                         </Form.Group>
                         <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
                           <Form.Label column>Số điện thoại</Form.Label>
-                          <Col sm={10} lg={6}>
+                          <Col sm={10} lg={7}>
                             <FormLabel className="text-normal" column>
-                              : {customerData.user_phone ? customerData.user_phone : '---'}
+                              : {customerData.customer_phone ? customerData.customer_phone : '---'}
                             </FormLabel>
                           </Col>
                         </Form.Group>
                         <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
                           <Form.Label column>Email</Form.Label>
-                          <Col sm={10} lg={6}>
+                          <Col sm={10} lg={7}>
                             <FormLabel className="text-normal" column>
-                              : {customerData.user_email ? customerData.user_email : '---'}
+                              : {customerData.customer_email ? customerData.customer_email : '---'}
                             </FormLabel>
                           </Col>
                         </Form.Group>
                         <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
                           <Form.Label column>Nhân viên phụ trách</Form.Label>
-                          <Col sm={10} lg={6}>
+                          <Col sm={10} lg={7}>
                             <FormLabel className="text-normal" column>
-                              : {customerData.user_staff ? customerData.user_staff : '---'}
+                              : {customerData.staff_id ? customerData.staff_id : '---'}
                             </FormLabel>
                           </Col>
                         </Form.Group>
                         <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
                           <Form.Label column>Tags</Form.Label>
-                          <Col sm={10} lg={6}>
-                            <FormLabel className="text-normal" column></FormLabel>
+                          <Col sm={10} lg={7}>
+                            <FormLabel className="text-normal" column>
+                            : {customerData.tags ? customerData.tags : '---'}
+
+                            </FormLabel>
                           </Col>
                         </Form.Group>
                       </Col>
                       <Col sm={12} lg={6}>
                         <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
                           <Form.Label column>Mã khách hàng</Form.Label>
-                          <Col sm={10} lg={6}>
+                          <Col sm={10} lg={7}>
                             <FormLabel className="text-normal" column>
-                              : {customerData.user_code ? customerData.user_code : '---'}
+                              : {customerData.customer_code ? customerData.customer_code : '---'}
                             </FormLabel>
                           </Col>
                         </Form.Group>
                         <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
                           <Form.Label column>Mã số thuế</Form.Label>
-                          <Col sm={10} lg={6}>
+                          <Col sm={10} lg={7}>
                             <FormLabel className="text-normal" column>
                               : {customerData.user_sex ? customerData.user_sex : '---'}
                             </FormLabel>
@@ -246,7 +223,7 @@ const UserDetails = () => {
                         </Form.Group>
                         <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
                           <Form.Label column>Website</Form.Label>
-                          <Col sm={10} lg={6}>
+                          <Col sm={10} lg={7}>
                             <FormLabel className="text-normal" column>
                               : {customerData.user_sexx ? customerData.user_sex : '---'}
                             </FormLabel>
@@ -254,9 +231,17 @@ const UserDetails = () => {
                         </Form.Group>
                         <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
                           <Form.Label column>Mô tả</Form.Label>
-                          <Col sm={10} lg={6}>
+                          <Col sm={10} lg={7}>
                             <FormLabel className="text-normal" column>
                               : {customerData.user_sex ? customerData.user_sex : '---'}
+                            </FormLabel>
+                          </Col>
+                        </Form.Group>
+                        <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
+                          <Form.Label column>Địa chỉ</Form.Label>
+                          <Col sm={10} lg={7}>
+                            <FormLabel className="text-normal" column>
+                              : {addressCustomer ? addressCustomer : '---' }
                             </FormLabel>
                           </Col>
                         </Form.Group>
@@ -275,7 +260,7 @@ const UserDetails = () => {
                       <Col sm={12} lg={6}>
                         <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
                           <Form.Label column>Tổng chi tiêu</Form.Label>
-                          <Col sm={10} lg={6}>
+                          <Col sm={10} lg={7}>
                             <FormLabel className="text-normal" column>
                               : {customerData.user_name ? customerData.user_name : '---'}
                             </FormLabel>
@@ -283,7 +268,7 @@ const UserDetails = () => {
                         </Form.Group>
                         <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
                           <Form.Label column>Tổng số lượng đơn hàng</Form.Label>
-                          <Col sm={10} lg={6}>
+                          <Col sm={10} lg={7}>
                             <FormLabel className="text-normal" column>
                               : {customerData.user_sex ? customerData.user_sex : '---'}
                             </FormLabel>
@@ -291,7 +276,7 @@ const UserDetails = () => {
                         </Form.Group>
                         <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
                           <Form.Label column>Ngày cuối cùng mua hàng</Form.Label>
-                          <Col sm={10} lg={6}>
+                          <Col sm={10} lg={7}>
                             <FormLabel className="text-normal" column>
                               : {customerData.user_phone ? customerData.user_phone : '---'}
                             </FormLabel>
@@ -301,7 +286,7 @@ const UserDetails = () => {
                       <Col sm={12} lg={6}>
                         <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
                           <Form.Label column>Tổng SL sản phẩm đã mua</Form.Label>
-                          <Col sm={10} lg={6}>
+                          <Col sm={10} lg={7}>
                             <FormLabel className="text-normal" column>
                               : {customerData.user_group ? customerData.user_group : '---'}
                             </FormLabel>
@@ -309,7 +294,7 @@ const UserDetails = () => {
                         </Form.Group>
                         <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
                           <Form.Label column>Tổng SL sản phẩm hoàn trả</Form.Label>
-                          <Col sm={10} lg={6}>
+                          <Col sm={10} lg={7}>
                             <FormLabel className="text-normal" column>
                               : {customerData.user_code ? customerData.user_code : '---'}
                             </FormLabel>
@@ -317,7 +302,7 @@ const UserDetails = () => {
                         </Form.Group>
                         <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
                           <Form.Label column>Công nợ hiện tại</Form.Label>
-                          <Col sm={10} lg={6}>
+                          <Col sm={10} lg={7}>
                             <FormLabel className="text-normal" column>
                               : {customerData.user_sex ? customerData.user_sex : '---'}
                             </FormLabel>

@@ -311,7 +311,7 @@ select.form-control:not([size]):not([multiple]){
     }
     > .d-flex.align-items-center {
       input {
-        width: 40px !important;
+        width: 80px !important;
         padding-left: 10px;
         padding-right: 10px;
       }
@@ -415,6 +415,10 @@ td {
   }
  }
 
+ input[type=checkbox]:hover{
+  cursor: pointer;
+ }
+
  .css-1v494f5-Wrapper{
   z-index: 20 !important;
  }
@@ -443,9 +447,14 @@ td {
   margin-bottom: 0
 }
 
+.button-under-input{
+  padding: 6px 12px;
+}
+
 .text-normal{
   color: #0F1824 
 }
+
 
 .tabs-menu{
   border-bottom: 2px solid #04a9f5;
@@ -476,4 +485,43 @@ small{
   font-size: 22px;
 }
 
+.no-image{
+  color: rgb(232, 234, 235);
+  font-size: 150px;
+}
+
+.text-center{
+  text-align: center;
+}
+
+
+.dashed-tb{
+  border-top: 1px dashed #ccc;
+  border-bottom: 1px dashed #ccc;
+}
+
+.dashed-r{
+  border-right: 1px dashed #ccc;
+}
+
+.fix-card{
+  padding: 10px 25px !important;
+}
+
+.form-group-link:hover{
+  cursor: pointer;
+  background-color: #F2F9FF;
+}
+
+.tab-content{
+  padding: 35px 0;
+}
+
+thead, tbody{
+  text-align: center;
+}
+
+.swal2-container {
+  z-index: 9999 !important;
+}
 

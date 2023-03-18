@@ -135,8 +135,8 @@ const routes = [
       },
       {
         exact: true,
-        path: '/app/sell-management/customer_groups/create',
-        component: lazy(() => import('./views/sell-management/customers-M/customer_groups/Create'))
+        path: '/app/sell-management/orders',
+        component: lazy(() => import('./views/sell-management/orders-M'))
       },
       {
         exact: true,
@@ -167,6 +167,11 @@ const routes = [
         exact: true,
         path: '/app/sell-management/users/:id',
         component: lazy(() => import('./views/users/Detail'))
+      },
+      {
+        exact: true,
+        path: '/app/settings/branchs',
+        component: lazy(() => import('./views/settings/agencyBranch-M'))
       },
       {
         exact: true,

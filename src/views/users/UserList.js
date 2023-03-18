@@ -9,6 +9,7 @@ import services from '../../utils/axios';
 import moment from 'moment';
 import NoPermission from '../errors/NoPermission';
 
+
 function Table({ columns, data }) {
   const {
     getTableProps,

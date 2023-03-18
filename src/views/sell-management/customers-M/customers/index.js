@@ -21,7 +21,6 @@ function Table({ columns, data }) {
     setGlobalFilter,
 
     // The rest of these things are super handy, too ;)
-    selectedFlatRows,
     canPreviousPage,
     canNextPage,
     pageOptions,
@@ -45,8 +44,8 @@ function Table({ columns, data }) {
         {
           id: 'selection',
           Header: ({ getToggleAllRowsSelectedProps }) => (
-            <div style={{width: '25px', textAlign: 'center'}}>
-              <input  type="checkbox" {...getToggleAllRowsSelectedProps()} />
+            <div style={{ width: '25px', textAlign: 'center' }}>
+              <input type="checkbox" {...getToggleAllRowsSelectedProps()} />
             </div>
           )
         },
@@ -54,14 +53,6 @@ function Table({ columns, data }) {
       ]);
     }
   );
-
-  const [selectedRows, setSelectedRows] = useState([]); //Mản lưu các dòng được chọn
-
-  useEffect(() => {
-    //selectedFlatRows biến của React-Table lưu dòng đang được chọn
-    const selectedRows = selectedFlatRows.map((d) => d.original);
-    setSelectedRows(selectedRows);
-  }, [selectedFlatRows]);
 
   const history = useHistory();
 
@@ -73,7 +64,7 @@ function Table({ columns, data }) {
   return (
     <>
       <Helmet>
-        <title>Danh sách sản phẩm</title>
+        <title>Danh sách khách hàng</title>
       </Helmet>
       <Row className="mb-3">
         <Col className="d-flex align-items-center">
@@ -115,11 +106,10 @@ function Table({ columns, data }) {
                 <div style={{ display: 'contents' }}>
                   {row.cells.map((cell) => {
                     return cell.column.id === 'selection' ? (
-                      <td style={{width: '50px', textAlign: 'center'}} {...cell.getCellProps()}>
+                      <td style={{ width: '50px', textAlign: 'center' }} {...cell.getCellProps()}>
                         <input {...row.getToggleRowSelectedProps()} type="checkbox" {...cell.getCellProps()} />
                       </td>
-                    ) 
-                     : (
+                    ) : (
                       <td
                         onClick={() => {
                           handleRowClick(row);
@@ -175,12 +165,15 @@ function App() {
 
   useEffect(() => {
     (async () => {
-      await services.get('/user/get-all-customer')
-      .then((response) => {
-        setListCustomer(response.data);
-      }).catch(error => {
-        console.log(error)
-      });
+      await services
+        .get('/customer/get-all')
+        .then((response) => {
+          const filteredData = response.data.data.filter(user => user !== null);
+          setListCustomer(filteredData);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     })();
   }, []);
 
@@ -188,24 +181,33 @@ function App() {
     () => [
       {
         Header: 'ID',
-        accessor: 'id'
+        accessor: 'id',
       },
       {
         Header: 'Tên khách hàng',
-        accessor: 'user_name'
+        accessor: 'customer_name',
       },
       {
         Header: 'Mã khách hàng',
-        accessor: 'user_code'
+        accessor: 'customer_code'
       },
       {
         Header: 'Số điện thoại',
-        accessor: 'user_phone'
+        accessor: 'customer_phone'
       },
+      {
+        Header: 'Địa chỉ',
+        accessor: (customerData) => [customerData.customer_address, customerData.customer_commune, customerData.customer_region].join(', '),
+        
+      }
     ],
     []
   );
 
+  if(!listCustomer) {
+    return <div>Lỗi</div>
+  }
+  else
   return (
     <React.Fragment>
       <Row>
