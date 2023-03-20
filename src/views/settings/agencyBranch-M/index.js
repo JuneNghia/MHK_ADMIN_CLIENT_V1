@@ -372,32 +372,25 @@ function App() {
       agency_branch_name: dataNewBranch.name,
       agency_branch_phone: dataNewBranch.phone,
       agency_branch_CN_code: dataNewBranch.cn_code,
-      agency_branch_address: dataNewBranch.cn_address,
+      agency_branch_address: dataNewBranch.address,
       isDefaultCN: isDefault
     };
     services
       .post('/agency-branch/create-new-agency-branch', branchData)
       .then((response) => {
-        setDataNewBranch({
-          name: '',
-          phone: '',
-          cn_code: '',
-          address: '',
-          area: ''
-        });
         setShowLoader(true);
         setTimeout(() => {
           setShowLoader(false);
           setIsShow(false);
           sweetSuccessAlert();
-        }, 3000);
+        }, 1000);
       })
       .catch((err) => {
         setShowLoader(true);
         setTimeout(() => {
           setShowLoader(false);
           sweetErrorAlert();
-        }, 3000);
+        }, 1000);
       });
   };
 

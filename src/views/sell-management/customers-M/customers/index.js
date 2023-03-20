@@ -168,7 +168,7 @@ function App() {
       await services
         .get('/customer/get-all')
         .then((response) => {
-          const filteredData = response.data.data.filter(user => user !== null);
+          const filteredData = response.data.data.filter((user) => user !== null);
           setListCustomer(filteredData);
         })
         .catch((error) => {
@@ -181,11 +181,11 @@ function App() {
     () => [
       {
         Header: 'ID',
-        accessor: 'id',
+        accessor: 'id'
       },
       {
         Header: 'Tên khách hàng',
-        accessor: 'customer_name',
+        accessor: 'customer_name'
       },
       {
         Header: 'Mã khách hàng',
@@ -197,37 +197,35 @@ function App() {
       },
       {
         Header: 'Địa chỉ',
-        accessor: (customerData) => [customerData.customer_address, customerData.customer_commune, customerData.customer_region].join(', '),
-        
+        accessor: (customerData) => [customerData.customer_address, customerData.customer_commune, customerData.customer_region].join(', ')
       }
     ],
     []
   );
 
-  if(!listCustomer) {
-    return <div>Lỗi</div>
-  }
-  else
-  return (
-    <React.Fragment>
-      <Row>
-        <Col>
-          <Card>
-            <Card.Header className="flex-between">
-              <Card.Title as="h5">Danh sách khách hàng</Card.Title>
-              <Button style={{ marginRight: 0 }} href="/app/sell-management/customers/create">
-                <i className="feather icon-plus-circle mr-2"></i>
-                Thêm khách hàng
-              </Button>{' '}
-            </Card.Header>
-            <Card.Body>
-              <Table columns={columns} data={listCustomer} />
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </React.Fragment>
-  );
+  if (!listCustomer) {
+    return <div>Lỗi</div>;
+  } else
+    return (
+      <React.Fragment>
+        <Row>
+          <Col>
+            <Card>
+              <Card.Header className="flex-between">
+                <Card.Title as="h5">Danh sách khách hàng</Card.Title>
+                <Button style={{ marginRight: 0 }} href="/app/sell-management/customers/create">
+                  <i className="feather icon-plus-circle mr-2"></i>
+                  Thêm khách hàng
+                </Button>{' '}
+              </Card.Header>
+              <Card.Body>
+                <Table columns={columns} data={listCustomer} />
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </React.Fragment>
+    );
 }
 
 export default App;

@@ -24,7 +24,7 @@ const ProvinceSelect = ({ handleProvinceChange }) => {
       handleProvinceChange(selectedOption);
     };
   
-    return <Select placeholder="Chọn Tỉnh/Thành phố" options={options} onChange={handleChange} />;
+    return <Select on placeholder="Chọn Tỉnh/Thành phố" options={options} onChange={handleChange} />;
   };
 
 export default ProvinceSelect;

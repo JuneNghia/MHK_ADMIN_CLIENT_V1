@@ -135,6 +135,11 @@ const routes = [
       },
       {
         exact: true,
+        path: '/app/sell-management/customers/:id/edit',
+        component: lazy(() => import('./views/sell-management/customers-M/customers/Edit'))
+      },
+      {
+        exact: true,
         path: '/app/sell-management/orders',
         component: lazy(() => import('./views/sell-management/orders-M'))
       },

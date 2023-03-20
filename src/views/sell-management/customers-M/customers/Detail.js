@@ -18,12 +18,6 @@ import { useHistory, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
 const UserDetails = () => {
-  const [validated, setValidated] = useState(false);
-  const [validatedTooltip, setValidatedTooltip] = useState(false);
-  const [supportedCheckbox, setSupportedCheckbox] = useState(false);
-  const [supportedRadio, setSupportedRadio] = useState(false);
-  const [supportedSelect, setSupportedSelect] = useState(0);
-  const [supportedFile, setSupportedFile] = useState(0);
   const [showLoader, setShowLoader] = useState(false);
   const history = useHistory();
 
@@ -41,6 +35,10 @@ const UserDetails = () => {
     fetchCustomer();
   }, [id]);
 
+  const handleEditProfile = (e) => {
+    e.preventDefault();
+    history.push(`/app/sell-management/customers/${id}/edit`)
+  }
 
   const handleDelete = () => {
     const MySwal = withReactContent(Swal);
@@ -67,32 +65,6 @@ const UserDetails = () => {
         return;
       }
     });
-  };
-
-  // const handleSubmit = (event) => {
-  //   const form = event.currentTarget;
-  //   if (form.checkValidity() === false) {
-  //     event.preventDefault();
-  //     event.stopPropagation();
-  //   }
-  //   setValidated(true);
-  // };
-
-  const handleSubmitTooltip = (event) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    setValidatedTooltip(true);
-  };
-
-  const supportedSelectHandler = (event) => {
-    setSupportedSelect(parseInt(event.target.value));
-  };
-
-  const supportedFileHandler = (event) => {
-    setSupportedFile(!!event.target.value);
   };
 
   const sweetSuccessAlert = () => {
@@ -131,7 +103,7 @@ const UserDetails = () => {
             <Row>
               <Col sm={12} lg={12}>
                 <Card>
-                  <Card.Header>
+                  <Card.Header className="flex-between">
                     <Card.Title as="h5">
                       <span>
                         <h4 style={{ display: 'inline-block', fontWeight: 600, fontSize: 22 }}>
@@ -148,8 +120,13 @@ const UserDetails = () => {
                             </Badge>
                           )}
                         </span>
-                      </span>
+                      </span>         
                     </Card.Title>
+                    <span>
+                        <small>
+                        <a href='#' onClick={handleEditProfile}>Cập nhật</a>
+                        </small>
+                      </span>
                   </Card.Header>
                   <Card.Body>
                     <Row>
