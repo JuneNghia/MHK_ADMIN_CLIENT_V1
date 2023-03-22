@@ -1,21 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Button,
-  FormLabel,
-  Badge,
-  Tabs,
-  Tab
-} from 'react-bootstrap';
+import { Row, Col, Card, Form, Button, FormLabel, Badge, Tabs, Tab } from 'react-bootstrap';
 import services from '../../../../utils/axios';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { ButtonLoading } from '../../../../components/Button/LoadButton';
 import { useHistory, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import Addresses from './dataDetail/Addresses';
 
 const UserDetails = () => {
   const [showLoader, setShowLoader] = useState(false);
@@ -23,28 +14,26 @@ const UserDetails = () => {
 
   const { id } = useParams();
   const [customerData, setCustomer] = useState(null);
-  const [addressCustomer, setAddressCustomer] = useState('');
+
 
   useEffect(() => {
     async function fetchCustomer() {
       const response = await services.get(`/customer/get-by-id/${id}`);
       setCustomer(response.data.data);
-      const address = [response.customer_address, response.customer_commune, response.customer_region].join(", ");
-      setAddressCustomer(address);
     }
     fetchCustomer();
   }, [id]);
 
   const handleEditProfile = (e) => {
     e.preventDefault();
-    history.push(`/app/sell-management/customers/${id}/edit`)
-  }
+    history.push(`/app/sell-management/customers/${id}/edit`);
+  };
 
   const handleDelete = () => {
     const MySwal = withReactContent(Swal);
     MySwal.fire({
       title: 'Xoá khách hàng',
-      text: `Bạn có chắc chắn muốn xoá khách hàng ${customerData.customer_name} ? Thao tác này không thể khôi phục`,
+      html: `Bạn có chắc chắn muốn xoá khách hàng <b>${customerData.customer_name}</b> ? Thao tác này không thể khôi phục`,
       type: 'warning',
       icon: 'warning',
       confirmButtonText: 'Xoá',
@@ -106,11 +95,9 @@ const UserDetails = () => {
                   <Card.Header className="flex-between">
                     <Card.Title as="h5">
                       <span>
-                        <h4 style={{ display: 'inline-block', fontWeight: 600, fontSize: 22 }}>
-                          {customerData.customer_name}
-                        </h4>
+                        <h4 style={{ display: 'inline-block', fontWeight: 600, fontSize: 22 }}>{customerData.customer_name}</h4>
                         <span>
-                          {customerData.customer_state === 'Ngừng giao dịch' ? (
+                          {customerData.customer_status === 'Ngừng giao dịch' ? (
                             <Badge style={{ fontSize: 15, marginLeft: 15, padding: 11 }} key="process" pill variant="danger">
                               Ngừng giao dịch
                             </Badge>
@@ -120,13 +107,15 @@ const UserDetails = () => {
                             </Badge>
                           )}
                         </span>
-                      </span>         
+                      </span>
                     </Card.Title>
                     <span>
-                        <small>
-                        <a href='#' onClick={handleEditProfile}>Cập nhật</a>
-                        </small>
-                      </span>
+                      <small>
+                        <a href="#" onClick={handleEditProfile}>
+                          Cập nhật
+                        </a>
+                      </small>
+                    </span>
                   </Card.Header>
                   <Card.Body>
                     <Row>
@@ -171,15 +160,6 @@ const UserDetails = () => {
                             </FormLabel>
                           </Col>
                         </Form.Group>
-                        <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
-                          <Form.Label column>Tags</Form.Label>
-                          <Col sm={10} lg={7}>
-                            <FormLabel className="text-normal" column>
-                            : {customerData.tags ? customerData.tags : '---'}
-
-                            </FormLabel>
-                          </Col>
-                        </Form.Group>
                       </Col>
                       <Col sm={12} lg={6}>
                         <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
@@ -211,14 +191,6 @@ const UserDetails = () => {
                           <Col sm={10} lg={7}>
                             <FormLabel className="text-normal" column>
                               : {customerData.user_sex ? customerData.user_sex : '---'}
-                            </FormLabel>
-                          </Col>
-                        </Form.Group>
-                        <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
-                          <Form.Label column>Địa chỉ</Form.Label>
-                          <Col sm={10} lg={7}>
-                            <FormLabel className="text-normal" column>
-                              : {addressCustomer ? addressCustomer : '---' }
                             </FormLabel>
                           </Col>
                         </Form.Group>
@@ -375,14 +347,9 @@ const UserDetails = () => {
             </Row>
           </Col>
           <Col sm={12} lg={12}>
-            <Tabs variant="pills" defaultActiveKey="history" className="tabs-menu">
-              <Tab eventKey="history" title="Lịch sử mua hàng">
-                <p>
-                  Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master
-                  cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher
-                  synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip
-                  quis cardigan american apparel, butcher voluptate nisi qui.
-                </p>
+            <Tabs variant="pills" defaultActiveKey="addresses" className="tabs-menu">
+              <Tab eventKey="addresses" title="Địa chỉ">
+                <Addresses />
               </Tab>
               <Tab eventKey="profile" title="Công nợ">
                 <p>

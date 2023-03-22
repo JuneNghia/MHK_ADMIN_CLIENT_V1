@@ -20,7 +20,6 @@ function Table({ columns, data }) {
     setGlobalFilter,
 
     // The rest of these things are super handy, too ;)
-    selectedFlatRows,
     canPreviousPage,
     canNextPage,
     pageOptions,
@@ -53,14 +52,6 @@ function Table({ columns, data }) {
       ]);
     }
   );
-
-  const [selectedRows, setSelectedRows] = useState([]); //Mản lưu các dòng được chọn
-
-  useEffect(() => {
-    //selectedFlatRows biến của React-Table lưu dòng đang được chọn
-    const selectedRows = selectedFlatRows.map((d) => d.original);
-    setSelectedRows(selectedRows);
-  }, [selectedFlatRows]);
 
   const history = useHistory();
 

@@ -8,7 +8,7 @@ import { ButtonLoading } from '../../components/Button/LoadButton';
 import { Helmet } from 'react-helmet';
 import Select from 'react-select';
 
-const UserDetails = () => {
+const UserDetail = () => {
   const [validated, setValidated] = useState(false);
   const [validatedTooltip, setValidatedTooltip] = useState(false);
   const [supportedCheckbox, setSupportedCheckbox] = useState(false);
@@ -346,4 +346,4 @@ const UserDetails = () => {
     );
 };
 
-export default UserDetails;
+export default UserDetail;

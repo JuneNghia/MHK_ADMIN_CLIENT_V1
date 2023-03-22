@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Form, Button } from 'react-bootstrap';
+import { Row, Col, Card, Form, Button, FormControl } from 'react-bootstrap';
 import services from '../../../../utils/axios';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -7,50 +7,69 @@ import { ButtonLoading } from '../../../../components/Button/LoadButton';
 import { useHistory, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import * as Yup from 'yup';
-import { Formik } from 'formik';
+import { Field, Formik } from 'formik';
 
 const Edit = () => {
-  const [customer, setCustomer] = useState([])
   const [showLoader, setShowLoader] = useState(false);
   const history = useHistory();
   const { id } = useParams();
 
+  const [customer, setCustomer] = useState({
+    name: '',
+    code: '',
+    phone: '',
+    email: ''
+  });
+
+  const keyMapping = {
+    name: 'customer_name',
+    code: 'customer_code',
+    phone: 'customer_phone',
+    email: 'customer_email'
+  };
+
   useEffect(() => {
     async function fetchCustomer() {
       const response = await services.get(`/customer/get-by-id/${id}`);
-      setCustomer(response.data.data);
+      setCustomer({
+        name: response.data.data.customer_name,
+        code: response.data.data.customer_code,
+        email: response.data.data.customer_email,
+        phone: response.data.data.customer_phone
+      });
     }
     fetchCustomer();
   }, [id]);
 
-  console.log(customer);
-
-  const [data, setData] = useState({
-    name: '',
-    code: '',
-    phone: '',
-    email: '',
-    address: '',
-    staff_id: '',
-    staff_in_charge_note: ''
-  });
-
   const handleSubmit = (values) => {
-    const customerData = {
-      customer_name: values.name,
-      customer_code: values.code,
-      customer_phone: values.phone,
-      customer_email: values.email,
-      // staff_id: data.staff_id,
-      // staff_in_charge_note: data.staff_in_charge_note
-    };
+
+    //Vòng lặp for sẽ duyệt các giá trị trong values so sánh với các giá trị của Customer
+    //Nếu trường nào có giá trị không thay đổi thì không được gửi lên server
+    const updatedFields = {};
+    for (const key in values) {
+      if (values.hasOwnProperty(key) && values[key] !== customer[key]) {
+        updatedFields[key] = values[key];
+      }
+    }
+    
+    //Thay đổi những key mặc định trong updateFields thành những tên key được đặt trong server
+    //Ví dụ : name -> customer_name ...
+    const updatedFieldsWithApiKeys = {};
+    for (const key in updatedFields) {
+      if (updatedFields.hasOwnProperty(key)) {
+        const newKey = keyMapping[key] || key;
+        updatedFieldsWithApiKeys[newKey] = updatedFields[key];
+      }
+    }
+
+    //Cập nhật khách hàng
     services
-      .patch('/customer/create-customer', customerData)
+      .patch(`/customer/update-personalInfo-by-id/${id}`, updatedFieldsWithApiKeys)
       .then((response) => {
         setShowLoader(true);
         setTimeout(() => {
           setShowLoader(false);
-          history.push('/app/sell-management/customers');
+          history.push(`/app/sell-management/customers/${id}`);
           sweetSuccessAlert();
         }, 1000);
       })
@@ -65,7 +84,6 @@ const Edit = () => {
             return `Email: <b>${values.email}</b> đã tồn tại`;
           } else return `Mã KH: <b>${values.code}</b> đã tồn tại`;
         });
-
         setShowLoader(true);
         setTimeout(() => {
           setShowLoader(false);
@@ -81,7 +99,7 @@ const Edit = () => {
 
   const sweetSuccessAlert = () => {
     const MySwal = withReactContent(Swal);
-    MySwal.fire('', 'Lưu khách hàng mới thành công', 'success');
+    MySwal.fire('', `Cập nhật thông tin khách hàng thành công`, 'success');
   };
 
   const sweetConfirmAlert = () => {
@@ -96,7 +114,7 @@ const Edit = () => {
       showCancelButton: true
     }).then((willExit) => {
       if (willExit.isConfirmed) {
-        return history.push('/app/sell-management/customers');
+        return history.push(`/app/sell-management/customers/${id}`);
       } else {
         return;
       }
@@ -104,21 +122,15 @@ const Edit = () => {
   };
 
 
+  //Kiểm tra những số điện thoại có thuộc vùng Việt Nam 
+  //và là những đầu số các nhà mạng Viettel, Mobifone, Vinaphone
   const phoneRegExp = /^(0|\+84)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0|3|4|5|7|8])+([0-9]{7})$/;
-
   const validateSchema = Yup.object().shape({
     name: Yup.string().required('Tên khách hàng không được để trống'),
     email: Yup.string().email('Email không hợp lệ').required('Email không được để trống'),
     phone: Yup.string().matches(phoneRegExp, 'Số điện thoại không hợp lệ').required('Số điện thoại không được để trống'),
-    code: Yup.string().required('Mã khách hàng không được để trống'),
+    code: Yup.string().required('Mã khách hàng không được để trống')
   });
-
-  console.log({
-    name: customer.customer_name,
-    phone: customer.customer_phone,
-    email:  customer.customer_email,
-    code: customer.customer_code,
-  })
 
   return (
     <React.Fragment>
@@ -127,19 +139,10 @@ const Edit = () => {
       </Helmet>
       <Button onClick={sweetConfirmAlert} variant="outline-primary" className="mr-0" style={{ marginBottom: 15 }}>
         <i className="feather icon-arrow-left"></i>
-        Quay lại danh sách khách hàng
+        Huỷ
       </Button>
-      <Formik
-        initialValues={{
-          name: customer.customer_name,
-          phone: customer.customer_phone,
-          email:  customer.customer_email,
-          code: customer.customer_code,
-        }}
-        validationSchema={validateSchema}
-        onSubmit={handleSubmit}
-      >
-        {({ errors, handleBlur, handleChange, handleSubmit, touched, values }) => (
+      <Formik enableReinitialize={true} initialValues={customer} validationSchema={validateSchema} onSubmit={handleSubmit}>
+        {({ errors, handleBlur, handleChange, handleSubmit, touched, values, isValid }) => (
           <Form noValidate onSubmit={handleSubmit}>
             <Row>
               <Col sm={12} lg={8}>
@@ -152,7 +155,7 @@ const Edit = () => {
                       <Card.Body>
                         <Row>
                           <Col md={12}>
-                            <Form.Group controlId="nameCustomer">
+                            <Form.Group controlId="formName">
                               <Form.Label>
                                 Tên khách hàng <span className="text-c-red">*</span>
                               </Form.Label>
@@ -160,10 +163,9 @@ const Edit = () => {
                                 name="name"
                                 onError={touched.name && errors.name}
                                 onBlur={handleBlur}
-                                value={values.name}
                                 onChange={handleChange}
-                                type="text"
                                 placeholder="Nhập tên khách hàng"
+                                value={values.name}
                               />
                               {touched.name && errors.name && <small class="text-danger form-text">{errors.name}</small>}
                             </Form.Group>
@@ -173,11 +175,11 @@ const Edit = () => {
                               </Form.Label>
                               <Form.Control
                                 name="email"
-                                onError={touched.name && errors.name}
+                                onError={touched.email && errors.email}
                                 onBlur={handleBlur}
                                 onChange={handleChange}
-                                value={values.email}
                                 type="email"
+                                value={values.email}
                                 placeholder="Nhập địa chỉ email"
                               />
                               {touched.email && errors.email && <small class="text-danger form-text">{errors.email}</small>}
@@ -218,8 +220,6 @@ const Edit = () => {
                               {touched.phone && errors.phone && <small class="text-danger form-text">{errors.phone}</small>}
                             </Form.Group>
                           </Col>
-                         
-                          
                         </Row>
                       </Card.Body>
                     </Card>
@@ -285,7 +285,7 @@ const Edit = () => {
                       <Card.Body>
                         <Form.Group controlId="staffCb">
                           <Form.Label>Nhân viên phụ trách</Form.Label>
-                          <Form.Control value={data.staff_id} onChange={handleChange} name="staff_id" as="select">
+                          <Form.Control value={''} onChange={handleChange} name="staff_id" as="select">
                             <option>Nghĩa</option>
                             <option>Tuấn</option>
                             <option>3</option>
@@ -295,13 +295,7 @@ const Edit = () => {
                         </Form.Group>
                         <Form.Group controlId="description">
                           <Form.Label>Mô tả</Form.Label>
-                          <Form.Control
-                            value={data.staff_in_charge_note}
-                            onChange={handleChange}
-                            name="staff_in_charge_note"
-                            as="textarea"
-                            rows="3"
-                          />
+                          <Form.Control value={''} onChange={handleChange} name="staff_in_charge_note" as="textarea" rows="3" />
                         </Form.Group>
                         <Form.Group controlId="tag">
                           <Form.Label>Tag</Form.Label>
@@ -342,11 +336,12 @@ const Edit = () => {
                       </Card.Body>
                     </Card>
                     <ButtonLoading
-                      text={'Lưu khách hàng mới'}
+                      text={'Cập nhật'}
                       onSubmit={handleSubmit}
                       loading={showLoader}
                       type="submit"
                       disabled={showLoader}
+                      style={ isValid ? {} : {backgroundColor: '#ccc', border: 'none'}}
                     ></ButtonLoading>
                   </Col>
                 </Row>

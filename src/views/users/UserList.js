@@ -4,11 +4,10 @@ import BTable from 'react-bootstrap/Table';
 import { useTable, usePagination, useGlobalFilter, useRowSelect } from 'react-table';
 import { GlobalFilter } from './GlobalFilter';
 import { useHistory } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 import services from '../../utils/axios';
+import { Helmet } from 'react-helmet';
 import moment from 'moment';
 import NoPermission from '../errors/NoPermission';
-
 
 function Table({ columns, data }) {
   const {
@@ -57,14 +56,6 @@ function Table({ columns, data }) {
     }
   );
 
-  const [selectedRows, setSelectedRows] = useState([]);
-
-  useEffect(() => {
-    //selectedFlatRows biến của React-Table lưu dòng đang được chọn
-    const selectedRows = selectedFlatRows.map((d) => d.original);
-    setSelectedRows(selectedRows);
-  }, [selectedFlatRows]);
-
   const history = useHistory();
 
   const handleRowClick = (row) => {
@@ -74,9 +65,6 @@ function Table({ columns, data }) {
 
   return (
     <>
-      <Helmet>
-        <title>Danh sách sản phẩm</title>
-      </Helmet>
       <Row className="mb-3">
         <Col className="d-flex align-items-center">
           Hiển thị
@@ -179,10 +167,9 @@ function App() {
   useEffect(() => {
     (async () => {
       await services
-        .get('/user/get-all-db')
+        .get('/staff/get-all')
         .then((response) => {
-          const employees = response.data.filter((user) => user.user_type === 'employee');
-          setListEmployees(employees);
+          setListEmployees(response.data.data);
           setIsLoading(false);
         })
         .catch((error) => {
@@ -200,23 +187,28 @@ function App() {
       },
       {
         Header: 'Tên nhân viên',
-        accessor: 'user_name'
+        accessor: 'staff_name'
       },
       {
         Header: 'Vai trò',
-        accessor: 'user_type'
+        accessor: 'staff_type'
       },
       {
         Header: 'Số điện thoại',
-        accessor: 'user_phone'
+        accessor: 'staff_phone'
       },
       {
         Header: 'Email',
-        accessor: 'user_email'
+        accessor: 'staff_email'
       },
       {
         Header: 'Trạng thái',
-        accessor: 'user_region'
+        accessor: 'staff_status',
+        Cell: ({ value }) => (
+          <span style={{ color: value === 'Đã nghỉ việc' ? 'red' : 'rgb(13, 180, 115)' }}>
+            {value === 'Đã nghỉ việc' ? 'Đã nghỉ việc' : 'Đang làm việc'}
+          </span>
+        )
       },
       {
         Header: 'Ngày khởi tạo',
@@ -232,11 +224,13 @@ function App() {
   }
 
   if (error) {
-    // handle error
-    return <NoPermission/>
+    return <NoPermission />;
   }
   return (
     <React.Fragment>
+      <Helmet>
+        <title>Danh sách nhân viên</title>
+      </Helmet>
       <Row>
         <Col>
           <Card>

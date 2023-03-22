@@ -194,17 +194,17 @@ function App() {
       {
         Header: 'Số điện thoại',
         accessor: 'customer_phone'
-      },
-      {
-        Header: 'Địa chỉ',
-        accessor: (customerData) => [customerData.customer_address, customerData.customer_commune, customerData.customer_region].join(', ')
       }
+      // {
+      //   Header: 'Địa chỉ',
+      //   accessor: (customerData) => [customerData.customer_address, customerData.customer_commune, customerData.customer_region].join(', ')
+      // }
     ],
     []
   );
 
-  if (!listCustomer) {
-    return <div>Lỗi</div>;
+  if (listCustomer.length === 0) {
+    return <div className="text-center">Lỗi truy vấn thông tin danh sách khách hàng</div>;
   } else
     return (
       <React.Fragment>
