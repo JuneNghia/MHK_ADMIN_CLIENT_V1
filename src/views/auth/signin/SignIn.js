@@ -4,11 +4,15 @@ import { NavLink } from 'react-router-dom';
 import Breadcrumb from '../../../layouts/AdminLayout/Breadcrumb';
 import back4 from '../../../assets/images/bg-images/bg4.jpg';
 import JWTLogin from '../signin/JWTLogin'
+import { Helmet } from 'react-helmet';
 
 
 const Signin = () => {
   return (
     <React.Fragment>
+      <Helmet>
+        <title>Đăng nhập</title>
+      </Helmet>
       <Breadcrumb />
       <div className="auth-wrapper aut-bg-img-side cotainer-fiuid align-items-stretch">
         <div className="row align-items-center w-100 align-items-stretch bg-white">

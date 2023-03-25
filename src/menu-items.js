@@ -194,7 +194,7 @@ const menuItems = {
           title: 'Quản lý chi nhánh',
           type: 'item',
           icon: 'feather icon-map-pin',
-          url:'/app/settings/branchs'
+          url:'/app/settings/branches'
         }
       ]
     }

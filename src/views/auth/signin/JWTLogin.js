@@ -12,7 +12,7 @@ const JWTLogin = ({ className, ...rest }) => {
   const handleSubmit = (values, { setErrors, setStatus, setSubmitting }) => {
     setTimeout( async () => {
       try {
-        await login(values.email, values.password);
+        await login(values.phone, values.password);
 
         if (scriptedRef.current) {
           setStatus({ success: true });
@@ -31,12 +31,12 @@ const JWTLogin = ({ className, ...rest }) => {
   return (
     <Formik
       initialValues={{
-        email: 'admin1@gmail.com',
-        password: 'admin123',
+        phone: '0987546325',
+        password: 'mhkadmin@123',
         submit: null
       }}
       validationSchema={Yup.object().shape({
-        email: Yup.string().email('Địa chỉ email không hợp lệ').max(255).required('Email không được bỏ trống'),
+        phone: Yup.string().required('Số điện thoại không được bỏ trống'),
         password: Yup.string().max(255).required('Mật khẩu không được bỏ trống')
       })}
       onSubmit={handleSubmit}
@@ -51,22 +51,21 @@ const JWTLogin = ({ className, ...rest }) => {
           <div className="form-group mb-3">
             <input
               className="form-control"
-              error={touched.email && errors.email}
-              label="Email Address / Username"
-              name="email"
+              error={touched.phone && errors.phone}
+              placeholder="Số điện thoại"
+              name="phone"
               onBlur={handleBlur}
               onChange={handleChange}
-              type="email"
-              value={values.email}
+              value={values.phone}
             />
-            {touched.email && errors.email && <small class="text-danger form-text">{errors.email}</small>}
+            {touched.phone && errors.phone && <small class="text-danger form-text">{errors.phone}</small>}
           </div>
           <div className="form-group mb-4">
             <input
               className="form-control"
               error={touched.password && errors.password}
-              label="Password"
               name="password"
+              placeholder="Mật khẩu"
               onBlur={handleBlur}
               onChange={handleChange}
               type="password"

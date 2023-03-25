@@ -8,6 +8,7 @@ import services from '../../utils/axios';
 import { Helmet } from 'react-helmet';
 import moment from 'moment';
 import NoPermission from '../errors/NoPermission';
+import MyPagination from '../../components/Pagination/PaginationComponent';
 
 function Table({ columns, data }) {
   const {
@@ -15,21 +16,12 @@ function Table({ columns, data }) {
     getTableBodyProps,
     headerGroups,
     prepareRow,
-    page, // Instead of using 'rows', we'll use page,
-    // which has only the rows for the active page
-
+    page, 
     globalFilter,
     setGlobalFilter,
-
-    // The rest of these things are super handy, too ;)
-    selectedFlatRows,
-    canPreviousPage,
-    canNextPage,
     pageOptions,
     pageCount,
     gotoPage,
-    nextPage,
-    previousPage,
     setPageSize,
     state: { pageIndex, pageSize }
   } = useTable(
@@ -57,6 +49,12 @@ function Table({ columns, data }) {
   );
 
   const history = useHistory();
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    gotoPage(newPage-1)
+  };
 
   const handleRowClick = (row) => {
     const id = row.values.id;
@@ -147,12 +145,7 @@ function Table({ columns, data }) {
           </span>
         </Col>
         <Col sm={12} md={6}>
-          <Pagination className="justify-content-end">
-            <Pagination.First onClick={() => gotoPage(0)} disabled={!canPreviousPage} />
-            <Pagination.Prev onClick={() => previousPage()} disabled={!canPreviousPage} />
-            <Pagination.Next onClick={() => nextPage()} disabled={!canNextPage} />
-            <Pagination.Last onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage} />
-          </Pagination>
+        <MyPagination currentPage={currentPage} totalPages={pageCount} onPageChange={handlePageChange} />  
         </Col>
       </Row>
     </>
@@ -213,7 +206,7 @@ function App() {
       {
         Header: 'Ngày khởi tạo',
         accessor: 'createdAt',
-        Cell: ({ value }) => moment(value).utcOffset(7).format('DD/MM/YYYY')
+        Cell: ({ value }) => moment(value).utcOffset(7).format('DD/MM/YYYY - HH:MM')
       }
     ],
     []

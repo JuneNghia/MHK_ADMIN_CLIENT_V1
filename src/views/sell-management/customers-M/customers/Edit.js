@@ -22,10 +22,10 @@ const Edit = () => {
   });
 
   const keyMapping = {
-    name: 'customer_name',
-    code: 'customer_code',
-    phone: 'customer_phone',
-    email: 'customer_email'
+    name: 'user_name',
+    code: 'user_code',
+    phone: 'user_phone',
+    email: 'user_email'
   };
 
   useEffect(() => {

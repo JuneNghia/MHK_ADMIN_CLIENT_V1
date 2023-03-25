@@ -526,3 +526,15 @@ thead, tbody{
   z-index: 9999 !important;
 }
 
+.long-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.tooltip-inner{
+  max-width: max-content !important;
+}
+
+

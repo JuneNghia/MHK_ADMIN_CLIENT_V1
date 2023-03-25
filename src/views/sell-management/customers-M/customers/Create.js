@@ -6,39 +6,27 @@ import withReactContent from 'sweetalert2-react-content';
 import { ButtonLoading } from '../../../../components/Button/LoadButton';
 import { useHistory } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import AreaSelect from '../../../../data/areaSelect';
-import CommuneSelect from '../../../../data/communeSelect';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-import { isSubmitting } from 'redux-form';
+import ProvinceDistrictSelect from '../../../../data/proviceSelect';
 
 const FormsElements = () => {
   const [showLoader, setShowLoader] = useState(false);
   const history = useHistory();
 
-  //Select Area & Commune
-  const [selectedProvince, setSelectedProvince] = useState('');
-  const [selectedCommune, setSelectedCommune] = useState(null);
-
-  const handleProvinceChange = (value) => {
-    setSelectedProvince(value);
-  };
-  const handleCommuneChange = (value) => {
-    setSelectedCommune(value);
-  };
-
   const handleSubmit = (values) => {
     const customerData = {
-      customer_name: values.name,
-      customer_code: values.code,
-      customer_phone: values.phone,
-      customer_email: values.email,
-      customer_region: selectedProvince.label,
-      customer_commune: selectedCommune,
+      user_name: values.name,
+      user_code: values.code,
+      user_phone: values.phone,
+      user_email: values.email,
+      customer_region: values.province,
+      customer_commune: values.district,
       customer_address: values.address
       // staff_id: data.staff_id,
       // staff_in_charge_note: data.staff_in_charge_note
     };
+    console.log(customerData)
     services
       .post('/customer/create', customerData)
       .then((response) => {
@@ -106,8 +94,7 @@ const FormsElements = () => {
     phone: Yup.string().matches(phoneRegExp, 'Số điện thoại không hợp lệ').required('Số điện thoại không được để trống'),
     code: Yup.string().required('Mã khách hàng không được để trống'),
     address: Yup.string().required('Địa chỉ không được để trống'),
-    // region: Yup.object().nullable().required('Vui lòng chọn tỉnh/thành phố'),
-    // commune: Yup.object().nullable().required('Vui lòng chọn quận/huyện')
+    province: Yup.string().required('Vui lòng chọn tỉnh/thành phố'),
   });
 
   return (
@@ -126,13 +113,13 @@ const FormsElements = () => {
           email: '',
           code: '',
           address: '',
-          region: selectedProvince,
-          commune: selectedCommune
+          province: '',
+          district: ''
         }}
         validationSchema={validateSchema}
         onSubmit={handleSubmit}
       >
-        {({ errors, handleBlur, handleChange, handleSubmit, touched, values, isValid }) => (
+        {({ errors, setFieldValue, handleBlur, handleChange, handleSubmit, touched, values, isValid }) => (
           <Form noValidate onSubmit={handleSubmit}>
             <Row>
               <Col sm={12} lg={8}>
@@ -212,36 +199,15 @@ const FormsElements = () => {
                             </Form.Group>
                           </Col>
                           <Col sm={12} lg={12}>
-                            <Row>
-                              <Col lg={6}>
-                                <Form.Group controlId="strictCustomer">
-                                  <Form.Label>
-                                    Tỉnh - Thành phố <span className="text-c-red">*</span>
-                                  </Form.Label>
-                                  <AreaSelect
-                                    name="region"
-                                    value={selectedProvince}
-                                    handleProvinceChange={handleProvinceChange}
-                                    onBlur={handleBlur}
-                                    
-                                  />
-                                  {touched.region && errors.region && (
-                                    <small class="text-danger form-text">{errors.region}</small>
-                                  )}
-                                </Form.Group>
-                              </Col>
-                              <Col lg={6}>
-                                <Form.Group controlId="strictCustomer">
-                                  <Form.Label>
-                                    Quận - Huyện <span className="text-c-red">*</span>
-                                  </Form.Label>
-                                  <CommuneSelect name="commune" province={selectedProvince} onChange={handleChange} onBlur={handleBlur} handleChangeDistrict={handleCommuneChange} />
-                                  {touched.commune && errors.commune &&  (
-                                    <small class="text-danger form-text">{errors.commune}</small>
-                                  )}
-                                </Form.Group>
-                              </Col>
-                            </Row>
+                            <Form.Group>
+                            <ProvinceDistrictSelect
+                              onChange={(p, d) => {
+                                setFieldValue('province', p);
+                                setFieldValue('district', d);
+                              }}
+                            />
+                              {touched.province && errors.province && <small class="text-danger form-text">{errors.province}</small>}
+                            </Form.Group>
                           </Col>
                           <Col sm={12} lg={12}>
                             <Form.Group controlId="addressCustomer">
@@ -325,7 +291,7 @@ const FormsElements = () => {
                       <Card.Body>
                         <Form.Group controlId="staffCb">
                           <Form.Label>Nhân viên phụ trách</Form.Label>
-                          <Form.Control value={""} onChange={handleChange} name="staff_id" as="select">
+                          <Form.Control value={''} onChange={handleChange} name="staff_id" as="select">
                             <option>Nghĩa</option>
                             <option>Tuấn</option>
                             <option>3</option>
@@ -335,13 +301,7 @@ const FormsElements = () => {
                         </Form.Group>
                         <Form.Group controlId="description">
                           <Form.Label>Mô tả</Form.Label>
-                          <Form.Control
-                            value={""}
-                            onChange={handleChange}
-                            name="staff_in_charge_note"
-                            as="textarea"
-                            rows="3"
-                          />
+                          <Form.Control value={''} onChange={handleChange} name="staff_in_charge_note" as="textarea" rows="3" />
                         </Form.Group>
                         <Form.Group controlId="tag">
                           <Form.Label>Tag</Form.Label>
@@ -388,7 +348,7 @@ const FormsElements = () => {
                       loading={showLoader}
                       type="submit"
                       disabled={showLoader}
-                      style={ isValid ? {} : {backgroundColor: '#ccc', border: 'none'}}
+                      style={isValid ? {} : { backgroundColor: '#ccc', border: 'none' }}
                     ></ButtonLoading>
                   </Col>
                 </Row>

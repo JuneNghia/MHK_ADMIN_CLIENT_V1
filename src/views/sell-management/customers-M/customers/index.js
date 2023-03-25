@@ -7,6 +7,7 @@ import { GlobalFilter } from '../../../users/GlobalFilter';
 import { Helmet } from 'react-helmet';
 import services from '../../../../utils/axios';
 import moment from 'moment';
+import MyPagination from '../../../../components/Pagination/PaginationComponent';
 
 function Table({ columns, data }) {
   const {
@@ -14,20 +15,12 @@ function Table({ columns, data }) {
     getTableBodyProps,
     headerGroups,
     prepareRow,
-    page, // Instead of using 'rows', we'll use page,
-    // which has only the rows for the active page
-
+    page, 
     globalFilter,
     setGlobalFilter,
-
-    // The rest of these things are super handy, too ;)
-    canPreviousPage,
-    canNextPage,
     pageOptions,
     pageCount,
     gotoPage,
-    nextPage,
-    previousPage,
     setPageSize,
     state: { pageIndex, pageSize }
   } = useTable(
@@ -54,11 +47,17 @@ function Table({ columns, data }) {
     }
   );
 
+  const [currentPage, setCurrentPage] = useState(1);
   const history = useHistory();
 
   const handleRowClick = (row) => {
     const id = row.values.id;
     history.push(`/app/sell-management/customers/${id}`);
+  };
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    gotoPage(newPage-1)
   };
 
   return (
@@ -148,12 +147,7 @@ function Table({ columns, data }) {
           </span>
         </Col>
         <Col sm={12} md={6}>
-          <Pagination className="justify-content-end">
-            <Pagination.First onClick={() => gotoPage(0)} disabled={!canPreviousPage} />
-            <Pagination.Prev onClick={() => previousPage()} disabled={!canPreviousPage} />
-            <Pagination.Next onClick={() => nextPage()} disabled={!canNextPage} />
-            <Pagination.Last onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage} />
-          </Pagination>
+        <MyPagination currentPage={currentPage} totalPages={pageCount} onPageChange={handlePageChange} />  
         </Col>
       </Row>
     </>
@@ -162,6 +156,8 @@ function Table({ columns, data }) {
 
 function App() {
   const [listCustomer, setListCustomer] = useState([]);
+  const [isLoading, setIsLoading] = useState(true)
+
 
   useEffect(() => {
     (async () => {
@@ -170,9 +166,10 @@ function App() {
         .then((response) => {
           const filteredData = response.data.data.filter((user) => user !== null);
           setListCustomer(filteredData);
+          setIsLoading(false);
         })
         .catch((error) => {
-          console.log(error);
+          setIsLoading(false);
         });
     })();
   }, []);
@@ -194,7 +191,13 @@ function App() {
       {
         Header: 'Số điện thoại',
         accessor: 'customer_phone'
+      },
+      {
+        Header: 'Ngày khởi tạo',
+        accessor: 'createdAt',
+        Cell: ({ value }) => moment(value).utcOffset(7).format('DD/MM/YYYY - HH:MM')
       }
+
       // {
       //   Header: 'Địa chỉ',
       //   accessor: (customerData) => [customerData.customer_address, customerData.customer_commune, customerData.customer_region].join(', ')
@@ -202,6 +205,9 @@ function App() {
     ],
     []
   );
+
+  if(isLoading)
+  return <div className="text-center">Đang tải...</div>
 
   if (listCustomer.length === 0) {
     return <div className="text-center">Lỗi truy vấn thông tin danh sách khách hàng</div>;

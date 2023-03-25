@@ -175,7 +175,7 @@ const routes = [
       },
       {
         exact: true,
-        path: '/app/settings/branchs',
+        path: '/app/settings/branches',
         component: lazy(() => import('./views/settings/agencyBranch-M'))
       },
       {

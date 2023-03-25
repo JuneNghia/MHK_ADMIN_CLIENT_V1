@@ -40,8 +40,8 @@ const JWTContext = createContext({
 export const JWTProvider = ({ children }) => {
   const [state, dispatch] = useReducer(accountReducer, initialState);
 
-  const login = async (email, password) => {
-    const response = await services.post('/auth/login', { email, password });
+  const login = async (phone, password) => {
+    const response = await services.post('/auth/login', { phone, password });
     const {token, user} = response.data;
     setSession(token);
     dispatch({

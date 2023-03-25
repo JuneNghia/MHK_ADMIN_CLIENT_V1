@@ -9,6 +9,7 @@ import back4 from '../../../assets/images/bg-images/bg4.jpg';
 import withReactContent from 'sweetalert2-react-content';
 import services from '../../../utils/axios';
 import Swal from 'sweetalert2';
+import { Helmet } from 'react-helmet';
 
 const SignUp = () => {
   const history = useHistory();
@@ -42,7 +43,7 @@ const SignUp = () => {
           email: values.email,
           password: values.password
         };
-        await services.post('http://localhost:5000/mhk-api/v1/auth/register', newUserData);
+        await services.post('/auth/register', newUserData);
 
         if (scriptedRef.current) {
           setStatus({ success: true });
@@ -61,6 +62,9 @@ const SignUp = () => {
 
   return (
     <React.Fragment>
+      <Helmet>
+        <title>Đăng ký</title>
+      </Helmet>
       <Breadcrumb />
       <div className="auth-wrapper aut-bg-img-side cotainer-fiuid align-items-stretch">
         <div className="row align-items-center w-100 align-items-stretch bg-white">

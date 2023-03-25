@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Form, Button, FormLabel, Badge, Tabs, Tab } from 'react-bootstrap';
+import { Row, Col, Card, Form, Button, FormLabel, Badge, Tabs, Tab, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import services from '../../../../utils/axios';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import { ButtonLoading } from '../../../../components/Button/LoadButton';
 import { useHistory, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import Addresses from './dataDetail/Addresses';
 
 const UserDetails = () => {
+  const [showTooltip, setShowTooltip] = useState(false);
+  const handleMouseEnter = () => setShowTooltip(true);
+  const handleMouseLeave = () => setShowTooltip(false);
+
   const [showLoader, setShowLoader] = useState(false);
   const history = useHistory();
 
   const { id } = useParams();
-  const [customerData, setCustomer] = useState(null);
-
+  const [customerData, setCustomer] = useState({});
 
   useEffect(() => {
     async function fetchCustomer() {
@@ -55,6 +57,12 @@ const UserDetails = () => {
       }
     });
   };
+
+  const tooltip = (
+    <Tooltip id={`tooltip-${customerData.customer_email}`} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      {customerData.customer_email}
+    </Tooltip>
+  );
 
   const sweetSuccessAlert = () => {
     history.push('/app/sell-management/customers');
@@ -147,9 +155,22 @@ const UserDetails = () => {
                         <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
                           <Form.Label column>Email</Form.Label>
                           <Col sm={10} lg={7}>
-                            <FormLabel className="text-normal" column>
-                              : {customerData.customer_email ? customerData.customer_email : '---'}
-                            </FormLabel>
+                            <OverlayTrigger
+                              overlay={tooltip}
+                              show={showTooltip}
+                              placement="bottom"
+                              delay={{ show: 0, hide: 100000 }}
+                              trigger={['hover', 'focus']}
+                            >
+                              <FormLabel
+                                onMouseEnter={handleMouseEnter}
+                                onMouseLeave={handleMouseLeave}
+                                className="text-normal long-text"
+                                column
+                              >
+                                : {customerData.customer_email ? customerData.customer_email : '---'}
+                              </FormLabel>
+                            </OverlayTrigger>
                           </Col>
                         </Form.Group>
                         <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
