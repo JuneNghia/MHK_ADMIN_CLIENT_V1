@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Form, Button, FormLabel, Badge, Tabs, Tab, FormGroup, FormControl } from 'react-bootstrap';
+import { Row, Col, Card, Form, Button, FormLabel, Badge, FormGroup, FormControl } from 'react-bootstrap';
 import services from '../../utils/axios';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -9,96 +9,21 @@ import { Helmet } from 'react-helmet';
 import Select from 'react-select';
 
 const UserDetail = () => {
-  const [validated, setValidated] = useState(false);
-  const [validatedTooltip, setValidatedTooltip] = useState(false);
-  const [supportedCheckbox, setSupportedCheckbox] = useState(false);
-  const [supportedRadio, setSupportedRadio] = useState(false);
-  const [supportedSelect, setSupportedSelect] = useState(0);
-  const [supportedFile, setSupportedFile] = useState(0);
   const [showLoader, setShowLoader] = useState(false);
   const history = useHistory();
 
   const { id } = useParams();
-  const [data, setData] = useState(null);
+  const [data, setData] = useState({});
+  const [address, setAddress] = useState('');
 
   useEffect(() => {
     async function fetchCustomer() {
-      const response = await services.get(`/user/get-by-id/${id}`);
-      setData(response.data);
+      const response = await services.get(`/staff/get-by-id/${id}`);
+      setData(response.data.data);
+      setAddress([response.data.data.staff_address, response.data.data.staff_commune, response.data.data.staff_region].join(', '));
     }
     fetchCustomer();
   }, [id]);
-
-  //   const [data, setData] = useState({
-  //     user_name: '',
-  //     user_type: '',
-  //     user_code: '',
-  //     user_group: '',
-  //     user_phone: '',
-  //     user_email: '',
-  //     user_password: '',
-  //     user_region: '',
-  //     user_commune: '',
-  //     user_address: '',
-  //     createdAt: '',
-  //     updatedAt: ''
-  //   });
-
-  const handleChange = (e) => {
-    const value = e.target.value;
-    setData({
-      ...data,
-      [e.target.name]: value
-    });
-  };
-
-  //   const handleDelete = (e) => {
-  //     e.preventDefault();
-  //     const data = {
-  //       user_name: data.user_name,
-  //       user_type: data.user_type,
-  //       user_code: data.user_code,
-  //       user_group: data.user_group,
-  //       user_phone: data.user_phone,
-  //       user_email: data.user_email,
-  //       user_password: data.user_password,
-  //       user_region: data.user_region,
-  //       user_commune: data.user_commune,
-  //       user_address: data.user_address,
-  //       createdAt: data.createdAt,
-  //       updatedAt: data.updatedAt
-  //     };
-  //     axios.post('http://localhost:5000/mhk-api/v1/user/create-customer', data).then((response) => {
-  //       setData({
-  //         user_name: '',
-  //         user_type: '',
-  //         user_code: '',
-  //         user_group: '',
-  //         user_phone: '',
-  //         user_email: '',
-  //         user_password: '',
-  //         user_region: '',
-  //         user_commune: '',
-  //         user_address: '',
-  //         createdAt: '',
-  //         updatedAt: ''
-  //       });
-  //       setShowLoader(true);
-  //       setTimeout(() => {
-  //         setShowLoader(false);
-  //         sweetSuccessAlert();
-  //       }, 3000);
-  //     });
-  //   };
-
-  const handleSubmit = (event) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    setValidated(true);
-  };
 
   const handleDelete = () => {
     const MySwal = withReactContent(Swal);
@@ -127,27 +52,9 @@ const UserDetail = () => {
     });
   };
 
-  const handleSubmitTooltip = (event) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    setValidatedTooltip(true);
-  };
-
-  const supportedSelectHandler = (event) => {
-    setSupportedSelect(parseInt(event.target.value));
-  };
-
-  const supportedFileHandler = (event) => {
-    setSupportedFile(!!event.target.value);
-  };
-
   const sweetSuccessAlert = () => {
     history.push('/app/sell-management/users');
-    const MySwal = withReactContent(Swal);
-    MySwal.fire('', 'Xoá nhân viên thành công', 'success');
+    Swal.fire('', 'Xoá nhân viên thành công', 'success');
   };
 
   if (!data) {
@@ -199,9 +106,9 @@ const UserDetail = () => {
                   <Card.Header>
                     <Card.Title as="h5">
                       <span>
-                        <h4 style={{ display: 'inline-block', fontWeight: 600, fontSize: 22 }}>{data.user_name}</h4>
+                        <h4 style={{ display: 'inline-block', fontWeight: 600, fontSize: 22 }}>{data.staff_name}</h4>
                         <span>
-                          {data.user_state === 'Đã nghỉ việc' ? (
+                          {data.staff_status === 'Đã nghỉ việc' ? (
                             <Badge style={{ fontSize: 15, marginLeft: 15, padding: 11 }} key="process" pill variant="danger">
                               Đã nghỉ việc
                             </Badge>
@@ -221,9 +128,9 @@ const UserDetail = () => {
                           <Col sm={12} lg={6}>
                             <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
                               <Form.Label column>Số điện thoại</Form.Label>
-                              <Col sm={10} lg={6}>
+                              <Col sm={12} lg={6}>
                                 <FormLabel className="text-normal" column>
-                                  : {data.user_phone ? data.user_phone : '---'}
+                                  : {data.staff_phone ? data.staff_phone : '---'}
                                 </FormLabel>
                               </Col>
                             </Form.Group>
@@ -231,7 +138,7 @@ const UserDetail = () => {
                               <Form.Label column>Email</Form.Label>
                               <Col sm={10} lg={6}>
                                 <FormLabel className="text-normal" column>
-                                  : {data.user_email ? data.user_email : '---'}
+                                  : {data.staff_email ? data.staff_email : '---'}
                                 </FormLabel>
                               </Col>
                             </Form.Group>
@@ -239,21 +146,21 @@ const UserDetail = () => {
                               <Form.Label column>Ngày sinh</Form.Label>
                               <Col sm={10} lg={6}>
                                 <FormLabel className="text-normal" column>
-                                  : {data.user_dob ? data.user_dob : '---'}
-                                </FormLabel>
-                              </Col>
-                            </Form.Group>
-                            <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
-                              <Form.Label column>Địa chỉ</Form.Label>
-                              <Col sm={10} lg={6}>
-                                <FormLabel className="text-normal" column>
-                                  : {data.user_address ? data.user_address : '---'}
+                                  : {data.staff_dob ? data.staff_dob : '---'}
                                 </FormLabel>
                               </Col>
                             </Form.Group>
                           </Col>
                           <Col lg={12}>
-                            <p className="mt-2 text-normal">
+                            <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
+                              <Form.Label column>Địa chỉ</Form.Label>
+                              <Col sm={12} lg={9}>
+                                <FormLabel className="text-normal" column>
+                                  : {address === ', ' ? '---' : address}
+                                </FormLabel>
+                              </Col>
+                            </Form.Group>
+                            <p className="mt-3 text-normal">
                               <em>
                                 Để cập nhật thông tin nhân viên, bạn vui lòng báo nhân viên vào “Tài khoản của tôi” trong trang quản trị MHK
                                 hoặc truy cập đường dẫn <a href="https://profiles.mhk.vn">https://profiles.mhk.vn </a>

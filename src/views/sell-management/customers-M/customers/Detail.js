@@ -11,8 +11,6 @@ const UserDetails = () => {
   const [showTooltip, setShowTooltip] = useState(false);
   const handleMouseEnter = () => setShowTooltip(true);
   const handleMouseLeave = () => setShowTooltip(false);
-
-  const [showLoader, setShowLoader] = useState(false);
   const history = useHistory();
 
   const { id } = useParams();
@@ -211,7 +209,15 @@ const UserDetails = () => {
                           <Form.Label column>Mô tả</Form.Label>
                           <Col sm={10} lg={7}>
                             <FormLabel className="text-normal" column>
-                              : {customerData.user_sex ? customerData.user_sex : '---'}
+                              : {customerData.note ? customerData.note : '---'}
+                            </FormLabel>
+                          </Col>
+                        </Form.Group>
+                        <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
+                          <Form.Label column>Tags</Form.Label>
+                          <Col sm={10} lg={7}>
+                            <FormLabel className="text-normal" column>
+                              : {customerData.tags ? customerData.tags : '---'}
                             </FormLabel>
                           </Col>
                         </Form.Group>

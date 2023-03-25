@@ -3,7 +3,7 @@ import axios from 'axios';
 import Select from 'react-select';
 import { Col, Form, Row } from 'react-bootstrap';
 
-const ProvinceDistrictSelect = ({ onChange }) => {
+const ProvinceDistrictSelect = ({ onChange, initialValues }) => {
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [selectedProvince, setSelectedProvince] = useState(null);
@@ -20,6 +20,7 @@ const ProvinceDistrictSelect = ({ onChange }) => {
     )
   }
 
+  // Lấy danh sách các tỉnh
   useEffect(() => {
     axios
       .get('https://provinces.open-api.vn/api/?depth=2')
@@ -35,6 +36,29 @@ const ProvinceDistrictSelect = ({ onChange }) => {
         console.error(error);
       });
   }, []);
+
+  useEffect(() => {
+    if (initialValues.province) {
+      const provinceOption = provinces.find((option) => option.label === initialValues.province);
+      if (provinceOption) {
+        setSelectedProvince(provinceOption);
+        setDistricts(
+          provinceOption.districts.map((district) => ({
+            value: district.code,
+            label: district.name
+          }))
+        );
+      }
+    }
+    if (initialValues.district) {
+      const districtOption = districts.find((option) => option.label === initialValues.district);
+      if (districtOption) {
+        setSelectedDistrict(districtOption);
+      }
+    }
+  }, [initialValues, provinces]);
+
+
 
   const handleProvinceChange = (selectedOption) => {
     setSelectedProvince(selectedOption);

@@ -22,7 +22,9 @@ const FormsElements = () => {
       user_email: values.email,
       customer_region: values.province,
       customer_commune: values.district,
-      customer_address: values.address
+      customer_address: values.address,
+      note: values.note,
+      tags: values.tags
       // staff_id: data.staff_id,
       // staff_in_charge_note: data.staff_in_charge_note
     };
@@ -114,7 +116,9 @@ const FormsElements = () => {
           code: '',
           address: '',
           province: '',
-          district: ''
+          district: '',
+          tags: '',
+          note: ''
         }}
         validationSchema={validateSchema}
         onSubmit={handleSubmit}
@@ -301,11 +305,11 @@ const FormsElements = () => {
                         </Form.Group>
                         <Form.Group controlId="description">
                           <Form.Label>Mô tả</Form.Label>
-                          <Form.Control value={''} onChange={handleChange} name="staff_in_charge_note" as="textarea" rows="3" />
+                          <Form.Control value={values.note} onChange={handleChange} name="note" as="textarea" rows="3" />
                         </Form.Group>
                         <Form.Group controlId="tag">
                           <Form.Label>Tag</Form.Label>
-                          <Form.Control as="textarea" rows="3" />
+                          <Form.Control value={values.tags} onChange={handleChange} name="tags" as="textarea" rows="3" />
                         </Form.Group>
                       </Card.Body>
                     </Card>

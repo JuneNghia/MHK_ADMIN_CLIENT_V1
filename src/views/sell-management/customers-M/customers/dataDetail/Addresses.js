@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { Row, Col, Pagination, Button, Form } from 'react-bootstrap';
+import React, { useEffect, useRef, useState } from 'react';
+import { Row, Col, Button, Form } from 'react-bootstrap';
 import BTable from 'react-bootstrap/Table';
 import { useTable, usePagination, useGlobalFilter, useRowSelect } from 'react-table';
-import { useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { GlobalFilter } from '../../../../users/GlobalFilter';
 import services from '../../../../../utils/axios';
 import ModalComponent from '../../../../../components/Modal/Modal';
@@ -10,6 +10,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import Swal from 'sweetalert2';
 import ProvinceDistrictSelect from '../../../../../data/proviceSelect';
+import MyPagination from '../../../../../components/Pagination/PaginationComponent';
 
 function Addresses() {
   const columns = React.useMemo(
@@ -37,10 +38,9 @@ function Addresses() {
   const [addressList, setAddressList] = useState([]);
   const [addressRow, setAddressRow] = useState({
     address: '',
-    region: '',
-    commune: ''
+    province: '',
+    district: ''
   });
-
   const data = addressList;
 
   const {
@@ -48,20 +48,12 @@ function Addresses() {
     getTableBodyProps,
     headerGroups,
     prepareRow,
-    page, // Instead of using 'rows', we'll use page,
-    // which has only the rows for the active page
-
+    page,
     globalFilter,
     setGlobalFilter,
-
-    // The rest of these things are super handy, too ;)
-    canPreviousPage,
-    canNextPage,
     pageOptions,
     pageCount,
     gotoPage,
-    nextPage,
-    previousPage,
     setPageSize,
     state: { pageIndex, pageSize }
   } = useTable(
@@ -89,7 +81,14 @@ function Addresses() {
   );
 
   const { id } = useParams();
-  const [idAddress, setIdAddress] = useState();
+  const [idAddress, setIdAddress] = useState(0);
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    gotoPage(newPage - 1);
+  };
 
   useEffect(() => {
     async function fetchAddress() {
@@ -98,16 +97,6 @@ function Addresses() {
     }
     fetchAddress();
   }, [id]);
-
-  const [selectedProvince, setSelectedProvince] = useState('');
-  const [selectedCommune, setSelectedCommune] = useState(null);
-
-  const handleProvinceChange = (value) => {
-    setSelectedProvince(value);
-  };
-  const handleCommuneChange = (value) => {
-    setSelectedCommune(value);
-  };
 
   const [isLoading, setIsLoading] = useState(false);
   const [showModalAdd, setShowModalAdd] = useState(false);
@@ -129,8 +118,8 @@ function Addresses() {
     setIsLoading(true);
     const newAddress = {
       customer_address: values.address,
-      customer_region: selectedProvince.label,
-      customer_commune: selectedCommune
+      customer_region: values.province,
+      customer_commune: values.district
     };
     try {
       await services
@@ -162,24 +151,60 @@ function Addresses() {
   };
 
   const handleSubmitUpdate = (values) => {
-    // ...
-    setShowModalAdd(false);
+    setIsLoading(true);
+    try {
+      const updateAddress = {
+        customer_address: values.address,
+        customer_region: values.province,
+        customer_commune: values.district
+      };
+      services
+        .patch(`/customer/address/${idAddress}/update/${id}`, updateAddress)
+        .then((response) => {
+          const updatedAddress = addressList.map((address) => {
+            if (address.id === idAddress) {
+              return response.data;
+            }
+            return address;
+          });
+          setTimeout(() => {
+            Swal.fire({
+              text: 'Cập nhật địa chỉ thành công',
+              showConfirmButton: true,
+              showCancelButton: false,
+              icon: 'success'
+            }).then((confirm) => {
+              if (confirm.isConfirmed) {
+                setIsLoading(false);
+                setAddressList(updatedAddress)
+                setShowModalUpdate(false);
+              }
+            });
+          }, 1000);
+        })
+        .catch((err) => {
+          setIsLoading(false);
+          Swal.fire('', 'Đã xảy ra lỗi khi thêm địa chỉ mới', 'error');
+        });
+    } catch (error) {
+      setIsLoading(false);
+      Swal.fire('Thất bại', 'Không thể kết nối tới máy chủ', 'error');
+    }
   };
 
   const handleRowClick = (row) => {
     setIdAddress(row.values.id);
     setAddressRow({
       address: row.values.customer_address,
-      region: row.values.customer_region,
-      commune: row.values.customer_commune
+      province: row.values.customer_region,
+      district: row.values.customer_commune
     });
     handleUpdateAddress();
   };
 
   const validateSchema = Yup.object().shape({
-    address: Yup.string().required('Địa chỉ không được để trống')
-    // region: Yup.object().nullable().required('Vui lòng chọn tỉnh/thành phố'),
-    // commune: Yup.object().nullable().required('Vui lòng chọn quận/huyện')
+    address: Yup.string().required('Địa chỉ không được để trống'),
+    province: Yup.string().required('Vui lòng chọn tỉnh/thành phố')
   });
 
   if (addressList.length === 0) {
@@ -187,8 +212,8 @@ function Addresses() {
   } else
     return (
       <>
-        <Formik onSubmit={handleSubmitAdd} initialValues={{ address: '' }} validationSchema={validateSchema}>
-          {({ errors, handleBlur, handleChange, handleSubmit, touched, values, isValid }) => (
+        <Formik onSubmit={handleSubmitAdd} initialValues={{ address: '', province: '', district: '' }} validationSchema={validateSchema}>
+          {({ errors, setFieldValue, handleBlur, handleChange, handleSubmit, touched, values, isValid }) => (
             <Form noValidate>
               <ModalComponent
                 show={showModalAdd}
@@ -221,7 +246,16 @@ function Addresses() {
                             </Form.Group>
                           </Col>
                           <Col sm={12} lg={12}>
-                            <ProvinceDistrictSelect/>
+                            <Form.Group>
+                              <ProvinceDistrictSelect
+                                initialValues={{ province: null, district: null }}
+                                onChange={(p, d) => {
+                                  setFieldValue('province', p);
+                                  setFieldValue('district', d);
+                                }}
+                              />
+                              {touched.province && errors.province && <small class="text-danger form-text">{errors.province}</small>}
+                            </Form.Group>
                           </Col>
                         </Row>
                       </Col>
@@ -234,7 +268,7 @@ function Addresses() {
         </Formik>
 
         <Formik enableReinitialize={true} onSubmit={handleSubmitUpdate} initialValues={addressRow} validationSchema={validateSchema}>
-          {({ errors, handleBlur, handleChange, handleSubmit, touched, values, isValid }) => (
+          {({ errors, dirty, setFieldValue, handleBlur, handleChange, handleSubmit, touched, values, isValid }) => (
             <Form noValidate>
               <ModalComponent
                 show={showModalUpdate}
@@ -243,7 +277,7 @@ function Addresses() {
                 title="Cập nhật địa chỉ khách hàng"
                 textSubmit={isLoading ? 'Đang lưu...' : 'Lưu'}
                 size="lg"
-                disabled={!isValid || isLoading}
+                disabled={!dirty || !isValid || isLoading}
                 body={
                   <Form>
                     <Row>
@@ -256,7 +290,6 @@ function Addresses() {
                               </Form.Label>
                               <Form.Control
                                 value={values.address}
-                                type="text"
                                 onError={touched.address && errors.address}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
@@ -267,7 +300,13 @@ function Addresses() {
                             </Form.Group>
                           </Col>
                           <Col sm={12} lg={12}>
-                            <ProvinceDistrictSelect/>
+                            <ProvinceDistrictSelect
+                              initialValues={{ province: values.province, district: values.district }}
+                              onChange={(p, d) => {
+                                setFieldValue('province', p);
+                                setFieldValue('district', d);
+                              }}
+                            />
                           </Col>
                         </Row>
                       </Col>
@@ -367,12 +406,7 @@ function Addresses() {
             </span>
           </Col>
           <Col sm={12} md={6}>
-            <Pagination className="justify-content-end">
-              <Pagination.First onClick={() => gotoPage(0)} disabled={!canPreviousPage} />
-              <Pagination.Prev onClick={() => previousPage()} disabled={!canPreviousPage} />
-              <Pagination.Next onClick={() => nextPage()} disabled={!canNextPage} />
-              <Pagination.Last onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage} />
-            </Pagination>
+            <MyPagination currentPage={currentPage} totalPages={pageCount} onPageChange={handlePageChange} />
           </Col>
         </Row>
       </>

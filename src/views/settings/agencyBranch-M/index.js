@@ -60,7 +60,6 @@ function Branches() {
   const [isLoading, setIsLoading] = useState(false);
   const [showModalAdd, setShowModalAdd] = useState(false);
   const [showModalUpdate, setShowModalUpdate] = useState(false);
-  const [isDefaultBranch, setIsDefaultBranch] = useState(false);
   const [idBranch, setIdBranch] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -68,14 +67,16 @@ function Branches() {
     branch_name: 'agency_branch_name',
     branch_code: 'agency_branch_CN_code',
     branch_phone: 'agency_branch_phone',
-    branch_address: 'agency_branch_address'
+    branch_address: 'agency_branch_address',
+    isDefaultBranch: 'isDefaultCN'
   };
 
   const [branchData, setBranchData] = useState({
     branch_code: '',
     branch_name: '',
     branch_phone: '',
-    branch_address: ''
+    branch_address: '',
+    isDefaultBranch: false
   });
 
   const [branchesList, setBranchesList] = useState([]);
@@ -150,7 +151,7 @@ function Branches() {
       agency_branch_name: values.branch_name,
       agency_branch_phone: values.branch_phone,
       agency_branch_address: values.branch_address,
-      isDefaultCN: isDefaultBranch
+      isDefaultCN: values.isDefaultBranch
     };
     try {
       await services
@@ -158,7 +159,7 @@ function Branches() {
         .then((response) => {
           setTimeout(() => {
             Swal.fire({
-              text: 'Thêm địa chỉ mới thành công',
+              text: 'Thêm chi nhánh mới thành công',
               showConfirmButton: true,
               showCancelButton: false,
               icon: 'success'
@@ -199,7 +200,7 @@ function Branches() {
       }
     }
     services
-      .patch(`/agency-branch/update-by-id/${idBranch}`, { ...updatedFieldsWithApiKeys, isDefaultCN: isDefaultBranch })
+      .patch(`/agency-branch/update-by-id/${idBranch}`, updatedFieldsWithApiKeys)
       .then((response) => {
         setTimeout(() => {
           setIsLoading(false);
@@ -228,15 +229,15 @@ function Branches() {
       branch_name: row.values.agency_branch_name,
       branch_phone: row.values.agency_branch_phone,
       branch_address: row.values.agency_branch_address,
-      branch_code: row.values.agency_branch_CN_code
+      branch_code: row.values.agency_branch_CN_code,
+      isDefaultBranch: row.values.isDefaultCN
     });
-    setIsDefaultBranch(row.values.isDefaultCN);
     handleUpdateAddress();
   };
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
-    gotoPage(newPage-1)
+    gotoPage(newPage - 1);
   };
 
   return (
@@ -246,16 +247,16 @@ function Branches() {
       </Helmet>
 
       <Formik initialValues={branchData} onSubmit={handleSubmitAdd}>
-        {({ errors, dirty, handleChange, handleBlur, handleSubmit, touched, values, isValid }) => (
+        {({ errors, setFieldValue, dirty, handleChange, handleBlur, handleSubmit, touched, values, isValid }) => (
           <Form noValidate>
             <ModalComponent
               show={showModalAdd}
               handleClose={handleCloseModal}
               handleSubmit={handleSubmit}
-              title="Thêm địa chỉ khách hàng"
+              title="Thêm chi nhánh"
               textSubmit={isLoading ? 'Đang thêm...' : 'Thêm'}
               size="lg"
-              disabled={!!dirty || !isValid || isLoading}
+              disabled={!dirty || !isValid || isLoading}
               body={
                 <Form>
                   <Row>
@@ -327,8 +328,8 @@ function Branches() {
                             <Form.Check
                               name="isDefaultBranch"
                               type="checkbox"
-                              checked={isDefaultBranch}
-                              onChange={() => setIsDefaultBranch(!isDefaultBranch)}
+                              checked={values.isDefaultBranch}
+                              onChange={() => setFieldValue('isDefaultBranch', !values.isDefaultBranch)}
                               label="Chi nhánh mặc định"
                             />
                           </Form.Group>
@@ -344,7 +345,7 @@ function Branches() {
       </Formik>
 
       <Formik enableReinitialize={true} initialValues={branchData} onSubmit={handleSubmitUpdate}>
-        {({ errors, dirty, handleChange, handleBlur, handleSubmit, touched, values, isValid }) => (
+        {({ errors, setFieldValue, dirty, handleChange, handleBlur, handleSubmit, touched, values, isValid }) => (
           <Form noValidate>
             <ModalComponent
               show={showModalUpdate}
@@ -425,8 +426,8 @@ function Branches() {
                             <Form.Check
                               name="isDefaultBranch"
                               type="checkbox"
-                              checked={isDefaultBranch}
-                              onChange={() => setIsDefaultBranch(!isDefaultBranch)}
+                              checked={values.isDefaultBranch}
+                              onChange={() => setFieldValue('isDefaultBranch', !values.isDefaultBranch)}
                               label="Chi nhánh mặc định"
                             />
                           </Form.Group>
