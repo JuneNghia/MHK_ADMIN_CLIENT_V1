@@ -28,7 +28,7 @@ const FormsElements = () => {
       // staff_id: data.staff_id,
       // staff_in_charge_note: data.staff_in_charge_note
     };
-    console.log(customerData)
+    console.log(customerData);
     services
       .post('/customer/create', customerData)
       .then((response) => {
@@ -96,7 +96,7 @@ const FormsElements = () => {
     phone: Yup.string().matches(phoneRegExp, 'Số điện thoại không hợp lệ').required('Số điện thoại không được để trống'),
     code: Yup.string().required('Mã khách hàng không được để trống'),
     address: Yup.string().required('Địa chỉ không được để trống'),
-    province: Yup.string().required('Vui lòng chọn tỉnh/thành phố'),
+    province: Yup.string().required('Vui lòng chọn tỉnh/thành phố và quận/huyện')
   });
 
   return (
@@ -104,10 +104,7 @@ const FormsElements = () => {
       <Helmet>
         <title>Thêm mới khách hàng</title>
       </Helmet>
-      <Button onClick={sweetConfirmAlert} variant="outline-primary" className="mr-0" style={{ marginBottom: 15 }}>
-        <i className="feather icon-arrow-left"></i>
-        Quay lại danh sách khách hàng
-      </Button>
+
       <Formik
         initialValues={{
           name: '',
@@ -125,6 +122,23 @@ const FormsElements = () => {
       >
         {({ errors, setFieldValue, handleBlur, handleChange, handleSubmit, touched, values, isValid }) => (
           <Form noValidate onSubmit={handleSubmit}>
+            <span className="flex-between">
+              <Button onClick={sweetConfirmAlert} variant="outline-primary" className="mr-0" style={{ marginBottom: 15 }}>
+                <i className="feather icon-arrow-left"></i>
+                Quay lại danh sách khách hàng
+              </Button>
+              <ButtonLoading
+                text={'Lưu khách hàng mới'}
+                onSubmit={handleSubmit}
+                loading={showLoader}
+                type="submit"
+                disabled={showLoader}
+                style={
+                  isValid ? { margin: 0, marginBottom: 15 } : { backgroundColor: '#ccc', borderColor: '#ccc', margin: 0, marginBottom: 15 }
+                }
+              ></ButtonLoading>
+            </span>
+
             <Row>
               <Col sm={12} lg={8}>
                 <Row>
@@ -204,12 +218,13 @@ const FormsElements = () => {
                           </Col>
                           <Col sm={12} lg={12}>
                             <Form.Group>
-                            <ProvinceDistrictSelect
-                              onChange={(p, d) => {
-                                setFieldValue('province', p);
-                                setFieldValue('district', d);
-                              }}
-                            />
+                              <ProvinceDistrictSelect
+                              initialValues={{province: null, district: null}}
+                                onChange={(p, d) => {
+                                  setFieldValue('province', p);
+                                  setFieldValue('district', d);
+                                }}
+                              />
                               {touched.province && errors.province && <small class="text-danger form-text">{errors.province}</small>}
                             </Form.Group>
                           </Col>
@@ -346,14 +361,6 @@ const FormsElements = () => {
                         </fieldset>
                       </Card.Body>
                     </Card>
-                    <ButtonLoading
-                      text={'Lưu khách hàng mới'}
-                      onSubmit={handleSubmit}
-                      loading={showLoader}
-                      type="submit"
-                      disabled={showLoader}
-                      style={isValid ? {} : { backgroundColor: '#ccc', border: 'none' }}
-                    ></ButtonLoading>
                   </Col>
                 </Row>
               </Col>

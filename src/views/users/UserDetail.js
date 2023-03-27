@@ -160,15 +160,9 @@ const UserDetail = () => {
                                 </FormLabel>
                               </Col>
                             </Form.Group>
-                            <p className="mt-3 text-normal">
-                              <em>
-                                Để cập nhật thông tin nhân viên, bạn vui lòng báo nhân viên vào “Tài khoản của tôi” trong trang quản trị MHK
-                                hoặc truy cập đường dẫn <a href="https://profiles.mhk.vn">https://profiles.mhk.vn </a>
-                              </em>{' '}
-                            </p>
                             <FormGroup>
-                              <FormLabel className="text-normal">
-                                <em>Ghi chú</em>
+                              <FormLabel className="mt-2">
+                                Ghi chú
                               </FormLabel>
                               <FormControl type="text"></FormControl>
                             </FormGroup>

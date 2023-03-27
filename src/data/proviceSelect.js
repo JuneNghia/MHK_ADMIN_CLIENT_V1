@@ -8,19 +8,18 @@ const ProvinceDistrictSelect = ({ onChange, initialValues }) => {
   const [districts, setDistricts] = useState([]);
   const [selectedProvince, setSelectedProvince] = useState(null);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
-  const customNoOntionMessage = () => {
-    return "Vui lòng chọn Tỉnh/Thành phố trước"
-  }
+  const customNoOptionMessage = () => {
+    return "Vui lòng chọn Tỉnh/Thành phố trước";
+  };
   const customPlaceholder = (placeholder) => {
     return (
       <span className="flex-between">
         <span>Tìm kiếm hoặc chọn {placeholder}</span>
         <i className="feather icon-search"></i>
       </span>
-    )
-  }
+    );
+  };
 
-  // Lấy danh sách các tỉnh
   useEffect(() => {
     axios
       .get('https://provinces.open-api.vn/api/?depth=2')
@@ -37,9 +36,12 @@ const ProvinceDistrictSelect = ({ onChange, initialValues }) => {
       });
   }, []);
 
+
   useEffect(() => {
-    if (initialValues.province) {
-      const provinceOption = provinces.find((option) => option.label === initialValues.province);
+    if (initialValues.province && selectedProvince !== initialValues.province) {
+      const provinceOption = provinces.find(
+        (province) => province.label === initialValues.province
+      );
       if (provinceOption) {
         setSelectedProvince(provinceOption);
         setDistricts(
@@ -50,15 +52,18 @@ const ProvinceDistrictSelect = ({ onChange, initialValues }) => {
         );
       }
     }
-    if (initialValues.district) {
-      const districtOption = districts.find((option) => option.label === initialValues.district);
+  }, [initialValues.province, provinces, selectedProvince]);
+
+  useEffect(() => {
+    if (initialValues.district && selectedDistrict !== initialValues.district) {
+      const districtOption = districts.find(
+        (district) => district.label === initialValues.district
+      );
       if (districtOption) {
         setSelectedDistrict(districtOption);
       }
     }
-  }, [initialValues, provinces]);
-
-
+  }, [initialValues.district, districts, selectedDistrict]);
 
   const handleProvinceChange = (selectedOption) => {
     setSelectedProvince(selectedOption);
@@ -89,10 +94,10 @@ const ProvinceDistrictSelect = ({ onChange, initialValues }) => {
         <Form.Label>
           Chọn Quận/Huyện <span className="text-c-red">*</span>
         </Form.Label>
-        <Select value={selectedDistrict} noOptionsMessage={customNoOntionMessage} options={districts} onChange={handleDistrictChange} placeholder={customPlaceholder("Quận/Huyện")} />
+        <Select value={selectedDistrict} noOptionsMessage={customNoOptionMessage} options={districts} onChange={handleDistrictChange} placeholder={customPlaceholder("Quận/Huyện")} />
       </Col>
     </Row>
-  );
-};
+  )
+}
 
 export default ProvinceDistrictSelect;

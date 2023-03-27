@@ -170,6 +170,11 @@ const routes = [
       },
       {
         exact: true,
+        path: '/app/sell-management/users/create',
+        component: lazy(() => import('./views/users/Create'))
+      },
+      {
+        exact: true,
         path: '/app/sell-management/users/:id',
         component: lazy(() => import('./views/users/UserDetail'))
       },
