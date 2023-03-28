@@ -115,7 +115,7 @@ function TableInTabs({ columns, data, hiddenColumns = ['id'], handleRowClick, Bu
           })}
         </tbody>
       </BTable>
-      <Row className="justify-content-between mt-3">
+      <Row style={{ margin: '0 -3px' }} className="justify-content-between mt-3">
         <Col sm={12} md={6}>
           <span className="d-flex align-items-center">
             Trang{' '}

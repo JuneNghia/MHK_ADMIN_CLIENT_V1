@@ -176,7 +176,7 @@ const routes = [
       {
         exact: true,
         path: '/app/sell-management/users/:id',
-        component: lazy(() => import('./views/users/UserDetail'))
+        component: lazy(() => import('./views/users/Detail'))
       },
       {
         exact: true,

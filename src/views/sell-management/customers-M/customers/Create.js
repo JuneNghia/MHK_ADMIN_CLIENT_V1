@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Form, Button } from 'react-bootstrap';
 import services from '../../../../utils/axios';
 import Swal from 'sweetalert2';
@@ -9,10 +9,33 @@ import { Helmet } from 'react-helmet';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import ProvinceDistrictSelect from '../../../../data/proviceSelect';
+import Select from 'react-select';
 
 const FormsElements = () => {
   const [showLoader, setShowLoader] = useState(false);
   const history = useHistory();
+  const [optionsStaff, setOptionsStaff] = useState([]);
+
+  useEffect(()=> {
+    services.get('/staff/get-all')
+    .then((res) => {
+      const result = res.data.data;
+      const options = result.map((staff) => ({
+        label: staff.staff_name,
+        value: staff.id
+      }));
+      setOptionsStaff(options);
+    })
+    .catch((err) => {});
+  }, [])
+
+  console.log(optionsStaff)
+
+  const gender = [
+    { label: 'Nam', value: 'male' },
+    { label: 'Nữ', value: 'female' },
+    { label: 'Khác', value: 'others' }
+  ];
 
   const handleSubmit = (values) => {
     const customerData = {
@@ -24,8 +47,8 @@ const FormsElements = () => {
       customer_commune: values.district,
       customer_address: values.address,
       note: values.note,
-      tags: values.tags
-      // staff_id: data.staff_id,
+      tags: values.tags,
+      staff_id: values.staff.value,
       // staff_in_charge_note: data.staff_in_charge_note
     };
     console.log(customerData);
@@ -115,7 +138,8 @@ const FormsElements = () => {
           province: '',
           district: '',
           tags: '',
-          note: ''
+          note: '',
+          staff: ''
         }}
         validationSchema={validateSchema}
         onSubmit={handleSubmit}
@@ -156,8 +180,7 @@ const FormsElements = () => {
                               </Form.Label>
                               <Form.Control
                                 name="name"
-                                onError={touched.name && errors.name}
-                                onBlur={handleBlur}
+                                onError={errors.name}
                                 value={values.name}
                                 onChange={handleChange}
                                 type="text"
@@ -171,8 +194,6 @@ const FormsElements = () => {
                               </Form.Label>
                               <Form.Control
                                 name="email"
-                                onError={touched.name && errors.name}
-                                onBlur={handleBlur}
                                 value={values.email}
                                 onChange={handleChange}
                                 type="email"
@@ -189,8 +210,6 @@ const FormsElements = () => {
                               <Form.Control
                                 name="code"
                                 value={values.code}
-                                onBlur={handleBlur}
-                                onError={touched.code && errors.code}
                                 onChange={handleChange}
                                 type="text"
                                 placeholder="Nhập mã khách hàng"
@@ -206,8 +225,6 @@ const FormsElements = () => {
                               </Form.Label>
                               <Form.Control
                                 value={values.phone}
-                                onBlur={handleBlur}
-                                onError={touched.phone && errors.phone}
                                 name="phone"
                                 onChange={handleChange}
                                 type="text"
@@ -237,7 +254,6 @@ const FormsElements = () => {
                                 name="address"
                                 placeholder="Ghi rõ tầng, số nhà, phường xã, ..."
                                 value={values.address}
-                                onError={touched.address && errors.address}
                                 onChange={handleChange}
                                 as="textarea"
                                 rows="3"
@@ -278,11 +294,12 @@ const FormsElements = () => {
                           <Col md={6}>
                             <Form.Group controlId="sexCustomer">
                               <Form.Label>Giới tính</Form.Label>
-                              <Form.Control as="select">
-                                <option>Khác</option>
-                                <option>Nam</option>
-                                <option>Nữ</option>
-                              </Form.Control>
+                              <Select
+                                    name="gender"
+                                    onChange={(g) => setFieldValue('gender', g)}
+                                    options={gender}
+                                    defaultValue={gender[0]}
+                              ></Select>
                             </Form.Group>
                             <Form.Group controlId="taxIdCustomer">
                               <Form.Label>Mã số thuế</Form.Label>
@@ -310,13 +327,7 @@ const FormsElements = () => {
                       <Card.Body>
                         <Form.Group controlId="staffCb">
                           <Form.Label>Nhân viên phụ trách</Form.Label>
-                          <Form.Control value={''} onChange={handleChange} name="staff_id" as="select">
-                            <option>Nghĩa</option>
-                            <option>Tuấn</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                          </Form.Control>
+                          <Select name="staff" options={optionsStaff} placeholder="Chọn nhân viên" defaultValue={optionsStaff[0]} onChange={(s) => setFieldValue('staff', s) }/>
                         </Form.Group>
                         <Form.Group controlId="description">
                           <Form.Label>Mô tả</Form.Label>

@@ -18,14 +18,14 @@ const Edit = () => {
     name: '',
     code: '',
     phone: '',
-    email: ''
+    email: '',
   });
 
   const keyMapping = {
     name: 'user_name',
     code: 'user_code',
     phone: 'user_phone',
-    email: 'user_email'
+    email: 'user_email',
   };
 
   useEffect(() => {
@@ -121,9 +121,6 @@ const Edit = () => {
     });
   };
 
-
-  //Kiểm tra những số điện thoại có thuộc vùng Việt Nam 
-  //và là những đầu số các nhà mạng Viettel, Mobifone, Vinaphone
   const phoneRegExp = /^(0|\+84)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0|3|4|5|7|8])+([0-9]{7})$/;
   const validateSchema = Yup.object().shape({
     name: Yup.string().required('Tên khách hàng không được để trống'),

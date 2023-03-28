@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Form, Button, FormLabel, Badge, FormGroup, FormControl } from 'react-bootstrap';
+import { Row, Col, Card, Form, Button, FormControl, Badge } from 'react-bootstrap';
 import { useHistory, useParams } from 'react-router-dom';
 import { ButtonLoading } from '../../components/Button/LoadButton';
 import { Helmet } from 'react-helmet';
@@ -7,36 +7,96 @@ import Select from 'react-select';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import ProvinceDistrictSelect from '../../data/proviceSelect';
-import { min } from 'moment';
 import services from '../../utils/axios';
+import moment from 'moment';
+import Swal from 'sweetalert2';
+import Positions from './Positions';
 
 const CreateUser = () => {
+  const [positions, setPositions] = useState([{ role: '', branches: [] }]);
   const [showLoader, setShowLoader] = useState(false);
   const history = useHistory();
-  const [optionsRole, setOptionsRole] = useState([
-    {
-      role_name: 'Nhân viên vận chuyển'
-    },
-    {
-      role_name: 'Nhân viên kho'
+  const [allowShippingPrice, setAllowShippingPrice] = useState(false);
+  const [allowSalePrice, setAllowSalePrice] = useState(false);
+  const gender = [
+    { label: 'Nam', value: 'male' },
+    { label: 'Nữ', value: 'female' },
+    { label: 'Khác', value: 'others' }
+  ];
+
+  const handleSubmit = async (values) => {
+    const position = positions.map((role) => ({
+      title: role.role.label,
+      agencyInChargeIDList: role.branches.map((branch) => branch.value)
+    }));
+
+    const newStaff = {
+      user_name: values.name,
+      user_code: values.code,
+      user_phone: values.phone,
+      user_email: values.email,
+      staff_gender: values.gender.value,
+      staff_region: values.province,
+      staff_commune: values.district,
+      staff_address: values.address,
+      staff_password: values.password,
+      staff_status: 'Đang làm việc',
+      staff_birthday: moment(values.dob).utcOffset(7).format('DD/MM/YYYY'),
+      note_about_staff: values.note,
+      isAllowViewImportNWholesalePrice: allowSalePrice,
+      isAllowViewShippingPrice: allowShippingPrice,
+      positionIncludeAgencyBranchInCharge: position
+    };
+    try {
+      await services
+        .post('/staff/create', newStaff)
+        .then((res) => {
+          console.log(res);
+          setShowLoader(true);
+          setTimeout(() => {
+            setShowLoader(false);
+            history.push('/app/sell-management/users');
+            Swal.fire({
+              html: `Thêm nhân viên <b>${values.name}</b> thành công`,
+              icon: 'success'
+            });
+          }, 1000);
+        })
+        .catch((errors) => {
+          const errorResponses = errors.response.data.message;
+          const errorMessages = errorResponses.map((error) => {
+            if (error.includes('name')) {
+              return `Tên NV: <b>${values.name}</b> đã tồn tại`;
+            } else if (error.includes('phone')) {
+              return `Số điện thoại NV: <b>${values.phone}</b> đã tồn tại`;
+            } else if (error.includes('email')) {
+              return `Email NV: <b>${values.email}</b> đã tồn tại`;
+            } else return `Mã NV: <b>${values.code}</b> đã tồn tại`;
+          });
+          setShowLoader(true);
+          setTimeout(() => {
+            setShowLoader(false);
+            Swal.fire({
+              title: 'Thất bại',
+              html: errorMessages.join('<br>'),
+              icon: 'warning',
+              confirmButtonText: 'Xác nhận'
+            });
+          }, 1000);
+        });
+    } catch (error) {
+      setShowLoader(true);
+      setTimeout(() => {
+        setShowLoader(false);
+        Swal.fire({
+          title: 'Thất bại',
+          text: 'Đã xảy ra lỗi khi kết nối tới máy chủ',
+          icon: 'error',
+          confirmButtonText: 'Xác nhận'
+        });
+      }, 1000);
     }
-  ]);
-
-  console.log(optionsRole);
-  const [optionsBranch, setOptionsBranch] = useState({});
-
-  useEffect(() => {
-    services
-      .get('/agency-branch/get-all')
-      .then((res) => {
-        const result = res.data.data;
-        const options = result.map((branch) => ({
-          label: branch.agency_branch_name
-        }));
-        setOptionsBranch(options);
-      })
-      .catch((err) => {});
-  }, []);
+  };
 
   const [data, setData] = useState({
     name: '',
@@ -50,10 +110,7 @@ const CreateUser = () => {
     district: '',
     status: '',
     note: '',
-    password: '',
-    branches: [],
-    allowShippingPrice: false,
-    allowSalePrice: false
+    password: ''
   });
 
   const phoneRegExp = /^(0|\+84)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0|3|4|5|7|8])+([0-9]{7})$/;
@@ -62,10 +119,11 @@ const CreateUser = () => {
     name: Yup.string().required('Tên khách hàng không được để trống'),
     phone: Yup.string()
       .matches(phoneRegExp, 'Số điện thoại không hợp lệ')
-      .min(10, 'Số điện thoại phải có độ dài bằng 10')
+      .length(10, 'Số điện thoại phải có độ dài bằng 10')
       .required('Số điện thoại không được để trống'),
     code: Yup.string().required('Mã nhân viên không được để trống'),
-    address: Yup.string().matches(phoneRegExp, 'Số điện thoại không hợp lệ').required('Số điện thoại không được để trống'),
+    address: Yup.string().required('Số điện thoại không được để trống'),
+    province: Yup.string().required('Vui lòng chọn Tỉnh/thành phố và Quận/huyện'),
     password: Yup.string().required('Mật khẩu không được để trống').min(8, 'Mật khẩu phải có tối thiểu 8 kí tự')
   });
 
@@ -74,36 +132,37 @@ const CreateUser = () => {
       <Helmet>
         <title>Thêm mới nhân viên</title>
       </Helmet>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Button
-          onClick={() => history.push('/app/sell-management/users')}
-          variant="outline-primary"
-          className="mr-0"
-          style={{ marginBottom: 15 }}
-        >
-          <i className="feather icon-arrow-left"></i>
-          Quay lại danh sách nhân viên
-        </Button>
-        <span>
-          <ButtonLoading
-            style={{ margin: '0 0px 15px 0' }}
-            text={
-              <span style={{ fontWeight: 600 }}>
-                <i className="feather icon-save mr-2"></i>
-                Thêm
-              </span>
-            }
-            loading={showLoader}
-            type="submit"
-            disabled={showLoader}
-            variant="primary"
-          ></ButtonLoading>
-        </span>
-      </div>
 
-      <Formik initialValues={data} validationSchema={validateSchema}>
+      <Formik initialValues={data} validationSchema={validateSchema} onSubmit={handleSubmit}>
         {({ errors, setFieldValue, handleChange, handleSubmit, touched, values, isValid }) => (
           <Form noValidate onSubmit={handleSubmit}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Button
+                onClick={() => history.push('/app/sell-management/users')}
+                variant="outline-primary"
+                className="mr-0"
+                style={{ marginBottom: 15 }}
+              >
+                <i className="feather icon-arrow-left"></i>
+                Quay lại danh sách nhân viên
+              </Button>
+              <span>
+                <ButtonLoading
+                  style={{ margin: '0 0px 15px 0' }}
+                  text={
+                    <span style={{ fontWeight: 600 }}>
+                      <i className="feather icon-save mr-2"></i>
+                      Thêm
+                    </span>
+                  }
+                  loading={showLoader}
+                  type="submit"
+                  onSubmit={handleSubmit}
+                  disabled={showLoader}
+                  variant="primary"
+                ></ButtonLoading>
+              </span>
+            </div>
             <Row>
               <Col sm={12} lg={12}>
                 <Row>
@@ -123,13 +182,13 @@ const CreateUser = () => {
                                   </Form.Label>
                                   <FormControl
                                     name="name"
-                                    onError={touched.name && errors.name}
+                                    onError={errors.name}
                                     value={values.name}
                                     onChange={handleChange}
                                     type="text"
                                     placeholder="Nhập tên đầy đủ nhân viên"
                                   ></FormControl>
-                                  {errors.name && <small class="text-danger form-text">{errors.name}</small>}
+                                  {touched.name && errors.name && <small class="text-danger form-text">{errors.name}</small>}
                                 </Form.Group>
                               </Col>
                               <Col sm={12} lg={4}>
@@ -144,14 +203,14 @@ const CreateUser = () => {
                                     type="text"
                                     placeholder="Nhập số điện thoại"
                                   ></FormControl>
-                                  {errors.phone && <small class="text-danger form-text">{errors.phone}</small>}
+                                  {touched.phone && errors.phone && <small class="text-danger form-text">{errors.phone}</small>}
                                 </Form.Group>
                               </Col>
                               <Col sm={12} lg={4}>
                                 <Form.Group>
-                                  <Form.Label>Email </Form.Label>
+                                  <Form.Label>Email</Form.Label>
                                   <FormControl
-                                    name="phone"
+                                    name="email"
                                     value={values.email}
                                     onChange={handleChange}
                                     type="text"
@@ -171,18 +230,19 @@ const CreateUser = () => {
                                     type="text"
                                     placeholder="Nhập địa chỉ"
                                   ></FormControl>
-                                  {errors.address && <small class="text-danger form-text">{errors.address}</small>}
+                                  {touched.address && errors.address && <small class="text-danger form-text">{errors.address}</small>}
                                 </Form.Group>
                               </Col>
                               <Col sm={12} lg={8}>
                                 <Form.Group>
                                   <ProvinceDistrictSelect
-                                    initialValues={{}}
+                                    initialValues={{ provice: values.province, district: values.district }}
                                     onChange={(p, d) => {
                                       setFieldValue('province', p);
                                       setFieldValue('district', d);
                                     }}
                                   />
+                                  {touched.province && errors.province && <small class="text-danger form-text">{errors.province}</small>}
                                 </Form.Group>
                               </Col>
                               <Col sm={12} lg={4}>
@@ -197,6 +257,7 @@ const CreateUser = () => {
                                     type="text"
                                     placeholder="Nhập mã nhân viên"
                                   ></FormControl>
+                                  {touched.code && errors.code && <small class="text-danger form-text">{errors.code}</small>}
                                 </Form.Group>
                               </Col>
                               <Col sm={12} lg={4}>
@@ -209,11 +270,11 @@ const CreateUser = () => {
                                 <Form.Group>
                                   <Form.Label>Giới tính</Form.Label>
                                   <Select
-                                    name="phone"
-                                    onError={touched.gender && errors.gender}
+                                    name="gender"
+                                    onChange={(g) => setFieldValue('gender', g)}
+                                    options={gender}
                                     value={values.gender}
-                                    onChange={handleChange}
-                                    placeholder={'Chọn giới tính'}
+                                    placeholder="Chọn giới tính"
                                   ></Select>
                                 </Form.Group>
                               </Col>
@@ -224,12 +285,12 @@ const CreateUser = () => {
                                   </Form.Label>
                                   <FormControl
                                     name="password"
-                                    onError={touched.password && errors.password}
                                     value={values.password}
                                     onChange={handleChange}
                                     placeholder="Nhập mật khẩu"
                                     type="password"
                                   ></FormControl>
+                                  {touched.password && errors.password && <small class="text-danger form-text">{errors.password}</small>}
                                 </Form.Group>
                               </Col>
                               <Col sm={12} lg={4}>
@@ -257,41 +318,8 @@ const CreateUser = () => {
                       </Card.Header>
                       <Card.Body>
                         <Row>
-                          <Col sm={12} lg={12}>
-                            <Row style={{ alignItems: 'center' }}>
-                              <Col lg={5}>
-                                <Form.Group>
-                                  <Form.Label>
-                                    Vai trò <span className="text-c-red">*</span>
-                                  </Form.Label>
-                                  <Select
-                                    placeholder="Chọn vai trò"
-                                    options={optionsRole.map((role) => ({
-                                      label: role.role_name
-                                    }))}
-                                  ></Select>
-                                </Form.Group>
-                              </Col>
-                              <Col lg={5}>
-                                <Form.Group controlId="nameCustomer">
-                                  <Form.Label>
-                                    Chi nhánh <span className="text-c-red">*</span>
-                                  </Form.Label>
-                                  <Select
-                                    placeholder="Chọn chi nhánh"
-                                    value={values.branches}
-                                    onChange={handleChange}
-                                    options={optionsBranch}
-                                  ></Select>
-                                </Form.Group>
-                              </Col>
-                              <Col lg={2}>
-                                <a className="ml-5 mr-5" href="#">
-                                  Xem chi tiết
-                                </a>
-                                <a href="#">Xoá</a>
-                              </Col>
-                            </Row>
+                          <Col lg={12} sm={12}>
+                            <Positions positions={positions} setPositions={setPositions}/>
                           </Col>
                         </Row>
                       </Card.Body>
@@ -307,7 +335,12 @@ const CreateUser = () => {
                           <Col sm={12} lg={6}>
                             <Form.Group>
                               <div className="switch switch-primary d-inline m-r-10">
-                                <input checked={values.allowSalePrice} onChange={() => setFieldValue('allowSalePrice',!values.allowSalePrice)} type="checkbox"/>
+                                <input
+                                  id="price_import"
+                                  checked={allowSalePrice}
+                                  onChange={() => setAllowSalePrice((prevState) => !prevState)}
+                                  type="checkbox"
+                                />
                                 <label htmlFor="price_import" className="cr" />
                               </div>
                               <Form.Label>Cho phép nhân viên xem giá vốn, giá nhập</Form.Label>
@@ -316,7 +349,12 @@ const CreateUser = () => {
                           <Col sm={12} lg={6}>
                             <Form.Group>
                               <div className="switch switch-primary d-inline m-r-10">
-                                <input name="allowShippingPrice" checked={values.allowShippingPrice} onChange={() => setFieldValue('allowShippingPrice',!values.allowShippingPrice)} type="checkbox"/>
+                                <input
+                                  id="price_delievery"
+                                  checked={allowShippingPrice}
+                                  onChange={() => setAllowShippingPrice((prevState) => !prevState)}
+                                  type="checkbox"
+                                />
                                 <label htmlFor="price_delievery" className="cr" />
                               </div>
                               <Form.Label>Cho phép nhân viên xem giá chuyển hàng</Form.Label>
