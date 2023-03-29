@@ -18,7 +18,7 @@ const CreateUser = () => {
   const history = useHistory();
   const [allowShippingPrice, setAllowShippingPrice] = useState(false);
   const [allowSalePrice, setAllowSalePrice] = useState(false);
-  
+
   const gender = [
     { label: 'Nam', value: 'male' },
     { label: 'Nữ', value: 'female' },
@@ -51,7 +51,6 @@ const CreateUser = () => {
       await services
         .post('/staff/create', newStaff)
         .then((res) => {
-          console.log(res);
           setShowLoader(true);
           setTimeout(() => {
             setShowLoader(false);

@@ -86,10 +86,11 @@ function Addresses() {
               icon: 'success'
             }).then((confirm) => {
               if (confirm.isConfirmed) {
-                setIsLoading(false);
-                setAddressList([...addressList, newAddress]);
-                actions.resetForm();
-                setShowModalAdd(false);
+                // setIsLoading(false);
+                // setAddressList([...addressList, newAddress]);
+                // actions.resetForm();
+                // setShowModalAdd(false);
+                window.location.reload();
               }
             });
           }, 1000);

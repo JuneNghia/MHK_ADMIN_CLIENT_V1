@@ -8,10 +8,11 @@ const Positions = ({ positions, setPositions }) => {
   const [usedRoleValues, setUsedRoleValues] = useState([]);
   const [optionsBranch, setOptionsBranch] = useState([]);
   const [optionsRole, setOptionsRole] = useState([
-    { label: 'Nhân viên kho', value: 1 },
-    { label: 'Nhân viên vận chuyển', value: 2 },
-    { label: 'Nhân viên bán hàng', value: 3 },
-    { label: 'Kế toán', value: 4 }
+    { label: 'Nhân viên kho', value: 'Nhân viên kho' },
+    { label: 'Nhân viên vận chuyển', value: 'Nhân viên vận chuyển' },
+    { label: 'Nhân viên bán hàng', value: 'Nhân viên bán hàng' },
+    { label: 'Nhân viên kỹ thuật', value: 'Nhân viên kỹ thuật' },
+    { label: 'Kế toán', value: 'Kế toán' },
   ]);
 
   useEffect(() => {
@@ -21,7 +22,7 @@ const Positions = ({ positions, setPositions }) => {
         const result = res.data.data;
         const options = result.map((branch) => ({
           label: branch.agency_branch_name,
-          value: branch.agency_branch_name
+          value: branch.id,
         }));
         setOptionsBranch(options);
       })
@@ -44,15 +45,15 @@ const Positions = ({ positions, setPositions }) => {
   };
 
   useEffect(() => {
-    const selectedRoleValues = positions.map((item) => item.role.label);
+    const selectedRoleValues = positions.map((item) => item.role.value);
     setUsedRoleValues(selectedRoleValues);
 
-    const selectedBranchValues = positions.flatMap((item) => item.branches.map((branch) => branch.label));
+    const selectedBranchValues = positions.flatMap((item) => item.branches.map((branch) => branch.value));
     setUsedBranchValues(selectedBranchValues);
   }, [positions]);
 
-  const availableRoleOptions = optionsRole.filter((option) => !usedRoleValues.includes(option.label));
-  const availableBranchOptions = optionsBranch.filter((option) => !usedBranchValues.includes(option.label));
+  const availableRoleOptions = optionsRole.filter((option) => !usedRoleValues.includes(option.value));
+  const availableBranchOptions = optionsBranch.filter((option) => !usedBranchValues.includes(option.value));
 
   const handleRemoveRole = (index) => {
     setPositions([...positions.slice(0, index), ...positions.slice(index + 1)]);

@@ -9,12 +9,6 @@ import services from '../../../../utils/axios';
 import { Helmet } from 'react-helmet';
 
 const ProductDetails = () => {
-  const [validated, setValidated] = useState(false);
-  const [validatedTooltip, setValidatedTooltip] = useState(false);
-  const [supportedCheckbox, setSupportedCheckbox] = useState(false);
-  const [supportedRadio, setSupportedRadio] = useState(false);
-  const [supportedSelect, setSupportedSelect] = useState(0);
-  const [supportedFile, setSupportedFile] = useState(0);
   const [showLoader, setShowLoader] = useState(false);
   const history = useHistory();
 
@@ -23,50 +17,12 @@ const ProductDetails = () => {
 
   useEffect(() => {
     async function fetchProducts() {
-      const response = await services.get(`/user/get-by-id/${id}`);
+      const response = await services.get(`/customer/get-by-id/${id}`);
       setData(response.data);
     }
     fetchProducts();
   }, [id]);
 
-  const handleChange = (e) => {
-    const value = e.target.value;
-    setData({
-      ...data,
-      [e.target.name]: value
-    });
-  };
-
-  const handleSubmit = (event) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    setValidated(true);
-  };
-
-  const handleSubmitTooltip = (event) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    setValidatedTooltip(true);
-  };
-
-  const supportedSelectHandler = (event) => {
-    setSupportedSelect(parseInt(event.target.value));
-  };
-
-  const supportedFileHandler = (event) => {
-    setSupportedFile(!!event.target.value);
-  };
-
-  const sweetSuccessAlert = () => {
-    const MySwal = withReactContent(Swal);
-    MySwal.fire('', 'Lưu khách hàng mới thành công', 'success');
-  };
 
   if (!data) {
     return <div>Lỗi : Không thể lấy dữ liệu từ server</div>;
@@ -78,7 +34,7 @@ const ProductDetails = () => {
         </Helmet>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Button
-            onClick={() => history.push('/app/sell-management/customers')}
+            onClick={() => history.push('/app/sell-management/products')}
             variant="outline-primary"
             className="mr-0"
             style={{ marginBottom: 15 }}
@@ -345,28 +301,7 @@ const ProductDetails = () => {
               
             </Row>
           </Col>
-          <Col sm={12} lg={12}>
-            <Tabs variant="pills" defaultActiveKey="inventory" className="tabs-menu">
-              <Tab eventKey="inventory" title="Tồn kho">
-                <p>
-                  Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master
-                  cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher
-                  synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip
-                  quis cardigan american apparel, butcher voluptate nisi qui.
-                </p>
-              </Tab>
-              <Tab eventKey="history" title="Lịch sử kho">
-                <p>
-                  Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit,
-                  blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth
-                  letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic,
-                  assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr, vero magna velit sapiente labore
-                  stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts beard ut DIY ethical culpa terry
-                  richardson biodiesel. Art party scenester stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.
-                </p>
-              </Tab>
-            </Tabs>
-          </Col>
+          
         </Row>
       </React.Fragment>
     );

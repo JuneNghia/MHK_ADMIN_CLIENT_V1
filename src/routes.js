@@ -150,6 +150,11 @@ const routes = [
       },
       {
         exact: true,
+        path: '/app/sell-management/products/create',
+        component: lazy(() => import('./views/sell-management/products-M/products/Create'))
+      },
+      {
+        exact: true,
         path: '/app/sell-management/products/:id',
         component: lazy(() => import('./views/sell-management/products-M/products/Detail'))
       },

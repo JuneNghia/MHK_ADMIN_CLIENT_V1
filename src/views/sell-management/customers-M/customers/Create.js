@@ -152,7 +152,10 @@ const FormsElements = () => {
                 Quay lại danh sách khách hàng
               </Button>
               <ButtonLoading
-                text={'Lưu khách hàng mới'}
+                text={<span>
+                  <i className="feather icon-plus-circle mr-2"></i>
+                  Lưu khách hàng mới
+                </span>}
                 onSubmit={handleSubmit}
                 loading={showLoader}
                 type="submit"

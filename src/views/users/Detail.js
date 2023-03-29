@@ -15,6 +15,11 @@ import ProvinceDistrictSelect from '../../data/proviceSelect';
 import Select from 'react-select';
 
 const UserDetail = () => {
+  const { id } = useParams();
+  const [data, setData] = useState({});
+  const [address, setAddress] = useState('');
+  const [allowShippingPrice, setAllowShippingPrice] = useState(false);
+  const [allowSalePrice, setAllowSalePrice] = useState(false);
   const [positions, setPositions] = useState([]);
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
@@ -33,31 +38,77 @@ const UserDetail = () => {
     { label: 'Khác', value: 'others' }
   ];
 
-  const { id } = useParams();
-  const [data, setData] = useState({});
-  const [address, setAddress] = useState('');
-  const [allowShippingPrice, setAllowShippingPrice] = useState(false);
-  const [allowSalePrice, setAllowSalePrice] = useState(false);
-
   useEffect(() => {
-    async function fetchCustomer() {
+    async function fetchUser() {
       const response = await services.get(`/staff/get-by-id/${id}`);
       setData(response.data.data);
-      setPositions(response.data.data.staff_position.map((position) => {
-        return {
+      setPositions(
+        response.data.data.staff_position.map((position) => {
+          return {
+            id: position.id,
             role: { label: position.staff_title, value: position.staff_title },
             branches: position.agency_branch_name_list.map((branch) => ({
-              label: branch,
-              value: branch,
-            })),
+              label: branch.agency_branch_name,
+              value: branch.agency_branch_id
+            }))
           };
-        }))
+        })
+      );
       setAllowSalePrice(response.data.data.isAllowViewImportNWholesalePrice);
       setAllowShippingPrice(response.data.data.isAllowViewShippingPrice);
       setAddress([response.data.data.staff_address, response.data.data.staff_commune, response.data.data.staff_region].join(', '));
     }
-    fetchCustomer();
+    fetchUser();
   }, [id]);
+
+  const successUpdatePositions = () => {
+    setTimeout(() => {
+      setIsLoading(false);
+      Swal.fire({
+        text: 'Cập nhật vai trò nhân viên thành công',
+        showConfirmButton: true,
+        showCancelButton: false,
+        icon: 'success'
+      }).then((confirm) => {
+        if (confirm.isConfirmed) {
+          window.location.reload();
+        }
+      });
+    }, 1000);
+  };
+
+  const failedUpdatePositions = () => {
+    setTimeout(() => {
+      setIsLoading(false);
+      Swal.fire({
+        text: 'Cập nhật vai trò nhân viên thất bại',
+        showConfirmButton: true,
+        showCancelButton: false,
+        icon: 'warning'
+      });
+    }, 1000);
+  };
+
+  const handleSaveSubmit = async () => {
+    setIsLoading(true);
+    try {
+      const position = positions.map((role) => ({
+        title: role.role.label,
+        agencyInChargeIDList: role.branches.map((branch) => branch.value)
+      }));
+      const newPosition = {
+        positionIncludeAgencyBranchInCharge: position
+      };
+      await services
+        .patch(`/staff/update-role-by-id/${id}`, newPosition)
+        .then((res) => {
+          successUpdatePositions();
+        })
+        .catch((err) => {
+          failedUpdatePositions();
+        });
+    } catch (error) {}
+  };
 
   const handleModalUpdateSubmit = (values) => {
     setIsLoading(true);
@@ -66,7 +117,7 @@ const UserDetail = () => {
       staff_phone: 'user_phone',
       staff_email: 'user_email',
       province: 'staff_region',
-      district: 'staff_commune',
+      district: 'staff_commune'
     };
 
     const updatedProfile = {};
@@ -95,21 +146,31 @@ const UserDetail = () => {
               showConfirmButton: true,
               showCancelButton: false,
               icon: 'success'
-            }).then(confirm => {
-              if(confirm.isConfirmed) {
+            }).then((confirm) => {
+              if (confirm.isConfirmed) {
                 window.location.reload();
               }
-            })
+            });
           }, 1000);
         })
-        .catch((err) => {
+        .catch((errors) => {
+          const errorResponses = errors.response.data.message;
+          const errorMessages = errorResponses.map((error) => {
+            if (error.includes('name')) {
+              return `Tên NV: <b>${values.staff_email}</b> đã tồn tại`;
+            } else if (error.includes('phone')) {
+              return `Số điện thoại NV: <b>${values.staff_phone}</b> đã tồn tại`;
+            } else if (error.includes('email')) {
+              return `Email NV: <b>${values.staff_email}</b> đã tồn tại`;
+            } else return `Mã NV: <b>${values.staff_code}</b> đã tồn tại`;
+          });
           setTimeout(() => {
             setIsLoading(false);
             Swal.fire({
-              text: 'Cập nhật thông tin nhân viên thất bại',
-              showConfirmButton: true,
-              showCancelButton: false,
-              icon: 'warning'
+              title: 'Thất bại',
+              html: errorMessages.join('<br>'),
+              icon: 'warning',
+              confirmButtonText: 'Xác nhận'
             });
           }, 1000);
         });
@@ -184,6 +245,7 @@ const UserDetail = () => {
 
           <span>
             <ButtonLoading
+              onSubmit={handleSaveSubmit}
               style={{ margin: '0 8px 15px 0' }}
               text={
                 <span style={{ fontWeight: 600 }}>
@@ -279,7 +341,7 @@ const UserDetail = () => {
                             </Form.Group>
                             <FormGroup>
                               <FormLabel className="mt-2">Ghi chú</FormLabel>
-                              <FormControl defaultValue={data.note_about_staff ? data.note_about_staff : ""} type="text"></FormControl>
+                              <FormControl defaultValue={data.note_about_staff ? data.note_about_staff : ''} type="text"></FormControl>
                             </FormGroup>
                           </Col>
                         </Row>
@@ -404,6 +466,7 @@ const UserDetail = () => {
                                 onChange={handleChange}
                                 name="staff_phone"
                                 placeholder="Nhập số điện thoại"
+                                disabled
                               />
                               {touched.staff_phone && errors.staff_phone && (
                                 <small class="text-danger form-text">{errors.staff_phone}</small>
@@ -454,11 +517,11 @@ const UserDetail = () => {
                           <Col lg={12}>
                             <Form.Group>
                               <ProvinceDistrictSelect
-                               initialValues={{ province: values.province, district: values.district }}
-                               onChange={(p, d) => {
-                                 setFieldValue('province', p);
-                                 setFieldValue('district', d);
-                               }}
+                                initialValues={{ province: values.province, district: values.district }}
+                                onChange={(p, d) => {
+                                  setFieldValue('province', p);
+                                  setFieldValue('district', d);
+                                }}
                               />
                               {touched.province && errors.province && <small class="text-danger form-text">{errors.province}</small>}
                             </Form.Group>
