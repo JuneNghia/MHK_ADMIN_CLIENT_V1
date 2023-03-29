@@ -21,7 +21,7 @@ const Positions = ({ positions, setPositions }) => {
         const result = res.data.data;
         const options = result.map((branch) => ({
           label: branch.agency_branch_name,
-          value: branch.id
+          value: branch.agency_branch_name
         }));
         setOptionsBranch(options);
       })
@@ -44,15 +44,15 @@ const Positions = ({ positions, setPositions }) => {
   };
 
   useEffect(() => {
-    const selectedRoleValues = positions.map((item) => item.role.value);
+    const selectedRoleValues = positions.map((item) => item.role.label);
     setUsedRoleValues(selectedRoleValues);
 
-    const selectedBranchValues = positions.flatMap((item) => item.branches.map((branch) => branch.value));
+    const selectedBranchValues = positions.flatMap((item) => item.branches.map((branch) => branch.label));
     setUsedBranchValues(selectedBranchValues);
   }, [positions]);
 
-  const availableRoleOptions = optionsRole.filter((option) => !usedRoleValues.includes(option.value));
-  const availableBranchOptions = optionsBranch.filter((option) => !usedBranchValues.includes(option.value));
+  const availableRoleOptions = optionsRole.filter((option) => !usedRoleValues.includes(option.label));
+  const availableBranchOptions = optionsBranch.filter((option) => !usedBranchValues.includes(option.label));
 
   const handleRemoveRole = (index) => {
     setPositions([...positions.slice(0, index), ...positions.slice(index + 1)]);
@@ -61,9 +61,9 @@ const Positions = ({ positions, setPositions }) => {
   const formatOptionLabel = ({ value, label }) => (
     <div>
       <span>{label}</span>
-      {optionsBranch.some((option) => option.value === value) && (
+      {/* {optionsBranch.some((option) => option.value === value) && (
         <span className="badge badge-pill badge-primary ml-2">Đang hoạt động</span>
-      )}
+      )} */}
     </div>
   );
 
@@ -96,6 +96,7 @@ const Positions = ({ positions, setPositions }) => {
                 options={availableBranchOptions}
                 isMulti
                 formatOptionLabel={formatOptionLabel}
+                defaultValue={position.branches}
               ></Select>
             </Form.Group>
           </Col>

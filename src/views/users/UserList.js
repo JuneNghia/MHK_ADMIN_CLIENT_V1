@@ -74,10 +74,16 @@ function ListUsers() {
   );
 
   if (isLoading) {
+    <Helmet>
+      <title>Danh sách nhân viên</title>
+    </Helmet>;
     return <div>Loading...</div>;
   }
 
   if (error) {
+    <Helmet>
+      <title>Danh sách nhân viên</title>
+    </Helmet>;
     return <NoPermission />;
   }
   return (
@@ -96,7 +102,7 @@ function ListUsers() {
               </Button>{' '}
             </Card.Header>
             <Card.Body>
-                <CustomTable columns={columns} data={listEmployees} handleRowClick={handleRowClick}/>
+              <CustomTable columns={columns} data={listEmployees} handleRowClick={handleRowClick} />
             </Card.Body>
           </Card>
         </Col>

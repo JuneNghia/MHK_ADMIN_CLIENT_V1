@@ -15,7 +15,7 @@ import ProvinceDistrictSelect from '../../data/proviceSelect';
 import Select from 'react-select';
 
 const UserDetail = () => {
-  const [positions, setPositions] = useState([{ role: '', branches: [] }]);
+  const [positions, setPositions] = useState([]);
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
   const [showModalUpdateProfile, setShowModalUpdateProfile] = useState(false);
@@ -43,6 +43,15 @@ const UserDetail = () => {
     async function fetchCustomer() {
       const response = await services.get(`/staff/get-by-id/${id}`);
       setData(response.data.data);
+      setPositions(response.data.data.staff_position.map((position) => {
+        return {
+            role: { label: position.staff_title, value: position.staff_title },
+            branches: position.agency_branch_name_list.map((branch) => ({
+              label: branch,
+              value: branch,
+            })),
+          };
+        }))
       setAllowSalePrice(response.data.data.isAllowViewImportNWholesalePrice);
       setAllowShippingPrice(response.data.data.isAllowViewShippingPrice);
       setAddress([response.data.data.staff_address, response.data.data.staff_commune, response.data.data.staff_region].join(', '));
@@ -50,14 +59,14 @@ const UserDetail = () => {
     fetchCustomer();
   }, [id]);
 
-  const handleUpdateSubmit = (values) => {
+  const handleModalUpdateSubmit = (values) => {
     setIsLoading(true);
     const keyMapping = {
       staff_name: 'user_name',
       staff_phone: 'user_phone',
       staff_email: 'user_email',
       province: 'staff_region',
-      commune: 'staff_commune',
+      district: 'staff_commune',
     };
 
     const updatedProfile = {};
@@ -80,24 +89,28 @@ const UserDetail = () => {
         .then((res) => {
           console.log(updatedProfile);
           setTimeout(() => {
+            setIsLoading(false);
             Swal.fire({
               text: 'Cập nhật nhân viên thành công',
               showConfirmButton: true,
               showCancelButton: false,
               icon: 'success'
-            });
-            setIsLoading(false);
+            }).then(confirm => {
+              if(confirm.isConfirmed) {
+                window.location.reload();
+              }
+            })
           }, 1000);
         })
         .catch((err) => {
           setTimeout(() => {
+            setIsLoading(false);
             Swal.fire({
               text: 'Cập nhật thông tin nhân viên thất bại',
               showConfirmButton: true,
               showCancelButton: false,
               icon: 'warning'
             });
-            setIsLoading(false);
           }, 1000);
         });
     } catch (error) {
@@ -266,7 +279,7 @@ const UserDetail = () => {
                             </Form.Group>
                             <FormGroup>
                               <FormLabel className="mt-2">Ghi chú</FormLabel>
-                              <FormControl type="text"></FormControl>
+                              <FormControl defaultValue={data.note_about_staff ? data.note_about_staff : ""} type="text"></FormControl>
                             </FormGroup>
                           </Col>
                         </Row>
@@ -335,8 +348,8 @@ const UserDetail = () => {
 
         <Formik
           enableReinitialize={true}
-          onSubmit={handleUpdateSubmit}
-          initialValues={{ ...data, province: '', distrcit: '' }}
+          onSubmit={handleModalUpdateSubmit}
+          initialValues={{ ...data, province: data.staff_region, district: data.staff_commune }}
           validationSchema={validateSchema}
         >
           {({ errors, dirty, setFieldValue, handleChange, handleSubmit, touched, values }) => (
@@ -439,13 +452,13 @@ const UserDetail = () => {
                             </Form.Group>
                           </Col>
                           <Col lg={12}>
-                            <Form.Group controlId="formBasicEmail">
+                            <Form.Group>
                               <ProvinceDistrictSelect
-                                initialValues={{ province: values.staff_region, district: values.staff_commune }}
-                                onChange={(p, d) => {
-                                  setFieldValue('province', p);
-                                  setFieldValue('district', d);
-                                }}
+                               initialValues={{ province: values.province, district: values.district }}
+                               onChange={(p, d) => {
+                                 setFieldValue('province', p);
+                                 setFieldValue('district', d);
+                               }}
                               />
                               {touched.province && errors.province && <small class="text-danger form-text">{errors.province}</small>}
                             </Form.Group>

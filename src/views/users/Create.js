@@ -18,6 +18,7 @@ const CreateUser = () => {
   const history = useHistory();
   const [allowShippingPrice, setAllowShippingPrice] = useState(false);
   const [allowSalePrice, setAllowSalePrice] = useState(false);
+  
   const gender = [
     { label: 'Nam', value: 'male' },
     { label: 'Nữ', value: 'female' },
@@ -29,7 +30,6 @@ const CreateUser = () => {
       title: role.role.label,
       agencyInChargeIDList: role.branches.map((branch) => branch.value)
     }));
-
     const newStaff = {
       user_name: values.name,
       user_code: values.code,
