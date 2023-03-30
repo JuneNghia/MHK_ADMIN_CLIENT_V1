@@ -7,9 +7,10 @@ export const GlobalFilter = ({ filter, setFilter }) => {
     setFilter(value || undefined);
   }, 1000);
   return (
-    <span className="d-flex align-items-center justify-content-end">
+    <span  className="d-flex align-items-center justify-content-end">
       Tìm kiếm:{' '}
       <input
+      style={{flex: 0.5}}
         className="form-control ml-2 w-auto"
         value={value || ''}
         onChange={(e) => {

@@ -10,6 +10,7 @@ import withReactContent from 'sweetalert2-react-content';
 import services from '../../../utils/axios';
 import Swal from 'sweetalert2';
 import { Helmet } from 'react-helmet';
+import logo from '../../../assets/images/auth/logo-mhk.png';
 
 const SignUp = () => {
   const history = useHistory();
@@ -24,7 +25,7 @@ const SignUp = () => {
       type: 'success',
       icon: 'success',
       confirmButtonText: 'Đăng nhập ngay',
-      confirmButtonColor: "success",
+      confirmButtonColor: 'success',
       showCancelButton: false
     }).then((willExit) => {
       if (willExit.isConfirmed) {
@@ -78,8 +79,7 @@ const SignUp = () => {
             }}
           >
             <div className="col-md-8">
-              <h1 className="text-white mb-5">Trải nghiệm dùng thử trong 7 ngày</h1>
-              <p className="text-white">Giúp quản lý công việc của bạn dễ dàng hơn</p>
+              <img style={{ width: '67%' }} src={logo}></img>
             </div>
           </div>
           <div className="col-lg-4 align-items-stret h-100 align-items-center d-flex justify-content-center">

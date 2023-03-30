@@ -12,6 +12,7 @@ import { Formik } from 'formik';
 import ModalComponent from '../../../components/Modal/Modal';
 import MyPagination from '../../../components/Pagination/PaginationComponent';
 import CustomTable from '../../../components/Table/CustomTable';
+import Error from '../../maintenance/Error';
 
 function ListBranches() {
   const columns = React.useMemo(
@@ -59,10 +60,10 @@ function ListBranches() {
   );
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isloadPage, setIsLoadPage] = useState(true);
   const [showModalAdd, setShowModalAdd] = useState(false);
   const [showModalUpdate, setShowModalUpdate] = useState(false);
   const [idBranch, setIdBranch] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
 
   const keyMapping = {
     branch_name: 'agency_branch_name',
@@ -87,14 +88,15 @@ function ListBranches() {
       await services
         .get('/agency-branch/get-all')
         .then((response) => {
+          setIsLoadPage(false);
           setBranchesList(response.data.data);
         })
         .catch((error) => {
+          setIsLoadPage(false);
           console.log(error);
         });
     })();
   }, []);
-
 
   const handleAddAddress = () => {
     setShowModalAdd(true);
@@ -198,6 +200,10 @@ function ListBranches() {
     });
     handleUpdateAddress();
   };
+
+  if (isloadPage) return <div className="text-center h5">Đang tải...</div>;
+
+  if (branchesList.length === 0) return <Error />;
 
   return (
     <>
@@ -413,7 +419,7 @@ function ListBranches() {
               </Button>{' '}
             </Card.Header>
             <Card.Body>
-              <CustomTable columns={columns} data={branchesList} handleRowClick={handleRowClick}/>
+              <CustomTable columns={columns} data={branchesList} handleRowClick={handleRowClick} />
             </Card.Body>
           </Card>
         </Col>

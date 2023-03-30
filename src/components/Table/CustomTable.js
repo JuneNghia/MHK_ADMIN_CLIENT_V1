@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useTable, usePagination, useGlobalFilter, useRowSelect } from 'react-table';
+import { useTable, usePagination, useGlobalFilter, useRowSelect, useSortBy } from 'react-table';
 import { Row, Col } from 'react-bootstrap';
 import MyPagination from '../Pagination/PaginationComponent';
 import { GlobalFilter } from '../../views/users/GlobalFilter';
@@ -18,14 +18,15 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick }) 
     pageCount,
     gotoPage,
     setPageSize,
-    state: { pageIndex, pageSize },
+    state: { pageIndex, pageSize }
   } = useTable(
     {
       columns,
       data,
-      initialState: { pageIndex: 0, hiddenColumns},
+      initialState: { pageIndex: 0, hiddenColumns, sortBy: [{ id: 'createdAt', desc: true }] }
     },
     useGlobalFilter,
+    useSortBy,
     usePagination,
     useRowSelect,
     (hooks) => {
@@ -36,9 +37,9 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick }) 
             <div style={{ width: '25px', textAlign: 'center' }}>
               <input type="checkbox" {...getToggleAllRowsSelectedProps()} />
             </div>
-          ),
+          )
         },
-        ...columns,
+        ...columns
       ]);
     }
   );
@@ -51,7 +52,7 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick }) 
 
   return (
     <>
-    <Row className="mb-3">
+      <Row className="mb-3">
         <Col className="d-flex align-items-center">
           Hiển thị
           <select
@@ -73,7 +74,13 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick }) 
           <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
         </Col>
       </Row>
-      <BTable striped bordered hover responsive {...getTableProps()}>
+      <BTable
+        striped
+        bordered
+        hover
+        responsive
+        {...getTableProps()}
+      >
         <thead>
           {headerGroups.map((headerGroup) => (
             <tr key={headerGroup.Header} {...headerGroup.getHeaderGroupProps()}>
@@ -116,7 +123,8 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick }) 
           <span className="d-flex align-items-center">
             Trang{' '}
             <strong className="ml-1">
-              {' '} {pageIndex + 1} trên tổng {pageOptions.length}{' '}
+              {' '}
+              {pageIndex + 1} trên tổng {pageOptions.length}{' '}
             </strong>{' '}
             | Đến trang:{' '}
             <input
@@ -132,7 +140,7 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick }) 
           </span>
         </Col>
         <Col sm={12} md={6}>
-        <MyPagination currentPage={currentPage} totalPages={pageCount} onPageChange={handlePageChange} />  
+          <MyPagination currentPage={currentPage} totalPages={pageCount} onPageChange={handlePageChange} />
         </Col>
       </Row>
     </>

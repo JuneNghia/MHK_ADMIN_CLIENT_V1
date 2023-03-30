@@ -18,14 +18,14 @@ const Edit = () => {
     name: '',
     code: '',
     phone: '',
-    email: '',
+    email: ''
   });
 
   const keyMapping = {
     name: 'user_name',
     code: 'user_code',
     phone: 'user_phone',
-    email: 'user_email',
+    email: 'user_email'
   };
 
   useEffect(() => {
@@ -42,7 +42,6 @@ const Edit = () => {
   }, [id]);
 
   const handleSubmit = (values) => {
-
     //Vòng lặp for sẽ duyệt các giá trị trong values so sánh với các giá trị của Customer
     //Nếu trường nào có giá trị không thay đổi thì không được gửi lên server
     const updatedFields = {};
@@ -51,7 +50,7 @@ const Edit = () => {
         updatedFields[key] = values[key];
       }
     }
-    
+
     //Thay đổi những key mặc định trong updateFields thành những tên key được đặt trong server
     //Ví dụ : name -> customer_name ...
     const updatedFieldsWithApiKeys = {};
@@ -134,13 +133,27 @@ const Edit = () => {
       <Helmet>
         <title>Cập nhật thông tin khách hàng</title>
       </Helmet>
-      <Button onClick={sweetConfirmAlert} variant="outline-primary" className="mr-0" style={{ marginBottom: 15 }}>
-        <i className="feather icon-arrow-left"></i>
-        Huỷ
-      </Button>
+
       <Formik enableReinitialize={true} initialValues={customer} validationSchema={validateSchema} onSubmit={handleSubmit}>
         {({ errors, handleBlur, handleChange, handleSubmit, touched, values, isValid }) => (
           <Form noValidate onSubmit={handleSubmit}>
+            <span className="flex-between">
+              <Button onClick={sweetConfirmAlert} variant="outline-primary" className="mr-0" style={{ marginBottom: 15 }}>
+                <i className="feather icon-arrow-left"></i>
+                Huỷ
+              </Button>
+              <ButtonLoading
+                text={'Cập nhật'}
+                onSubmit={handleSubmit}
+                loading={showLoader}
+                type="submit"
+                disabled={showLoader}
+                style={
+                  isValid ? { margin: 0, marginBottom: 15 } : { backgroundColor: '#ccc', borderColor: '#ccc', margin: 0, marginBottom: 15 }
+                }
+              ></ButtonLoading>
+            </span>
+
             <Row>
               <Col sm={12} lg={8}>
                 <Row>
@@ -332,14 +345,6 @@ const Edit = () => {
                         </fieldset>
                       </Card.Body>
                     </Card>
-                    <ButtonLoading
-                      text={'Cập nhật'}
-                      onSubmit={handleSubmit}
-                      loading={showLoader}
-                      type="submit"
-                      disabled={showLoader}
-                      style={ isValid ? {} : {backgroundColor: '#ccc', border: 'none'}}
-                    ></ButtonLoading>
                   </Col>
                 </Row>
               </Col>

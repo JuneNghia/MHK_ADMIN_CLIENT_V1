@@ -5,6 +5,7 @@ import services from '../../../../utils/axios';
 import moment from 'moment';
 import CustomTable from '../../../../components/Table/CustomTable';
 import { useHistory } from 'react-router-dom';
+import Error from '../../../maintenance/Error';
 
 function ListCustomers() {
   const history = useHistory();
@@ -50,18 +51,27 @@ function ListCustomers() {
         accessor: 'customer_phone'
       },
       {
-        Header: 'Ngày khởi tạo',
+        Header: 'Trạng thái',
+        accessor: 'customer_status',
+        Cell: ({ value }) => (
+          <span style={{ color: value === 'Ngừng giao dịch' ? 'red' : 'rgb(13, 180, 115)' }}>
+            {value === 'Ngừng giao dịch' ? 'Ngừng giao dịch' : 'Đang giao dịch'}
+          </span>
+        )
+      },
+      {
+        Header: 'Thời gian khởi tạo',
         accessor: 'createdAt',
-        Cell: ({ value }) => moment(value).utcOffset(7).format('DD/MM/YYYY - HH:MM')
+        Cell: ({ value }) => moment(value).utcOffset(7).format('DD/MM/YYYY - HH:mm:ss')
       }
     ],
     []
   );
 
-  if (isLoading) return <div className="text-center">Đang tải...</div>;
+  if (isLoading) return <div className="text-center h5">Đang tải...</div>;
 
   if (listCustomer.length === 0) {
-    return <div className="text-center">Lỗi truy vấn thông tin danh sách khách hàng</div>;
+    return <Error/>
   } else
     return (
       <React.Fragment>

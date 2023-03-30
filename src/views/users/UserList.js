@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Button } from 'react-bootstrap';
+import { Row, Col, Card, Button, Badge } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import services from '../../utils/axios';
 import { Helmet } from 'react-helmet';
 import moment from 'moment';
 import NoPermission from '../errors/NoPermission';
 import CustomTable from '../../components/Table/CustomTable';
+import Error from '../maintenance/Error'
 
 function ListUsers() {
   const [listEmployees, setListEmployees] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isNoPermission, setIsNoPermission] = useState(false);
   const [error, setError] = useState(null);
   const history = useHistory();
 
@@ -45,7 +47,10 @@ function ListUsers() {
       },
       {
         Header: 'Vai trò',
-        accessor: 'staff_type'
+        accessor: 'staff_type',
+        Cell : ({value}) => (
+         <Badge style={{color: value === 'admin' ? 'red' : 'blue'}} className="my-badge">{value}</Badge>
+        )
       },
       {
         Header: 'Số điện thoại',
@@ -65,9 +70,9 @@ function ListUsers() {
         )
       },
       {
-        Header: 'Ngày khởi tạo',
+        Header: 'Thời gian khởi tạo',
         accessor: 'createdAt',
-        Cell: ({ value }) => moment(value).utcOffset(7).format('DD/MM/YYYY - HH:MM')
+        Cell: ({ value }) => moment(value).utcOffset(7).format('DD/MM/YYYY - HH:mm:ss')
       }
     ],
     []
@@ -77,10 +82,17 @@ function ListUsers() {
     <Helmet>
       <title>Danh sách nhân viên</title>
     </Helmet>;
-    return <div>Loading...</div>;
+    return <div className="text-center h5">Đang tải...</div>;
   }
 
   if (error) {
+    <Helmet>
+      <title>Danh sách nhân viên</title>
+    </Helmet>;
+    return <Error/>
+  }
+
+  if (isNoPermission) {
     <Helmet>
       <title>Danh sách nhân viên</title>
     </Helmet>;
@@ -102,7 +114,11 @@ function ListUsers() {
               </Button>{' '}
             </Card.Header>
             <Card.Body>
-              <CustomTable columns={columns} data={listEmployees} handleRowClick={handleRowClick} />
+              <CustomTable
+                columns={columns}
+                data={listEmployees}
+                handleRowClick={handleRowClick}
+              />
             </Card.Body>
           </Card>
         </Col>

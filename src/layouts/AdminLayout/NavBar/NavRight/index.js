@@ -27,10 +27,12 @@ const NavRight = () => {
       title: 'Bạn có chắc chắn muốn đăng xuất ?',
       type: 'warning',
       icon: 'question',
-      confirmButtonText: 'Đồng ý',
+      confirmButtonText: 'Đăng xuất',
       confirmButtonColor: 'red',
       cancelButtonText: 'Quay lại',
-      showCancelButton: true
+      showCancelButton: true,
+      focusCancel: false,
+      focusConfirm: false,
     }).then((willExit) => {
       if (willExit.isConfirmed) {
         handleLogout();

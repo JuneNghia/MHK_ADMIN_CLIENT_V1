@@ -3,9 +3,9 @@ import { NavLink } from 'react-router-dom';
 
 import Breadcrumb from '../../../layouts/AdminLayout/Breadcrumb';
 import back4 from '../../../assets/images/bg-images/bg4.jpg';
-import JWTLogin from '../signin/JWTLogin'
+import JWTLogin from '../signin/JWTLogin';
 import { Helmet } from 'react-helmet';
-
+import logo from '../../../assets/images/auth/logo-mhk.png';
 
 const Signin = () => {
   return (
@@ -26,10 +26,7 @@ const Signin = () => {
             }}
           >
             <div className="col-md-8">
-              <h1 className="text-white mb-5">Chào mừng bạn đến với MHK</h1>
-              <p className="text-white">
-               Quản lý mọi thứ trong tầm tay của bạn
-              </p>
+              <img style={{ width: '67%' }} src={logo}></img>
             </div>
           </div>
           <div className="col-lg-4 align-items-stret h-100 align-items-center d-flex justify-content-center">
@@ -37,7 +34,7 @@ const Signin = () => {
               <div className="mb-4">
                 <i className="feather icon-unlock auth-icon" />
               </div>
-              <JWTLogin/>
+              <JWTLogin />
               <p className="mb-2 text-muted">
                 Quên mật khẩu? <NavLink to="/auth/reset-password">Đặt lại</NavLink>
               </p>

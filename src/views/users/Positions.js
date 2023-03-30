@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import Select from 'react-select';
 import services from '../../utils/axios';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
-const Positions = ({ positions, setPositions }) => {
+const Positions = ({ positions, setPositions, ButtonAddRole }) => {
   const [usedBranchValues, setUsedBranchValues] = useState([]);
   const [usedRoleValues, setUsedRoleValues] = useState([]);
   const [optionsBranch, setOptionsBranch] = useState([]);
@@ -12,7 +14,7 @@ const Positions = ({ positions, setPositions }) => {
     { label: 'Nhân viên vận chuyển', value: 'Nhân viên vận chuyển' },
     { label: 'Nhân viên bán hàng', value: 'Nhân viên bán hàng' },
     { label: 'Nhân viên kỹ thuật', value: 'Nhân viên kỹ thuật' },
-    { label: 'Kế toán', value: 'Kế toán' },
+    { label: 'Kế toán', value: 'Kế toán' }
   ]);
 
   useEffect(() => {
@@ -22,7 +24,7 @@ const Positions = ({ positions, setPositions }) => {
         const result = res.data.data;
         const options = result.map((branch) => ({
           label: branch.agency_branch_name,
-          value: branch.id,
+          value: branch.id
         }));
         setOptionsBranch(options);
       })
@@ -126,9 +128,10 @@ const Positions = ({ positions, setPositions }) => {
           </Col>
         </Row>
       ))}
-      <Row>
+      
+      <Row className="mt-2">
         {availableBranchOptions.length === 0 || availableRoleOptions.length === 0 ? null : (
-          <Col className="mt-2" sm={12} lg={12}>
+          <Col sm={12} lg={12}>
             <Button onClick={handleAddRole}>Thêm vai trò</Button>
           </Col>
         )}

@@ -89,17 +89,20 @@ const UserDetail = () => {
     }, 1000);
   };
 
-  const handleSaveSubmit = async () => {
+  const handleSaveSubmit = () => {
     setIsLoading(true);
-    try {
-      const position = positions.map((role) => ({
-        title: role.role.label,
-        agencyInChargeIDList: role.branches.map((branch) => branch.value)
-      }));
-      const newPosition = {
-        positionIncludeAgencyBranchInCharge: position
-      };
-      await services
+    const position = positions.map((role) => ({
+      title: role.role.label,
+      agencyInChargeIDList: role.branches.map((branch) => branch.value)
+    }));
+    const newPosition = {
+      positionIncludeAgencyBranchInCharge: position
+    };
+    if (position[0].agencyInChargeIDList.length === 0) {
+      setIsLoading(false);
+      Swal.fire('', 'Vui lòng chọn chi nhánh cho nhân viên trước khi lưu', 'warning');
+    } else {
+      services
         .patch(`/staff/update-role-by-id/${id}`, newPosition)
         .then((res) => {
           successUpdatePositions();
@@ -107,7 +110,7 @@ const UserDetail = () => {
         .catch((err) => {
           failedUpdatePositions();
         });
-    } catch (error) {}
+    }
   };
 
   const handleModalUpdateSubmit = (values) => {
@@ -116,8 +119,10 @@ const UserDetail = () => {
       staff_name: 'user_name',
       staff_phone: 'user_phone',
       staff_email: 'user_email',
+      gender: 'staff_gender',
+      dob: 'staff_birthday',
       province: 'staff_region',
-      district: 'staff_commune'
+      district: 'staff_commune',
     };
 
     const updatedProfile = {};
@@ -134,11 +139,11 @@ const UserDetail = () => {
         updatedProfileWithApiKeys[newKey] = updatedProfile[key];
       }
     }
+    
     try {
       services
         .patch(`/staff/update/${id}`, updatedProfileWithApiKeys)
         .then((res) => {
-          console.log(updatedProfile);
           setTimeout(() => {
             setIsLoading(false);
             Swal.fire({
@@ -411,7 +416,7 @@ const UserDetail = () => {
         <Formik
           enableReinitialize={true}
           onSubmit={handleModalUpdateSubmit}
-          initialValues={{ ...data, province: data.staff_region, district: data.staff_commune }}
+          initialValues={{ ...data, gender: data.staff_gender, dob: moment(data.staff_birthday).utcOffset(7).format('YYYY-MM-DD'), province: data.staff_region, district: data.staff_commune }}
           validationSchema={validateSchema}
         >
           {({ errors, dirty, setFieldValue, handleChange, handleSubmit, touched, values }) => (
@@ -450,9 +455,8 @@ const UserDetail = () => {
                               <Select
                                 options={optionsGender}
                                 defaultValue={optionsGender.find((option) => option.value === values.staff_gender)}
-                                onChange={(g) => setFieldValue('gender', g)}
+                                onChange={(g) => setFieldValue('gender', g.value)}
                                 placeholder="Chọn giới tính"
-                                isDisabled
                               />
                             </Form.Group>
                           </Col>
@@ -492,8 +496,8 @@ const UserDetail = () => {
                               <Form.Label>Ngày sinh</Form.Label>
                               <Form.Control
                                 type="date"
-                                value={moment(values.staff_birthday).utcOffset(7).format('YYYY-MM-DD')}
-                                onChange={handleChange}
+                                value={values.dob}
+                                onChange={(e) => setFieldValue('dob', e.target.value)}
                                 name="staff_birthday"
                               />
                             </Form.Group>

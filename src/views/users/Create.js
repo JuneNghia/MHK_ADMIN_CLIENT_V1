@@ -13,7 +13,6 @@ import Swal from 'sweetalert2';
 import Positions from './Positions';
 
 const CreateUser = () => {
-  const [positions, setPositions] = useState([{ role: '', branches: [] }]);
   const [showLoader, setShowLoader] = useState(false);
   const history = useHistory();
   const [allowShippingPrice, setAllowShippingPrice] = useState(false);
@@ -26,10 +25,11 @@ const CreateUser = () => {
   ];
 
   const handleSubmit = async (values) => {
-    const position = positions.map((role) => ({
+    const position = values.positions.map((role) => ({
       title: role.role.label,
       agencyInChargeIDList: role.branches.map((branch) => branch.value)
     }));
+
     const newStaff = {
       user_name: values.name,
       user_code: values.code,
@@ -101,7 +101,7 @@ const CreateUser = () => {
     name: '',
     phone: '',
     email: '',
-    dob: '',
+    dob: new Date(),
     code: '',
     address: '',
     gender: '',
@@ -109,7 +109,8 @@ const CreateUser = () => {
     district: '',
     status: '',
     note: '',
-    password: ''
+    password: '',
+    positions: [{ role: '', branches: [] }]
   });
 
   const phoneRegExp = /^(0|\+84)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0|3|4|5|7|8])+([0-9]{7})$/;
@@ -121,9 +122,16 @@ const CreateUser = () => {
       .length(10, 'Số điện thoại phải có độ dài bằng 10')
       .required('Số điện thoại không được để trống'),
     code: Yup.string().required('Mã nhân viên không được để trống'),
+    dob: Yup.date().required('Ngày sinh không được để trống'),
     address: Yup.string().required('Số điện thoại không được để trống'),
     province: Yup.string().required('Vui lòng chọn Tỉnh/thành phố và Quận/huyện'),
-    password: Yup.string().required('Mật khẩu không được để trống').min(8, 'Mật khẩu phải có tối thiểu 8 kí tự')
+    password: Yup.string().required('Mật khẩu không được để trống').min(8, 'Mật khẩu phải có tối thiểu 8 kí tự'),
+    positions: Yup.array().of(
+      Yup.object().shape({
+        role: Yup.mixed().required('Vui lòng chọn ít nhất một vai trò'),
+        branches: Yup.array().min(1, 'Vui lòng chọn ít nhất một chi nhánh').required('Vui lòng chọn ít nhất một chi nhánh')
+      })
+    )
   });
 
   return (
@@ -261,8 +269,9 @@ const CreateUser = () => {
                               </Col>
                               <Col sm={12} lg={4}>
                                 <Form.Group>
-                                  <Form.Label>Ngày sinh</Form.Label>
+                                  <Form.Label>Ngày sinh <span className="text-c-red">*</span></Form.Label>
                                   <FormControl name="dob" value={values.dob} onChange={handleChange} type="date"></FormControl>
+                                  {touched.dob && errors.dob && <small class="text-danger form-text">{errors.dob}</small>}
                                 </Form.Group>
                               </Col>
                               <Col sm={12} lg={4}>
@@ -318,7 +327,12 @@ const CreateUser = () => {
                       <Card.Body>
                         <Row>
                           <Col lg={12} sm={12}>
-                            <Positions positions={positions} setPositions={setPositions}/>
+                            <Positions positions={values.positions} setPositions={(positions) => setFieldValue('positions', positions)} />
+                            {touched.positions && errors.positions && (
+                              <small className="text-danger form-text mb-2">
+                                {errors.positions[0]?.role || errors.positions[0]?.branches}
+                              </small>
+                            )}
                           </Col>
                         </Row>
                       </Card.Body>
