@@ -29,8 +29,11 @@ function ListUsers() {
           setIsLoading(false);
         })
         .catch((error) => {
-          setError(error);
           setIsLoading(false);
+          if(error.response === 'You do not have permission!'){
+            setIsNoPermission(error)
+          }
+          else setError(error)
         });
     })();
   }, []);

@@ -20,7 +20,7 @@ const DashDefault = () => {
         <Col md={6} xl={4}>
           <Card>
             <Card.Body>
-              <h6 className="mb-4">Doanh thu hôm nay</h6>
+              <h6 className="mb-4">Doanh thu ngày</h6>
               <div className="row d-flex align-items-center">
                 <div className="col-9">
                   <h3 className="f-w-300 d-flex align-items-center m-b-0">
@@ -48,11 +48,11 @@ const DashDefault = () => {
         <Col md={6} xl={4}>
           <Card>
             <Card.Body>
-              <h6 className="mb-4">Tổng đơn hàng hôm nay</h6>
+              <h6 className="mb-4">Tỉ lệ đơn hàng thành công ngày</h6>
               <div className="row d-flex align-items-center">
                 <div className="col-9">
                   <h3 className="f-w-300 d-flex align-items-center m-b-0">
-                    <i className="feather icon-arrow-down text-c-red f-30 m-r-5" /> 1.920
+                    <i className="feather icon-arrow-down text-c-red f-30 m-r-5" /> 19.402
                   </h3>
                 </div>
 
@@ -76,11 +76,11 @@ const DashDefault = () => {
         <Col xl={4}>
           <Card>
             <Card.Body>
-              <h6 className="mb-4">Yearly Sales</h6>
+              <h6 className="mb-4">Tổng doanh thu tháng</h6>
               <div className="row d-flex align-items-center">
                 <div className="col-9">
                   <h3 className="f-w-300 d-flex align-items-center m-b-0">
-                    <i className="feather icon-arrow-up text-c-green f-30 m-r-5" /> $8.638.32
+                    <i className="feather icon-arrow-up text-c-green f-30 m-r-5" /> 18.748.381.238 VNĐ
                   </h3>
                 </div>
 

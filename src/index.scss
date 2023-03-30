@@ -544,4 +544,13 @@ thead, tbody{
   font-size: 13px;
 }
 
+::-webkit-scrollbar {
+  width: 8px;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #888;
+}
 
