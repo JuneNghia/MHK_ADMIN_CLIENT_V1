@@ -101,7 +101,7 @@ const CreateUser = () => {
     name: '',
     phone: '',
     email: '',
-    dob: new Date(),
+    dob: '',
     code: '',
     address: '',
     gender: '',
@@ -123,8 +123,8 @@ const CreateUser = () => {
       .required('Số điện thoại không được để trống'),
     code: Yup.string().required('Mã nhân viên không được để trống'),
     dob: Yup.date().required('Ngày sinh không được để trống'),
-    address: Yup.string().required('Số điện thoại không được để trống'),
-    province: Yup.string().required('Vui lòng chọn Tỉnh/thành phố và Quận/huyện'),
+    address: Yup.string().required('Địa chỉ không được để trống'),
+    province: Yup.string().required('Vui lòng chọn Tỉnh/Thành phố'),
     password: Yup.string().required('Mật khẩu không được để trống').min(8, 'Mật khẩu phải có tối thiểu 8 kí tự'),
     positions: Yup.array().of(
       Yup.object().shape({
@@ -243,10 +243,10 @@ const CreateUser = () => {
                               <Col sm={12} lg={8}>
                                 <Form.Group>
                                   <ProvinceDistrictSelect
-                                    initialValues={{ provice: values.province, district: values.district }}
+                                    initialValues={{ province: values.province, district: values.district }}
                                     onChange={(p, d) => {
-                                      setFieldValue('province', p);
-                                      setFieldValue('district', d);
+                                      setFieldValue('province', p, true);
+                                      setFieldValue('district', d, false);
                                     }}
                                   />
                                   {touched.province && errors.province && <small class="text-danger form-text">{errors.province}</small>}

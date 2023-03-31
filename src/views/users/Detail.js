@@ -470,7 +470,6 @@ const UserDetail = () => {
                                 onChange={handleChange}
                                 name="staff_phone"
                                 placeholder="Nhập số điện thoại"
-                                disabled
                               />
                               {touched.staff_phone && errors.staff_phone && (
                                 <small class="text-danger form-text">{errors.staff_phone}</small>

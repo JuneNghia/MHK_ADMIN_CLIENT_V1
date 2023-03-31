@@ -168,7 +168,7 @@ function Addresses() {
 
   const validateSchema = Yup.object().shape({
     address: Yup.string().required('Địa chỉ không được để trống'),
-    province: Yup.string().required('Vui lòng chọn tỉnh/thành phố')
+    province: Yup.string().required('Vui lòng chọn Tỉnh/Thành phố')
   });
 
   if (addressList.length === 0) {
@@ -177,7 +177,7 @@ function Addresses() {
     return (
       <>
         <Formik onSubmit={handleSubmitAdd} initialValues={{ address: '', province: '', district: '' }} validationSchema={validateSchema}>
-          {({ errors, setFieldValue, handleBlur, handleChange, handleSubmit, touched, values, isValid }) => (
+          {({ errors, setFieldValue, handleBlur, handleChange, handleSubmit, touched, values, dirty }) => (
             <Form noValidate>
               <ModalComponent
                 show={showModalAdd}
@@ -186,7 +186,7 @@ function Addresses() {
                 title="Thêm địa chỉ khách hàng"
                 textSubmit={isLoading ? 'Đang thêm...' : 'Thêm'}
                 size="lg"
-                disabled={!isValid || isLoading}
+                disabled={ !dirty || isLoading}
                 body={
                   <Form>
                     <Row>
@@ -214,8 +214,8 @@ function Addresses() {
                               <ProvinceDistrictSelect
                                 initialValues={{ province: null, district: null }}
                                 onChange={(p, d) => {
-                                  setFieldValue('province', p);
-                                  setFieldValue('district', d);
+                                  setFieldValue('province', p, true);
+                                  setFieldValue('district', d, false);
                                 }}
                               />
                               {touched.province && errors.province && <small class="text-danger form-text">{errors.province}</small>}
@@ -232,7 +232,7 @@ function Addresses() {
         </Formik>
 
         <Formik enableReinitialize={true} onSubmit={handleSubmitUpdate} initialValues={addressRow} validationSchema={validateSchema}>
-          {({ errors, dirty, setFieldValue, handleBlur, handleChange, handleSubmit, touched, values, isValid }) => (
+          {({ errors, dirty, setFieldValue, handleBlur, handleChange, handleSubmit, touched, values }) => (
             <Form noValidate>
               <ModalComponent
                 show={showModalUpdate}
@@ -241,7 +241,7 @@ function Addresses() {
                 title="Cập nhật địa chỉ khách hàng"
                 textSubmit={isLoading ? 'Đang lưu...' : 'Lưu'}
                 size="lg"
-                disabled={!dirty || !isValid || isLoading}
+                disabled={!dirty || isLoading}
                 body={
                   <Form>
                     <Row>
@@ -267,8 +267,8 @@ function Addresses() {
                             <ProvinceDistrictSelect
                               initialValues={{ province: values.province, district: values.district }}
                               onChange={(p, d) => {
-                                setFieldValue('province', p);
-                                setFieldValue('district', d);
+                                setFieldValue('province', p, true);
+                                setFieldValue('district', d, false);
                               }}
                             />
                           </Col>

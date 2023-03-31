@@ -39,7 +39,10 @@ function ListBranches() {
       },
       {
         Header: 'Ngày hết hạn',
-        accessor: 'agency_branch_expiration_date'
+        accessor: 'agency_branch_expiration_date',
+        Cell: ({value}) => (
+          <span>{value ? value : moment().add(3, 'years').utcOffset(7).format('DD/MM/YYYY')}</span>
+        )
       },
       {
         Header: 'Trạng thái',

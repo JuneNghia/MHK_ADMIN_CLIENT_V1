@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTable, usePagination, useGlobalFilter, useRowSelect, useSortBy } from 'react-table';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, CloseButton } from 'react-bootstrap';
 import MyPagination from '../Pagination/PaginationComponent';
 import { GlobalFilter } from '../../views/users/GlobalFilter';
 import BTable from 'react-bootstrap/Table';
@@ -15,6 +15,7 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick }) 
     globalFilter,
     setGlobalFilter,
     pageOptions,
+    selectedFlatRows,
     pageCount,
     gotoPage,
     setPageSize,
@@ -43,12 +44,21 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick }) 
       ]);
     }
   );
-
+  const [showGoToPage, setShowGoToPage] = useState(false);
   const [currentPage, setCurrentPage] = useState(pageIndex + 1);
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
+    setShowGoToPage(false);
     gotoPage(newPage - 1);
   };
+
+  const selectedRows = selectedFlatRows.map((row) => row.original);
+  const selectedCount = selectedFlatRows.length;
+  console.log(selectedCount);
+
+  useEffect(() => {
+    setCurrentPage(pageIndex + 1);
+  }, [pageIndex]);
 
   return (
     <>
@@ -74,13 +84,7 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick }) 
           <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
         </Col>
       </Row>
-      <BTable
-        striped
-        bordered
-        hover
-        responsive
-        {...getTableProps()}
-      >
+      <BTable striped bordered hover responsive {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (
             <tr key={headerGroup.Header} {...headerGroup.getHeaderGroupProps()}>
@@ -122,21 +126,37 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick }) 
         <Col sm={12} md={6}>
           <span className="d-flex align-items-center">
             Trang{' '}
-            <strong className="ml-1">
+            <strong className="ml-1 mr-1">
               {' '}
               {pageIndex + 1} trên tổng {pageOptions.length}{' '}
             </strong>{' '}
-            | Đến trang:{' '}
-            <input
-              type="number"
-              className="form-control ml-2"
-              defaultValue={pageIndex + 1}
-              onChange={(e) => {
-                const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                gotoPage(page);
-              }}
-              style={{ width: '100px' }}
-            />
+            |
+            <span className="custom-a ml-1 mr-1" onClick={() => setShowGoToPage(true)}>
+              Chọn nhanh trang
+            </span>{' '}
+            {showGoToPage ? (
+              <span style={{ display: 'inherit' }}>
+                <input
+                  id="page-input"
+                  type="number"
+                  placeholder="Số trang"
+                  className="form-control ml-2"
+                  onChange={(e) => {
+                    const page = e.target.value ? Number(e.target.value) - 1 : 0;
+                    gotoPage(page);
+                  }}
+                  onKeyPress={(e) => {
+                    if (e.key === '-' || e.key === '0' || e.key === '+') {
+                      e.preventDefault();
+                    }
+                  }}
+                  style={{ width: '100px' }}
+                  min="1"
+                  max={pageOptions.length}
+                />
+                <CloseButton onClick={() => setShowGoToPage(false)} className="ml-3" aria-label="hide" />
+              </span>
+            ) : null}
           </span>
         </Col>
         <Col sm={12} md={6}>

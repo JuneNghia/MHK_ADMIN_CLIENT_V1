@@ -474,6 +474,9 @@ td {
   color:#04a9f5 !important;
   background-color:rgba(0, 0, 0, 0.05) !important;
 }
+.row-has-detail:hover span{
+  color:#04a9f5 !important;
+}
 
 small{
   text-align: left;
@@ -552,5 +555,14 @@ thead, tbody{
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
   background-color: #888;
+}
+
+.custom-a{
+  color: blue
+}
+
+.custom-a:hover{
+  cursor: pointer;
+  color: rgba(0,0,255,0.8)
 }
 

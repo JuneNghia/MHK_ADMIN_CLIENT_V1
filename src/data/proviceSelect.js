@@ -8,8 +8,10 @@ const ProvinceDistrictSelect = ({ onChange, initialValues }) => {
   const [districts, setDistricts] = useState([]);
   const [selectedProvince, setSelectedProvince] = useState(null);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
-  const customNoOptionMessage = () => {
-    return "Vui lòng chọn Tỉnh/Thành phố trước";
+  const customNoOptionMessage = (province) => {
+    if(province === true)
+    return "Tỉnh/Thành phố bạn đang tìm kiếm không tồn tại"
+    else return "Vui lòng chọn Tỉnh/Thành phố trước";
   };
   const customPlaceholder = (placeholder) => {
     return (
@@ -74,7 +76,7 @@ const ProvinceDistrictSelect = ({ onChange, initialValues }) => {
         label: district.name
       }))
     );
-    onChange(selectedOption.label, null);
+    onChange(selectedOption.label, '---');
   };
 
   const handleDistrictChange = (selectedOption) => {
@@ -88,13 +90,13 @@ const ProvinceDistrictSelect = ({ onChange, initialValues }) => {
         <Form.Label>
           Chọn Tỉnh/Thành phố <span className="text-c-red">*</span>
         </Form.Label>
-        <Select value={selectedProvince} options={provinces} onChange={handleProvinceChange} placeholder={customPlaceholder("Tỉnh/Thành phố")}/>
+        <Select value={selectedProvince} noOptionsMessage={() => customNoOptionMessage(true)} options={provinces} onChange={handleProvinceChange} placeholder={customPlaceholder("Tỉnh/Thành phố")}/>
       </Col>
       <Col sm={12} lg={6}>
         <Form.Label>
-          Chọn Quận/Huyện <span className="text-c-red">*</span>
+          Chọn Quận/Huyện
         </Form.Label>
-        <Select value={selectedDistrict} noOptionsMessage={customNoOptionMessage} options={districts} onChange={handleDistrictChange} placeholder={customPlaceholder("Quận/Huyện")} />
+        <Select value={selectedDistrict} noOptionsMessage={() => customNoOptionMessage(false)} options={districts} onChange={handleDistrictChange} placeholder={customPlaceholder("Quận/Huyện")} />
       </Col>
     </Row>
   )

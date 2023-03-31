@@ -5,7 +5,7 @@ import services from '../../utils/axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
-const Positions = ({ positions, setPositions, ButtonAddRole }) => {
+const Positions = ({ positions, setPositions }) => {
   const [usedBranchValues, setUsedBranchValues] = useState([]);
   const [usedRoleValues, setUsedRoleValues] = useState([]);
   const [optionsBranch, setOptionsBranch] = useState([]);
@@ -32,7 +32,7 @@ const Positions = ({ positions, setPositions, ButtonAddRole }) => {
   }, []);
 
   const handleAddRole = () => {
-    setPositions([...positions, { role: '', branches: [] }]);
+    setPositions([...positions, { role: availableRoleOptions[0], branches: [] }]);
   };
 
   const handleRoleChange = (role, index) => {
@@ -85,6 +85,7 @@ const Positions = ({ positions, setPositions, ButtonAddRole }) => {
                 onChange={(role) => handleRoleChange(role, index)}
                 placeholder="Chọn vai trò"
                 options={availableRoleOptions}
+                noOptionsMessage={()=>('Đã chọn hết vai trò')}
               ></Select>
             </Form.Group>
           </Col>
@@ -100,6 +101,7 @@ const Positions = ({ positions, setPositions, ButtonAddRole }) => {
                 isMulti
                 formatOptionLabel={formatOptionLabel}
                 defaultValue={position.branches}
+                noOptionsMessage={()=>('Đã chọn hết chi nhánh')}
               ></Select>
             </Form.Group>
           </Col>

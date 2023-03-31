@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet';
 import moment from 'moment';
 import NoPermission from '../errors/NoPermission';
 import CustomTable from '../../components/Table/CustomTable';
-import Error from '../maintenance/Error'
+import Error from '../maintenance/Error';
 
 function ListUsers() {
   const [listEmployees, setListEmployees] = useState([]);
@@ -30,10 +30,9 @@ function ListUsers() {
         })
         .catch((error) => {
           setIsLoading(false);
-          if(error.response === 'You do not have permission!'){
-            setIsNoPermission(error)
-          }
-          else setError(error)
+          if (error.response === 'You do not have permission!') {
+            setIsNoPermission(error);
+          } else setError(error);
         });
     })();
   }, []);
@@ -49,10 +48,16 @@ function ListUsers() {
         accessor: 'staff_name'
       },
       {
+        Header: 'Mã nhân viên',
+        accessor: 'staff_code'
+      },
+      {
         Header: 'Vai trò',
         accessor: 'staff_type',
-        Cell : ({value}) => (
-         <Badge style={{color: value === 'admin' ? 'red' : 'blue'}} className="my-badge">{value}</Badge>
+        Cell: ({ value }) => (
+          <Badge style={{ color: value === 'admin' ? 'red' : 'blue' }} className="my-badge">
+            {value}
+          </Badge>
         )
       },
       {
@@ -92,7 +97,7 @@ function ListUsers() {
     <Helmet>
       <title>Danh sách nhân viên</title>
     </Helmet>;
-    return <Error/>
+    return <Error />;
   }
 
   if (isNoPermission) {
@@ -117,11 +122,7 @@ function ListUsers() {
               </Button>{' '}
             </Card.Header>
             <Card.Body>
-              <CustomTable
-                columns={columns}
-                data={listEmployees}
-                handleRowClick={handleRowClick}
-              />
+              <CustomTable columns={columns} data={listEmployees} handleRowClick={handleRowClick} />
             </Card.Body>
           </Card>
         </Col>

@@ -119,7 +119,7 @@ const FormsElements = () => {
     phone: Yup.string().matches(phoneRegExp, 'Số điện thoại không hợp lệ').required('Số điện thoại không được để trống'),
     code: Yup.string().required('Mã khách hàng không được để trống'),
     address: Yup.string().required('Địa chỉ không được để trống'),
-    province: Yup.string().required('Vui lòng chọn tỉnh/thành phố và quận/huyện')
+    province: Yup.string().required('Vui lòng chọn Tỉnh/Thành phố')
   });
 
   return (
@@ -160,9 +160,7 @@ const FormsElements = () => {
                 loading={showLoader}
                 type="submit"
                 disabled={showLoader}
-                style={
-                  isValid ? { margin: 0, marginBottom: 15 } : { backgroundColor: '#ccc', borderColor: '#ccc', margin: 0, marginBottom: 15 }
-                }
+                style={{margin: "0 0 15px 0"}}
               ></ButtonLoading>
             </span>
 
@@ -241,8 +239,8 @@ const FormsElements = () => {
                               <ProvinceDistrictSelect
                               initialValues={{province: null, district: null}}
                                 onChange={(p, d) => {
-                                  setFieldValue('province', p);
-                                  setFieldValue('district', d);
+                                  setFieldValue('province', p, true);
+                                  setFieldValue('district', d, false)
                                 }}
                               />
                               {touched.province && errors.province && <small class="text-danger form-text">{errors.province}</small>}

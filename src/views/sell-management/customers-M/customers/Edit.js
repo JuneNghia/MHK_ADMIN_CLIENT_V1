@@ -140,7 +140,7 @@ const Edit = () => {
             <span className="flex-between">
               <Button onClick={sweetConfirmAlert} variant="outline-primary" className="mr-0" style={{ marginBottom: 15 }}>
                 <i className="feather icon-arrow-left"></i>
-                Huỷ
+               Quay lại
               </Button>
               <ButtonLoading
                 text={'Cập nhật'}
