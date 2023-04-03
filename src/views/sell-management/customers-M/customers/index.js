@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Pagination, Button } from 'react-bootstrap';
+import { Row, Col, Card, Button, Dropdown, DropdownButton } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
 import services from '../../../../utils/axios';
 import moment from 'moment';
@@ -14,8 +14,8 @@ function ListCustomers() {
 
   const handleRowClick = (row) => {
     const id = row.values.id;
-    history.push(`/app/sell-management/customers/${id}`)
-  }
+    history.push(`/app/sell-management/customers/${id}`);
+  };
 
   useEffect(() => {
     (async () => {
@@ -71,7 +71,7 @@ function ListCustomers() {
   if (isLoading) return <div className="text-center h5">Đang tải...</div>;
 
   if (listCustomer.length === 0) {
-    return <Error/>
+    return <Error />;
   } else
     return (
       <React.Fragment>
@@ -89,7 +89,13 @@ function ListCustomers() {
                 </Button>{' '}
               </Card.Header>
               <Card.Body>
-                <CustomTable columns={columns} data={listCustomer} handleRowClick={handleRowClick}/>
+                <CustomTable
+                  columns={columns}
+                  data={listCustomer}
+                  handleRowClick={handleRowClick}
+                  selectedTitle="khách hàng"
+                  object="customer"
+                />
               </Card.Body>
             </Card>
           </Col>

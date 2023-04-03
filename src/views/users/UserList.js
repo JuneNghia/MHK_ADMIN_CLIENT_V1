@@ -122,7 +122,13 @@ function ListUsers() {
               </Button>{' '}
             </Card.Header>
             <Card.Body>
-              <CustomTable columns={columns} data={listEmployees} handleRowClick={handleRowClick} />
+              <CustomTable
+                columns={columns}
+                data={listEmployees}
+                handleRowClick={handleRowClick}
+                selectedTitle="nhân viên"
+                object="staff"
+              />
             </Card.Body>
           </Card>
         </Col>

@@ -1,16 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useTable, usePagination, useGlobalFilter, useRowSelect, useSortBy } from 'react-table';
-import { Row, Col, CloseButton } from 'react-bootstrap';
+import { Row, Col, CloseButton, Dropdown, DropdownButton } from 'react-bootstrap';
 import MyPagination from '../Pagination/PaginationComponent';
 import { GlobalFilter } from '../../views/users/GlobalFilter';
 import BTable from 'react-bootstrap/Table';
+import services from '../../utils/axios';
+import Swal from 'sweetalert2';
 
-function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick }) {
+function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, selectedTitle, object }) {
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
     prepareRow,
+    rows,
     page,
     globalFilter,
     setGlobalFilter,
@@ -54,7 +57,42 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick }) 
 
   const selectedRows = selectedFlatRows.map((row) => row.original);
   const selectedCount = selectedFlatRows.length;
-  console.log(selectedCount);
+
+
+  const promises = selectedRows.map((row) => services.delete(`/${object}/delete-by-id/${row.id}`));
+
+  const handleDeleteRow = () => {
+    Swal.fire({
+      title: 'Xoá khách hàng ?',
+      html: `Bạn có chắc chắn muốn xoá các ${selectedTitle} đã chọn ? </br>Thao tác này không thể khôi phục.`,
+      showCancelButton: true,
+      showConfirmButton: true,
+      confirmButtonText: 'Xoá',
+      cancelButtonText: 'Thoát',
+      confirmButtonColor: 'red',
+      icon: 'warning'
+    }).then((isConfirm) => {
+      if (isConfirm.isConfirmed) {
+        Promise.all(promises)
+          .then(() => {
+            Swal.fire({
+              title: 'Thành công',
+              html: `Đã xoá ${selectedCount} ${selectedTitle} khỏi danh sách`,
+              showCancelButton: false,
+              showConfirmButton: true,
+              icon: 'success'
+            }).then((isConfirm) => {
+              if (isConfirm.isConfirmed) {
+                window.location.reload();
+              }
+            });
+          })
+          .catch((error) => {
+            Swal.fire('Thất bại', 'Đã xảy ra lỗi khi xoá các khách hàng đã chọn', 'error');
+          });
+      }
+    });
+  };
 
   useEffect(() => {
     setCurrentPage(pageIndex + 1);
@@ -79,7 +117,26 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick }) 
             ))}
           </select>
           kết quả
+          {selectedCount === 0 ? null : (
+            <span className="flex-between">
+              <span className="text-normal" style={{ marginLeft: '100px' }}>
+                Đã chọn {selectedCount}/{rows.length} {selectedTitle}{' '}
+              </span>
+              <DropdownButton variant="secondary" className="ml-2 custom-button" id="dropdown-selectedRow" title="Chọn thao tác">
+                <Dropdown.Item className="custom-dropdown-item" href="#/action-1">
+                  Cập nhật thông tin
+                </Dropdown.Item>
+                <Dropdown.Item className="custom-dropdown-item" href="#/action-2">
+                  Cập nhật trạng thái
+                </Dropdown.Item>
+                <Dropdown.Item className="custom-dropdown-item" onClick={handleDeleteRow}>
+                  Xoá
+                </Dropdown.Item>
+              </DropdownButton>
+            </span>
+          )}
         </Col>
+
         <Col>
           <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
         </Col>

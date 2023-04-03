@@ -1,3 +1,5 @@
+
+
 const menuItems = {
   items: [
     {
@@ -59,7 +61,7 @@ const menuItems = {
           id: 'delievery',
           title: 'Vận chuyển',
           type: 'collapse',
-          icon: 'feather icon-users',
+          icon: 'feather icon-truck',
           children: [
             {
               id: 'alert',
