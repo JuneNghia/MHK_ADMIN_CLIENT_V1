@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import Select from 'react-select';
 import services from '../../utils/axios';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
 
 const Positions = ({ positions, setPositions }) => {
   const [usedBranchValues, setUsedBranchValues] = useState([]);
