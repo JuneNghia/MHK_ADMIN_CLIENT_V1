@@ -1,16 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Row, Col, Card, Pagination, Button, Form } from 'react-bootstrap';
-import BTable from 'react-bootstrap/Table';
-import { useTable, usePagination, useGlobalFilter, useRowSelect } from 'react-table';
-import { GlobalFilter } from '../../users/GlobalFilter';
+import React, { useEffect, useState } from 'react';
+import { Row, Col, Card, Button, Form } from 'react-bootstrap';
 import services from '../../../utils/axios';
 import { Helmet } from 'react-helmet';
 import moment from 'moment';
-import Select from 'react-select';
 import Swal from 'sweetalert2';
 import { Formik } from 'formik';
 import ModalComponent from '../../../components/Modal/Modal';
-import MyPagination from '../../../components/Pagination/PaginationComponent';
 import CustomTable from '../../../components/Table/CustomTable';
 import Error from '../../maintenance/Error';
 
@@ -64,6 +59,7 @@ function ListBranches() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isloadPage, setIsLoadPage] = useState(true);
+  const [isFetched, setIsFetched] = useState(false);
   const [showModalAdd, setShowModalAdd] = useState(false);
   const [showModalUpdate, setShowModalUpdate] = useState(false);
   const [idBranch, setIdBranch] = useState(0);
@@ -93,13 +89,13 @@ function ListBranches() {
         .then((response) => {
           setIsLoadPage(false);
           setBranchesList(response.data.data);
+          setIsFetched(true);
         })
         .catch((error) => {
           setIsLoadPage(false);
-          console.log(error);
         });
     })();
-  }, [isloadPage]);
+  }, []);
 
   const handleAddAddress = () => {
     setShowModalAdd(true);
@@ -206,7 +202,7 @@ function ListBranches() {
 
   if (isloadPage) return <div className="text-center h5">Đang tải...</div>;
 
-  if (branchesList.length === 0) return <Error />;
+  if (!isFetched) return <Error />;
 
   return (
     <>

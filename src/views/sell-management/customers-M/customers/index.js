@@ -29,7 +29,6 @@ function ListCustomers() {
         })
         .catch((error) => {
           setIsLoading(false);
-          setIsFetched(true);
         });
     
   }, []);

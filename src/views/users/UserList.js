@@ -11,8 +11,8 @@ import Error from '../maintenance/Error';
 function ListUsers() {
   const [listEmployees, setListEmployees] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFetched, setIsFetched] = useState(false);
   const [isNoPermission, setIsNoPermission] = useState(false);
-  const [error, setError] = useState(null);
   const history = useHistory();
 
   const handleRowClick = (row) => {
@@ -27,12 +27,13 @@ function ListUsers() {
         .then((response) => {
           setListEmployees(response.data.data);
           setIsLoading(false);
+          setIsFetched(true);
         })
         .catch((error) => {
           setIsLoading(false);
           if (error.response === 'You do not have permission!') {
             setIsNoPermission(error);
-          } else setError(error);
+          } else setIsFetched(error)
         });
     })();
   }, []);
@@ -93,7 +94,7 @@ function ListUsers() {
     return <div className="text-center h5">Đang tải...</div>;
   }
 
-  if (error) {
+  if (!isFetched) {
     <Helmet>
       <title>Danh sách nhân viên</title>
     </Helmet>;

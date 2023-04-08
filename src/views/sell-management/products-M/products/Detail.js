@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Form, Button, FormLabel, Badge, Tabs, Tab, FormGroup, FormCheck } from 'react-bootstrap';
-import axios from 'axios';
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
 import { ButtonLoading } from '../../../../components/Button/LoadButton';
 import { useHistory, useParams } from 'react-router-dom';
 import services from '../../../../utils/axios';
