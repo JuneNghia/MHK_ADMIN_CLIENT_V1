@@ -99,7 +99,7 @@ function ListBranches() {
           console.log(error);
         });
     })();
-  }, []);
+  }, [isloadPage]);
 
   const handleAddAddress = () => {
     setShowModalAdd(true);

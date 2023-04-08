@@ -11,22 +11,25 @@ function ListCustomers() {
   const history = useHistory();
   const [listCustomer, setListCustomer] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFetched, setIsFetched] = useState(false);
 
   const handleRowClick = (row) => {
     const id = row.values.id;
     history.push(`/app/sell-management/customers/${id}`);
   };
 
-  useEffect(() => {
+  useEffect( () => {
     services
         .get('/customer/get-all')
         .then((response) => {
           const filteredData = response.data.data.filter((user) => user !== null);
           setListCustomer(filteredData);
           setIsLoading(false);
+          setIsFetched(true); 
         })
         .catch((error) => {
           setIsLoading(false);
+          setIsFetched(true);
         });
     
   }, []);
@@ -69,7 +72,7 @@ function ListCustomers() {
 
   if (isLoading) return <div className="text-center h5">Đang tải...</div>;
 
-  if (listCustomer.length === 0) {
+  if(!isFetched) {
     return <Error />;
   } else
     return (
