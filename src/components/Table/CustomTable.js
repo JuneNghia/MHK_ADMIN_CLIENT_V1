@@ -39,7 +39,7 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
           id: 'selection',
           Header: ({ getToggleAllRowsSelectedProps }) => (
             <div style={{ width: '25px', textAlign: 'center' }}>
-              <input type="checkbox" {...getToggleAllRowsSelectedProps()} />
+              <input type="checkbox" {...getToggleAllRowsSelectedProps()} title="Chọn tất cả" />
             </div>
           )
         },
@@ -48,6 +48,7 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
     }
   );
   const [showGoToPage, setShowGoToPage] = useState(false);
+  const [inputGoToPage, setInputGoToPage] = useState(0);
   const [currentPage, setCurrentPage] = useState(pageIndex + 1);
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
@@ -58,12 +59,11 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
   const selectedRows = selectedFlatRows.map((row) => row.original);
   const selectedCount = selectedFlatRows.length;
 
-
-  const promises = selectedRows.map((row) => services.delete(`/${object}/delete-by-id/${row.id}`));
+  const promises = selectedRows.map((row) => services.delete(`/${object}/delete-by-id/${row.id}`, { data: row }));
 
   const handleDeleteRow = () => {
     Swal.fire({
-      title: 'Xoá khách hàng ?',
+      title: `Xoá ${selectedTitle} ?`,
       html: `Bạn có chắc chắn muốn xoá các ${selectedTitle} đã chọn ? </br>Thao tác này không thể khôi phục.`,
       showCancelButton: true,
       showConfirmButton: true,
@@ -74,7 +74,8 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
     }).then((isConfirm) => {
       if (isConfirm.isConfirmed) {
         Promise.all(promises)
-          .then(() => {
+          .then((res) => {
+            console.log(res);
             Swal.fire({
               title: 'Thành công',
               html: `Đã xoá ${selectedCount} ${selectedTitle} khỏi danh sách`,
@@ -88,7 +89,7 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
             });
           })
           .catch((error) => {
-            Swal.fire('Thất bại', 'Đã xảy ra lỗi khi xoá các khách hàng đã chọn', 'error');
+            Swal.fire('Thất bại', `Đã xảy ra lỗi khi xoá các ${selectedTitle} đã chọn`, 'error');
           });
       }
     });
@@ -160,7 +161,7 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
                   {row.cells.map((cell) => {
                     return cell.column.id === 'selection' ? (
                       <td style={{ width: '50px', textAlign: 'center' }} {...cell.getCellProps()}>
-                        <input {...row.getToggleRowSelectedProps()} type="checkbox" {...cell.getCellProps()} />
+                        <input {...row.getToggleRowSelectedProps()} type="checkbox" {...cell.getCellProps()} title="" />
                       </td>
                     ) : (
                       <td
@@ -192,7 +193,7 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
               Chọn nhanh trang
             </span>{' '}
             {showGoToPage ? (
-              <span style={{ display: 'inherit' }}>
+              <span className="flex-between">
                 <input
                   id="page-input"
                   type="number"
@@ -201,17 +202,22 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
                   onChange={(e) => {
                     const page = e.target.value ? Number(e.target.value) - 1 : 0;
                     gotoPage(page);
+                    setInputGoToPage(e.target.value);
                   }}
                   onKeyPress={(e) => {
-                    if (e.key === '-' || e.key === '0' || e.key === '+') {
+                    if (e.key === '-' || e.key === '+') {
                       e.preventDefault();
                     }
                   }}
                   style={{ width: '100px' }}
                   min="1"
                   max={pageOptions.length}
+                  title=""
                 />
                 <CloseButton onClick={() => setShowGoToPage(false)} className="ml-3" aria-label="hide" />
+                {inputGoToPage > pageOptions.length ? (
+                  <span className="text-c-red ml-3">Số trang nhập vào phải nhỏ hơn {pageOptions.length}</span>
+                ) : null}
               </span>
             ) : null}
           </span>

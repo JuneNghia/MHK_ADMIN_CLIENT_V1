@@ -18,8 +18,7 @@ function ListCustomers() {
   };
 
   useEffect(() => {
-    (async () => {
-      await services
+    services
         .get('/customer/get-all')
         .then((response) => {
           const filteredData = response.data.data.filter((user) => user !== null);
@@ -29,7 +28,7 @@ function ListCustomers() {
         .catch((error) => {
           setIsLoading(false);
         });
-    })();
+    
   }, []);
 
   const columns = React.useMemo(

@@ -135,7 +135,7 @@ const Edit = () => {
       </Helmet>
 
       <Formik enableReinitialize={true} initialValues={customer} validationSchema={validateSchema} onSubmit={handleSubmit}>
-        {({ errors, handleBlur, handleChange, handleSubmit, touched, values, isValid }) => (
+        {({dirty, errors, handleBlur, handleChange, handleSubmit, touched, values, isValid }) => (
           <Form noValidate onSubmit={handleSubmit}>
             <span className="flex-between">
               <Button onClick={sweetConfirmAlert} variant="outline-primary" className="mr-0" style={{ marginBottom: 15 }}>
@@ -147,10 +147,8 @@ const Edit = () => {
                 onSubmit={handleSubmit}
                 loading={showLoader}
                 type="submit"
-                disabled={showLoader}
-                style={
-                  isValid ? { margin: 0, marginBottom: 15 } : { backgroundColor: '#ccc', borderColor: '#ccc', margin: 0, marginBottom: 15 }
-                }
+                disabled={!dirty || showLoader}
+                style={{ margin: 0, marginBottom: 15 }}
               ></ButtonLoading>
             </span>
 

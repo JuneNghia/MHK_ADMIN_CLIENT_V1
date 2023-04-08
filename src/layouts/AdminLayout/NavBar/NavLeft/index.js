@@ -1,14 +1,22 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ListGroup, Dropdown } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 import useWindowSize from '../../../../hooks/useWindowSize';
 import { ConfigContext } from '../../../../contexts/ConfigContext';
 import NavSearch from './NavSearch';
+import services from '../../../../utils/axios';
 
 const NavLeft = () => {
-  const windowSize = useWindowSize();
+  const [dataBranch, setDataBranch] = useState([]);
 
+  useEffect(() => {
+    services.get('/agency-branch/get-all').then((res) => {
+      setDataBranch(res.data.data);
+    });
+  }, []);
+
+  const windowSize = useWindowSize();
   const configContext = useContext(ConfigContext);
   const { rtlLayout } = configContext.state;
   let dropdownRightAlign = false;
@@ -31,21 +39,13 @@ const NavLeft = () => {
             </Dropdown.Toggle>
             <ul>
               <Dropdown.Menu>
-                <li>
-                  <Link to="#" className="dropdown-item">
-                    Chi nhánh 1
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#" className="dropdown-item">
-                    Chi nhánh 2
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#" className="dropdown-item">
-                    Chi nhánh 3
-                  </Link>
-                </li>
+                {dataBranch.map((branch, index) => (
+                  <li key={index}>
+                    <Link onClick={() => alert(`Chọn chi nhánh ${branch.agency_branch_name} `)} to="#" className="dropdown-item hover-transparent">
+                      {branch.agency_branch_name}
+                    </Link>
+                  </li>
+                ))}
               </Dropdown.Menu>
             </ul>
           </Dropdown>
