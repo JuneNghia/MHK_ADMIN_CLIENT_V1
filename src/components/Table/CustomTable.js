@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTable, usePagination, useGlobalFilter, useRowSelect, useSortBy } from 'react-table';
 import { Row, Col, CloseButton, Dropdown, DropdownButton } from 'react-bootstrap';
 import MyPagination from '../Pagination/PaginationComponent';
-import { GlobalFilter } from '../../views/users/GlobalFilter';
+import GlobalFilter from '../Filter/GlobalFilter';
 import BTable from 'react-bootstrap/Table';
 import services from '../../utils/axios';
 import Swal from 'sweetalert2';

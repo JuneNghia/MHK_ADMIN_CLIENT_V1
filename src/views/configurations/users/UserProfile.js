@@ -7,22 +7,23 @@ import { Modal, ModalGateway } from 'react-images';
 
 import { photos } from './gallery';
 
-import avatar1 from '../../assets/images/user/avatar-1.jpg';
-import avatar2 from '../../assets/images/user/avatar-2.jpg';
-import avatar3 from '../../assets/images/user/avatar-3.jpg';
-import avatar4 from '../../assets/images/user/avatar-4.jpg';
-import avatar5 from '../../assets/images/user/avatar-5.jpg';
+import avatar1 from '../../../assets/images/user/avatar-1.jpg';
+import avatar2 from '../../../assets/images/user/avatar-2.jpg';
+import avatar3 from '../../../assets/images/user/avatar-3.jpg';
+import avatar4 from '../../../assets/images/user/avatar-4.jpg';
+import avatar5 from '../../../assets/images/user/avatar-5.jpg';
 
-import bg1 from '../../assets/images/profile/bg-1.jpg';
-import bg2 from '../../assets/images/profile/bg-2.jpg';
-import bg3 from '../../assets/images/profile/bg-3.jpg';
+import bg1 from '../../../assets/images/profile/bg-1.jpg';
+import bg2 from '../../../assets/images/profile/bg-2.jpg';
+import bg3 from '../../../assets/images/profile/bg-3.jpg';
 
-import slider5 from '../../assets/images/widget/slider5.jpg';
-import slider7 from '../../assets/images/widget/slider7.jpg';
-import slider6 from '../../assets/images/widget/slider6.jpg';
+import slider5 from '../../../assets/images/widget/slider5.jpg';
+import slider7 from '../../../assets/images/widget/slider7.jpg';
+import slider6 from '../../../assets/images/widget/slider6.jpg';
 
-import coverImage from '../../assets/images/profile/cover.jpg';
-import LightBox from '../../components/Gallery/LightBox';
+import coverImage from '../../../assets/images/profile/cover.jpg';
+import LightBox from '../../../components/Gallery/LightBox'
+ 
 
 const UserProfile = () => {
   const [activeProfileTab, setActiveProfileTab] = useState('home');

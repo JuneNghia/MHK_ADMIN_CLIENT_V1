@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Row, Col, Card, Pagination } from 'react-bootstrap';
 import BTable from 'react-bootstrap/Table';
 
-import { GlobalFilter } from './GlobalFilter';
+import GlobalFilter from '../../../components/Filter/GlobalFilter';
 
 import { useTable, useSortBy, usePagination, useGlobalFilter } from 'react-table';
 import makeData from '../../../data/taskListData';

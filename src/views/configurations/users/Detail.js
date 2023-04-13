@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Form, Button, FormLabel, Badge, FormGroup, FormControl } from 'react-bootstrap';
-import services from '../../utils/axios';
+import services from '../../../utils/axios';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { useHistory, useParams } from 'react-router-dom';
-import { ButtonLoading } from '../../components/Button/LoadButton';
+import { ButtonLoading } from '../../../components/Button/LoadButton';
 import { Helmet } from 'react-helmet';
 import moment from 'moment';
 import Positions from './Positions';
 import { Formik } from 'formik';
-import ModalComponent from '../../components/Modal/Modal';
+import ModalComponent from '../../../components/Modal/Modal';
 import * as Yup from 'yup';
-import ProvinceDistrictSelect from '../../data/proviceSelect';
+import ProvinceDistrictSelect from '../../../data/proviceSelect';
 import Select from 'react-select';
 
 const UserDetail = () => {

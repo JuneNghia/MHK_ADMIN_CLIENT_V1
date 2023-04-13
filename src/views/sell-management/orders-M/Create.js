@@ -24,14 +24,8 @@ import { Helmet } from 'react-helmet';
 import GiftIcon from '../../../assets/icon/gift.svg';
 
 const FormsElements = () => {
-  const [validated, setValidated] = useState(false);
-  const [validatedTooltip, setValidatedTooltip] = useState(false);
-  const [supportedCheckbox, setSupportedCheckbox] = useState(false);
-  const [supportedRadio, setSupportedRadio] = useState(false);
-  const [supportedSelect, setSupportedSelect] = useState(0);
-  const [supportedFile, setSupportedFile] = useState(0);
+  
   const [showLoader, setShowLoader] = useState(false);
-  const [selectedOption, setSelectedOption] = useState();
 
   const navigate = useHistory();
 
@@ -111,23 +105,6 @@ const FormsElements = () => {
   //   }
   //   setValidated(true);
   // };
-
-  const handleSubmitTooltip = (event) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    setValidatedTooltip(true);
-  };
-
-  const supportedSelectHandler = (event) => {
-    setSupportedSelect(parseInt(event.target.value));
-  };
-
-  const supportedFileHandler = (event) => {
-    setSupportedFile(!!event.target.value);
-  };
 
   const sweetSuccessAlert = () => {
     const MySwal = withReactContent(Swal);
@@ -288,7 +265,7 @@ const FormsElements = () => {
                     Bán bởi
                   </Form.Label>
                   <Col sm={9}>
-                    <Select defaultValue={valueStaff[0]} onChange={setSelectedOption} options={valueStaff} />
+                    <Select defaultValue={valueStaff[0]}  options={valueStaff} />
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="formHorizontalEmail">
@@ -296,7 +273,7 @@ const FormsElements = () => {
                     Bán tại
                   </Form.Label>
                   <Col sm={9}>
-                    <Select defaultValue={valueStaff[0]} onChange={setSelectedOption} options={valueStaff} />
+                    <Select defaultValue={valueStaff[0]}  options={valueStaff} />
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="formHorizontalEmail">
@@ -304,7 +281,7 @@ const FormsElements = () => {
                     Nguồn
                   </Form.Label>
                   <Col sm={9}>
-                    <Select defaultValue={valueStaff[0]} onChange={setSelectedOption} options={valueStaff} />
+                    <Select defaultValue={valueStaff[0]}  options={valueStaff} />
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="formHorizontalEmail">
@@ -344,7 +321,7 @@ const FormsElements = () => {
                     Thanh toán dự kiến
                   </Form.Label>
                   <Col sm={9}>
-                    <Select defaultValue={valueStaff[0]} onChange={setSelectedOption} options={valueStaff} />
+                    <Select defaultValue={valueStaff[0]} options={valueStaff} />
                   </Col>
                 </Form.Group>
               </Form>

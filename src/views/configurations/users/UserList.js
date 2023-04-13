@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Button, Badge } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
-import services from '../../utils/axios';
+import services from '../../../utils/axios';
 import { Helmet } from 'react-helmet';
 import moment from 'moment';
-import NoPermission from '../errors/NoPermission';
-import CustomTable from '../../components/Table/CustomTable';
-import Error from '../maintenance/Error';
+import CustomTable from '../../../components/Table/CustomTable';
+import Error from '../../maintenance/Error';
+import NoPermission from '../../errors/NoPermission';
 
 function ListUsers() {
   const [listEmployees, setListEmployees] = useState([]);

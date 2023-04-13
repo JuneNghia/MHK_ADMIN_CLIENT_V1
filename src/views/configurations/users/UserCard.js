@@ -2,24 +2,24 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, Col, Carousel, Dropdown, Row, Tab, Tabs, Button } from 'react-bootstrap';
 
-import imgAvatar1 from '../../assets/images/user/img-avatar-1.jpg';
-import imgAvatar2 from '../../assets/images/user/img-avatar-2.jpg';
-import imgAvatar3 from '../../assets/images/user/img-avatar-3.jpg';
+import imgAvatar1 from '../../../assets/images/user/img-avatar-1.jpg';
+import imgAvatar2 from '../../../assets/images/user/img-avatar-2.jpg';
+import imgAvatar3 from '../../../assets/images/user/img-avatar-3.jpg';
 
-import avatar1 from '../../assets/images/user/avatar-1.jpg';
-import avatar2 from '../../assets/images/user/avatar-2.jpg';
-import avatar3 from '../../assets/images/user/avatar-3.jpg';
-import avatar4 from '../../assets/images/user/avatar-4.jpg';
-import avatar5 from '../../assets/images/user/avatar-5.jpg';
-import cover from '../../assets/images/user/cover.jpg';
+import avatar1 from '../../../assets/images/user/avatar-1.jpg';
+import avatar2 from '../../../assets/images/user/avatar-2.jpg';
+import avatar3 from '../../../assets/images/user/avatar-3.jpg';
+import avatar4 from '../../../assets/images/user/avatar-4.jpg';
+import avatar5 from '../../../assets/images/user/avatar-5.jpg';
+import cover from '../../../assets/images/user/cover.jpg';
 
-import slider5 from '../../assets/images/widget/slider5.jpg';
-import slider7 from '../../assets/images/widget/slider7.jpg';
-import slider6 from '../../assets/images/widget/slider6.jpg';
+import slider5 from '../../../assets/images/widget/slider5.jpg';
+import slider7 from '../../../assets/images/widget/slider7.jpg';
+import slider6 from '../../../assets/images/widget/slider6.jpg';
 
-import userBlurBg from '../../assets/images/widget/user-blur-bg.png';
-import imgRound1 from '../../assets/images/widget/img-round1.jpg';
-import profilePerson1 from '../../assets/images/widget/profile-person1.jpg';
+import userBlurBg from '../../../assets/images/widget/user-blur-bg.png';
+import imgRound1 from '../../../assets/images/widget/img-round1.jpg';
+import profilePerson1 from '../../../assets/images/widget/profile-person1.jpg';
 
 const UserCard = () => {
   return (

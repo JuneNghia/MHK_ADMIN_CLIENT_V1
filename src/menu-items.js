@@ -15,14 +15,6 @@ const menuItems = {
           icon: 'feather icon-home',
           url: '/app/dashboard/default'
         },
-        {
-          id: 'message',
-          title: 'Tin nhắn',
-          type: 'item',
-          classes: 'nav-item',
-          url: '/message',
-          icon: 'feather icon-message-circle'
-        }
       ]
     },
     {
@@ -184,21 +176,29 @@ const menuItems = {
           icon: 'feather icon-users',
           url: '/app/sell-management/customers'
         },
+      ]
+    },
+    {
+      id: 'advance',
+      title: 'Nâng cao',
+      type: 'group',
+      icon: 'icon-ui',
+      children: [
         {
-          id: 'users',
-          title: 'Nhân viên',
+          id: 'applications',
+          title: 'Ứng dụng',
           type: 'item',
-          icon: 'feather icon-users',
-          url:'/app/sell-management/users'
+          icon: 'feather icon-grid',
+          url:'/app/application'
         },
         {
-          id: 'locations',
-          title: 'Quản lý chi nhánh',
+          id: 'configurations',
+          title: 'Cấu hình',
           type: 'item',
-          icon: 'feather icon-map-pin',
-          url:'/app/settings/branches'
-        }
-      ]
+          icon: 'feather icon-settings',
+          url:'/app/configurations'
+        },
+      ],
     }
   ]
 };

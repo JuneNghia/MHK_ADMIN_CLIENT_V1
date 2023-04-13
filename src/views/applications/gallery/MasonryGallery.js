@@ -4,7 +4,6 @@ import { Row, Col, Card } from 'react-bootstrap';
 import GalleryMasonry from '../../../components/Gallery/GalleryMasonry';
 
 import image1 from '../../../assets/images/gallery-grid/masonry-1.jpg';
-import image2 from '../../../assets/images/gallery-grid/masonry-2.jpg';
 import image3 from '../../../assets/images/gallery-grid/masonry-3.jpg';
 import image4 from '../../../assets/images/gallery-grid/masonry-4.jpg';
 import image5 from '../../../assets/images/gallery-grid/masonry-5.jpg';
@@ -13,7 +12,7 @@ import image7 from '../../../assets/images/gallery-grid/masonry-7.jpg';
 import image8 from '../../../assets/images/gallery-grid/masonry-8.jpg';
 
 let brakePoints = [350, 500, 750];
-let images = [image1, image2, image3, image4, image5, image6, image7, image2, image8, image4];
+let images = [image1, image3, image4, image5, image6, image7, image8, image4];
 
 const Tile = ({ src }) => {
   return (

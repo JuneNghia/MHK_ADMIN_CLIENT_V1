@@ -1,64 +1,74 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Form, Button } from 'react-bootstrap';
-import services from '../../../../utils/axios';
+import services from '../../../utils/axios';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import { ButtonLoading } from '../../../../components/Button/LoadButton';
-import { useHistory } from 'react-router-dom';
+import { ButtonLoading } from '../../../components/Button/LoadButton';
+import { useHistory, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-import ProvinceDistrictSelect from '../../../../data/proviceSelect';
-import Select from 'react-select';
 
-const FormsElements = () => {
+const Edit = () => {
   const [showLoader, setShowLoader] = useState(false);
   const history = useHistory();
-  const [optionsStaff, setOptionsStaff] = useState([]);
+  const { id } = useParams();
 
-  useEffect(()=> {
-    services.get('/staff/get-all')
-    .then((res) => {
-      const result = res.data.data;
-      const options = result.map((staff) => ({
-        label: staff.staff_name,
-        value: staff.id
-      }));
-      setOptionsStaff(options);
-    })
-    .catch((err) => {});
-  }, [])
+  const [customer, setCustomer] = useState({
+    name: '',
+    code: '',
+    phone: '',
+    email: ''
+  });
 
-  console.log(optionsStaff)
+  const keyMapping = {
+    name: 'user_name',
+    code: 'user_code',
+    phone: 'user_phone',
+    email: 'user_email'
+  };
 
-  const gender = [
-    { label: 'Nam', value: 'male' },
-    { label: 'Nữ', value: 'female' },
-    { label: 'Khác', value: 'others' }
-  ];
+  useEffect(() => {
+    async function fetchCustomer() {
+      const response = await services.get(`/customer/get-by-id/${id}`);
+      setCustomer({
+        name: response.data.data.customer_name,
+        code: response.data.data.customer_code,
+        email: response.data.data.customer_email,
+        phone: response.data.data.customer_phone
+      });
+    }
+    fetchCustomer();
+  }, [id]);
 
   const handleSubmit = (values) => {
-    const customerData = {
-      user_name: values.name,
-      user_code: values.code,
-      user_phone: values.phone,
-      user_email: values.email,
-      customer_region: values.province,
-      customer_commune: values.district,
-      customer_address: values.address,
-      note: values.note,
-      tags: values.tags,
-      staff_id: values.staff.value,
-      // staff_in_charge_note: data.staff_in_charge_note
-    };
-    console.log(customerData);
+    //Vòng lặp for sẽ duyệt các giá trị trong values so sánh với các giá trị của Customer
+    //Nếu trường nào có giá trị không thay đổi thì không được gửi lên server
+    const updatedFields = {};
+    for (const key in values) {
+      if (values.hasOwnProperty(key) && values[key] !== customer[key]) {
+        updatedFields[key] = values[key];
+      }
+    }
+
+    //Thay đổi những key mặc định trong updateFields thành những tên key được đặt trong server
+    //Ví dụ : name -> customer_name ...
+    const updatedFieldsWithApiKeys = {};
+    for (const key in updatedFields) {
+      if (updatedFields.hasOwnProperty(key)) {
+        const newKey = keyMapping[key] || key;
+        updatedFieldsWithApiKeys[newKey] = updatedFields[key];
+      }
+    }
+
+    //Cập nhật khách hàng
     services
-      .post('/customer/create', customerData)
+      .patch(`/customer/update-personalInfo-by-id/${id}`, updatedFieldsWithApiKeys)
       .then((response) => {
         setShowLoader(true);
         setTimeout(() => {
           setShowLoader(false);
-          history.push('/app/sell-management/customers');
+          history.push(`/app/sell-management/customers/${id}`);
           sweetSuccessAlert();
         }, 1000);
       })
@@ -73,7 +83,6 @@ const FormsElements = () => {
             return `Email: <b>${values.email}</b> đã tồn tại`;
           } else return `Mã KH: <b>${values.code}</b> đã tồn tại`;
         });
-
         setShowLoader(true);
         setTimeout(() => {
           setShowLoader(false);
@@ -89,7 +98,7 @@ const FormsElements = () => {
 
   const sweetSuccessAlert = () => {
     const MySwal = withReactContent(Swal);
-    MySwal.fire('', 'Lưu khách hàng mới thành công', 'success');
+    MySwal.fire('', `Cập nhật thông tin khách hàng thành công`, 'success');
   };
 
   const sweetConfirmAlert = () => {
@@ -104,7 +113,7 @@ const FormsElements = () => {
       showCancelButton: true
     }).then((willExit) => {
       if (willExit.isConfirmed) {
-        return history.replace('../customers');
+        return history.push(`/app/sell-management/customers/${id}`);
       } else {
         return;
       }
@@ -112,55 +121,34 @@ const FormsElements = () => {
   };
 
   const phoneRegExp = /^(0|\+84)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0|3|4|5|7|8])+([0-9]{7})$/;
-
   const validateSchema = Yup.object().shape({
     name: Yup.string().required('Tên khách hàng không được để trống'),
     email: Yup.string().email('Email không hợp lệ').required('Email không được để trống'),
     phone: Yup.string().matches(phoneRegExp, 'Số điện thoại không hợp lệ').required('Số điện thoại không được để trống'),
-    code: Yup.string().required('Mã khách hàng không được để trống'),
-    address: Yup.string().required('Địa chỉ không được để trống'),
-    province: Yup.string().required('Vui lòng chọn Tỉnh/Thành phố')
+    code: Yup.string().required('Mã khách hàng không được để trống')
   });
 
   return (
     <React.Fragment>
       <Helmet>
-        <title>Thêm mới khách hàng</title>
+        <title>Cập nhật thông tin khách hàng</title>
       </Helmet>
 
-      <Formik
-        initialValues={{
-          name: '',
-          phone: '',
-          email: '',
-          code: '',
-          address: '',
-          province: '',
-          district: '',
-          tags: '',
-          note: '',
-          staff: ''
-        }}
-        validationSchema={validateSchema}
-        onSubmit={handleSubmit}
-      >
-        {({ errors, setFieldValue, handleBlur, handleChange, handleSubmit, touched, values, isValid }) => (
+      <Formik enableReinitialize={true} initialValues={customer} validationSchema={validateSchema} onSubmit={handleSubmit}>
+        {({dirty, errors, handleBlur, handleChange, handleSubmit, touched, values, isValid }) => (
           <Form noValidate onSubmit={handleSubmit}>
             <span className="flex-between">
               <Button onClick={sweetConfirmAlert} variant="outline-primary" className="mr-0" style={{ marginBottom: 15 }}>
                 <i className="feather icon-arrow-left"></i>
-                Quay lại danh sách khách hàng
+               Quay lại
               </Button>
               <ButtonLoading
-                text={<span>
-                  <i className="feather icon-plus-circle mr-2"></i>
-                  Lưu khách hàng mới
-                </span>}
+                text={'Cập nhật'}
                 onSubmit={handleSubmit}
                 loading={showLoader}
                 type="submit"
-                disabled={showLoader}
-                style={{margin: "0 0 15px 0"}}
+                disabled={!dirty || showLoader}
+                style={{ margin: 0, marginBottom: 15 }}
               ></ButtonLoading>
             </span>
 
@@ -175,17 +163,17 @@ const FormsElements = () => {
                       <Card.Body>
                         <Row>
                           <Col md={12}>
-                            <Form.Group controlId="nameCustomer">
+                            <Form.Group controlId="formName">
                               <Form.Label>
                                 Tên khách hàng <span className="text-c-red">*</span>
                               </Form.Label>
                               <Form.Control
                                 name="name"
-                                onError={errors.name}
-                                value={values.name}
+                                onError={touched.name && errors.name}
+                                onBlur={handleBlur}
                                 onChange={handleChange}
-                                type="text"
                                 placeholder="Nhập tên khách hàng"
+                                value={values.name}
                               />
                               {touched.name && errors.name && <small class="text-danger form-text">{errors.name}</small>}
                             </Form.Group>
@@ -195,9 +183,11 @@ const FormsElements = () => {
                               </Form.Label>
                               <Form.Control
                                 name="email"
-                                value={values.email}
+                                onError={touched.email && errors.email}
+                                onBlur={handleBlur}
                                 onChange={handleChange}
                                 type="email"
+                                value={values.email}
                                 placeholder="Nhập địa chỉ email"
                               />
                               {touched.email && errors.email && <small class="text-danger form-text">{errors.email}</small>}
@@ -210,6 +200,8 @@ const FormsElements = () => {
                               </Form.Label>
                               <Form.Control
                                 name="code"
+                                onBlur={handleBlur}
+                                onError={touched.code && errors.code}
                                 value={values.code}
                                 onChange={handleChange}
                                 type="text"
@@ -225,6 +217,8 @@ const FormsElements = () => {
                                 Số điện thoại <span className="text-c-red">*</span>
                               </Form.Label>
                               <Form.Control
+                                onBlur={handleBlur}
+                                onError={touched.phone && errors.phone}
                                 value={values.phone}
                                 name="phone"
                                 onChange={handleChange}
@@ -232,34 +226,6 @@ const FormsElements = () => {
                                 placeholder="Nhập số điện thoại"
                               />
                               {touched.phone && errors.phone && <small class="text-danger form-text">{errors.phone}</small>}
-                            </Form.Group>
-                          </Col>
-                          <Col sm={12} lg={12}>
-                            <Form.Group>
-                              <ProvinceDistrictSelect
-                              initialValues={{province: null, district: null}}
-                                onChange={(p, d) => {
-                                  setFieldValue('province', p, true);
-                                  setFieldValue('district', d, false)
-                                }}
-                              />
-                              {touched.province && errors.province && <small class="text-danger form-text">{errors.province}</small>}
-                            </Form.Group>
-                          </Col>
-                          <Col sm={12} lg={12}>
-                            <Form.Group controlId="addressCustomer">
-                              <Form.Label>
-                                Địa chỉ <span className="text-c-red">*</span>
-                              </Form.Label>
-                              <Form.Control
-                                name="address"
-                                placeholder="Ghi rõ tầng, số nhà, phường xã, ..."
-                                value={values.address}
-                                onChange={handleChange}
-                                as="textarea"
-                                rows="3"
-                              />
-                              {touched.address && errors.address && <small class="text-danger form-text">{errors.address}</small>}
                             </Form.Group>
                           </Col>
                         </Row>
@@ -295,12 +261,11 @@ const FormsElements = () => {
                           <Col md={6}>
                             <Form.Group controlId="sexCustomer">
                               <Form.Label>Giới tính</Form.Label>
-                              <Select
-                                    name="gender"
-                                    onChange={(g) => setFieldValue('gender', g)}
-                                    options={gender}
-                                    defaultValue={gender[0]}
-                              ></Select>
+                              <Form.Control as="select">
+                                <option>Khác</option>
+                                <option>Nam</option>
+                                <option>Nữ</option>
+                              </Form.Control>
                             </Form.Group>
                             <Form.Group controlId="taxIdCustomer">
                               <Form.Label>Mã số thuế</Form.Label>
@@ -328,20 +293,25 @@ const FormsElements = () => {
                       <Card.Body>
                         <Form.Group controlId="staffCb">
                           <Form.Label>Nhân viên phụ trách</Form.Label>
-                          <Select name="staff" options={optionsStaff} placeholder="Chọn nhân viên" defaultValue={optionsStaff[0]} onChange={(s) => setFieldValue('staff', s) }/>
+                          <Form.Control value={''} onChange={handleChange} name="staff_id" as="select">
+                            <option>Nghĩa</option>
+                            <option>Tuấn</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                          </Form.Control>
                         </Form.Group>
                         <Form.Group controlId="description">
                           <Form.Label>Mô tả</Form.Label>
-                          <Form.Control value={values.note} onChange={handleChange} name="note" as="textarea" rows="3" />
+                          <Form.Control value={''} onChange={handleChange} name="staff_in_charge_note" as="textarea" rows="3" />
                         </Form.Group>
                         <Form.Group controlId="tag">
                           <Form.Label>Tag</Form.Label>
-                          <Form.Control value={values.tags} onChange={handleChange} name="tags" as="textarea" rows="3" />
+                          <Form.Control as="textarea" rows="3" />
                         </Form.Group>
                       </Card.Body>
                     </Card>
                   </Col>
-
                   <Col sm={12} lg={12}>
                     <Card>
                       <Card.Header>
@@ -384,4 +354,4 @@ const FormsElements = () => {
   );
 };
 
-export default FormsElements;
+export default Edit;

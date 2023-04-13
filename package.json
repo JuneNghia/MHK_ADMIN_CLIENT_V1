@@ -9,6 +9,7 @@
   "dependencies": {
     "@amcharts/amcharts5": "^5.1.8",
     "@amcharts/amcharts5-geodata": "^5.0.2",
+    "@auth0/auth0-spa-js": "^1.20.1",
     "@ckeditor/ckeditor5-build-balloon": "33.0.0",
     "@ckeditor/ckeditor5-build-classic": "33.0.0",
     "@ckeditor/ckeditor5-build-decoupled-document": "33.0.0",
@@ -27,6 +28,7 @@
     "apexcharts": "^3.33.2",
     "aphrodite": "^2.4.0",
     "axios": "^0.26.0",
+    "axios-mock-adapter": "^1.20.0",
     "bootstrap": "^4.6.0",
     "caniuse-lite": "^1.0.30001460",
     "chart.js": "^2.9.4",
@@ -119,8 +121,8 @@
     "yup": "^0.32.9"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "node -r dotenv/config ./node_modules/react-scripts/scripts/start.js",
+    "build": "node -r dotenv/config ./node_modules/react-scripts/scripts/build.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -143,6 +145,7 @@
     ]
   },
   "devDependencies": {
+    "dotenv": "^16.0.3",
     "prettier": "2.6.0"
   }
 }

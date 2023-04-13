@@ -583,3 +583,14 @@ tbody {
 .hover-transparent:focus {
   background-color: transparent !important;
 }
+
+.hover-card{
+  background-color: #F2F9FF;
+  box-shadow: none;
+  transition: none;
+  border: solid 1px transparent;
+}
+
+.hover-card:hover{
+  border: solid 1px ;
+}

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Button, Dropdown, DropdownButton } from 'react-bootstrap';
+import { Row, Col, Card, Button } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
-import services from '../../../../utils/axios';
+import services from '../../../utils/axios';
 import moment from 'moment';
-import CustomTable from '../../../../components/Table/CustomTable';
+import CustomTable from '../../../components/Table/CustomTable';
 import { useHistory } from 'react-router-dom';
-import Error from '../../../maintenance/Error';
+import Error from '../../maintenance/Error';
+
 
 function ListCustomers() {
   const history = useHistory();

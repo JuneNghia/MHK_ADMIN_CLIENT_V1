@@ -121,22 +121,22 @@ const routes = [
       {
         exact: true,
         path: '/app/sell-management/customers',
-        component: lazy(() => import('./views/sell-management/customers-M/customers'))
+        component: lazy(() => import('./views/sell-management/customers-M'))
       },
       {
         exact: true,
         path: '/app/sell-management/customers/create',
-        component: lazy(() => import('./views/sell-management/customers-M/customers/Create'))
+        component: lazy(() => import('./views/sell-management/customers-M/Create'))
       },
       {
         exact: true,
         path: '/app/sell-management/customers/:id',
-        component: lazy(() => import('./views/sell-management/customers-M/customers/Detail'))
+        component: lazy(() => import('./views/sell-management/customers-M/Detail'))
       },
       {
         exact: true,
         path: '/app/sell-management/customers/:id/edit',
-        component: lazy(() => import('./views/sell-management/customers-M/customers/Edit'))
+        component: lazy(() => import('./views/sell-management/customers-M/Edit'))
       },
       {
         exact: true,
@@ -158,60 +158,70 @@ const routes = [
         path: '/app/sell-management/products/:id',
         component: lazy(() => import('./views/sell-management/products-M/products/Detail'))
       },
+
+      //Configurations
+      {
+        exact: true,
+        path: '/app/configurations',
+        component: lazy(() => import('./views/configurations'))
+      },
       {
         exact: true,
         path: '/users/user-profile',
-        component: lazy(() => import('./views/users/UserProfile'))
+        component: lazy(() => import('./views/configurations/users/UserProfile'))
       },
       {
         exact: true,
         path: '/users/user-cards',
-        component: lazy(() => import('./views/users/UserCard'))
+        component: lazy(() => import('./views/configurations/users/UserCard'))
       },
       {
         exact: true,
         path: '/app/sell-management/users',
-        component: lazy(() => import('./views/users/UserList'))
+        component: lazy(() => import('./views/configurations/users/UserList'))
       },
       {
         exact: true,
         path: '/app/sell-management/users/create',
-        component: lazy(() => import('./views/users/Create'))
+        component: lazy(() => import('./views/configurations/users/Create'))
       },
       {
         exact: true,
         path: '/app/sell-management/users/:id',
-        component: lazy(() => import('./views/users/Detail'))
+        component: lazy(() => import('./views/configurations/users/Detail'))
+      },
+      //Branch
+      {
+        exact: true,
+        path: '/app/configurations/branches',
+        component: lazy(() => import('./views/configurations/agencyBranch-M'))
+      },
+
+      //APP
+      {
+        exact: true,
+        path: '/app/application',
+        component: lazy(() => import('./views/applications'))
       },
       {
         exact: true,
-        path: '/app/settings/branches',
-        component: lazy(() => import('./views/settings/agencyBranch-M'))
+        path: '/app/application/gallery',
+        component: lazy(() => import('./views/applications/gallery/MasonryGallery'))
       },
       {
         exact: true,
-        path: '/todo/todo-basic',
+        path: '/app/application/to-do',
         component: lazy(() => import('./views/applications/to-do/ToDo'))
       },
       {
         exact: true,
-        path: '/message',
+        path: '/app/application/message',
         component: lazy(() => import('./views/applications/message'))
       },
       {
         exact: true,
-        path: '/task/task-list',
+        path: '/app/application/task',
         component: lazy(() => import('./views/applications/task/TaskList'))
-      },
-      {
-        exact: true,
-        path: '/task/task-board',
-        component: lazy(() => import('./views/applications/task/TaskBoard'))
-      },
-      {
-        exact: true,
-        path: '/task/task-detail',
-        component: lazy(() => import('./views/applications/task/TaskDetails'))
       },
       {
         exact: true,

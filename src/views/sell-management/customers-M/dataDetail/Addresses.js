@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Row, Col, Button, Form } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
-import services from '../../../../../utils/axios';
-import ModalComponent from '../../../../../components/Modal/Modal';
+import services from '../../../../utils/axios';
+import ModalComponent from '../../../../components/Modal/Modal';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import Swal from 'sweetalert2';
-import ProvinceDistrictSelect from '../../../../../data/proviceSelect';
-import TableInTabs from '../../../../../components/Table/TableInTabs';
+import ProvinceDistrictSelect from '../../../../data/proviceSelect';
+import TableInTabs from '../../../../components/Table/TableInTabs';
 
 function Addresses() {
   const columns = React.useMemo(

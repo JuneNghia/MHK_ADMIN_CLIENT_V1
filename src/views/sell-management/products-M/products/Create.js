@@ -1,6 +1,6 @@
 import { Formik } from 'formik';
 import React, { useState } from 'react';
-import { Card, Col, Form, FormGroup, Row, Button, FormControl } from 'react-bootstrap';
+import { Card, Col, Form, FormGroup, Row, FormControl } from 'react-bootstrap';
 
 function CreateProducts() {
   const generalInfo = [

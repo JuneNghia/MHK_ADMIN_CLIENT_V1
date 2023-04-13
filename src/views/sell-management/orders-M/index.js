@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Pagination, Button, FormGroup, FormLabel, FormText, Badge, Tab, Tabs } from 'react-bootstrap';
 import BTable from 'react-bootstrap/Table';
 import { useTable, usePagination, useGlobalFilter, useRowSelect } from 'react-table';
-import { GlobalFilter } from '../../users/GlobalFilter';
+import GlobalFilter from '../../../components/Filter/GlobalFilter';
 import { useHistory } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import services from '../../../utils/axios';
