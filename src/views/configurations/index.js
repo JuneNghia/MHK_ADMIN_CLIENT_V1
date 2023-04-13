@@ -16,13 +16,9 @@ const configsMenu = [
         name: 'Nhân viên và phân quyền',
         description: 'Quản lý & phân quyền nhân viên',
         icon: 'feather icon-users',
-        url: '/app/sell-management/users'
+        url: '/app/configurations/users'
       }
     ],
-  },
-  {
-    title: 'Thiết lập bán hàng',
-    children: []
   }
 ];
 

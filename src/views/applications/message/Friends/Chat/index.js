@@ -16,7 +16,7 @@ const Chat = ({ user, chatOpen, listOpen, closed }) => {
     <Media className="chat-messages text-center">
       <Media.Body className="chat-menu-content">
         <div className="">
-          <p className="chat-cont">CHAT NOT FOUND</p>
+          <p className="chat-cont">KHÔNG TẢI ĐƯỢC DỮ LIỆU</p>
         </div>
       </Media.Body>
     </Media>

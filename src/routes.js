@@ -177,17 +177,17 @@ const routes = [
       },
       {
         exact: true,
-        path: '/app/sell-management/users',
+        path: '/app/configurations/users',
         component: lazy(() => import('./views/configurations/users/UserList'))
       },
       {
         exact: true,
-        path: '/app/sell-management/users/create',
+        path: '/app/configurations/users/create',
         component: lazy(() => import('./views/configurations/users/Create'))
       },
       {
         exact: true,
-        path: '/app/sell-management/users/:id',
+        path: '/app/configurations/users/:id',
         component: lazy(() => import('./views/configurations/users/Detail'))
       },
       //Branch

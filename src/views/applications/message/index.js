@@ -53,7 +53,7 @@ const Message = () => {
     return <Friend key={f.id} data={f} activeId={user.id} clicked={() => friendListHandler(f)} />;
   });
 
-  let message = <div className="text-center text-danger">Chat Not Found</div>;
+  let message = <div className="text-center text-c-red">TÍNH NĂNG ĐANG ĐƯỢC XÂY DỰNG</div>;
   chatMsg.filter((chats) => {
     message = chats.messages.map((msg, index) => {
       return <Messages key={index} message={msg} name={user.name} photo={chats.friend_photo} />;
@@ -149,7 +149,7 @@ const Message = () => {
                           <TextInputGroup
                             name="newMsg"
                             id="newMsg"
-                            placeholder="Send message"
+                            placeholder="Nhập tin nhắn ..."
                             required
                             append={
                               <Button type="submit" variant="link" className="btn-theme btn-icon btn-msg-send">

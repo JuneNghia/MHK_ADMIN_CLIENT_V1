@@ -6,7 +6,7 @@ const Search = (props) => {
     <React.Fragment>
       <div className="h-list-header m-b-5">
         <div className="input-group">
-          <input type="text" id="msg-friends" className="form-control" placeholder="Search Friend . . ." onChange={onChange} />
+          <input type="text" id="msg-friends" className="form-control" placeholder="Nhập tên bạn bè . . ." onChange={onChange} />
           <div className="input-group-append">
             <span className="input-group-text">
               <i className="feather icon-search" />

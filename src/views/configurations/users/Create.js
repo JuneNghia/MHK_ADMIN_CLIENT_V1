@@ -54,7 +54,7 @@ const CreateUser = () => {
           setShowLoader(true);
           setTimeout(() => {
             setShowLoader(false);
-            history.push('/app/sell-management/users');
+            history.push('/app/configurations/users');
             Swal.fire({
               html: `Thêm nhân viên <b>${values.name}</b> thành công`,
               icon: 'success'
@@ -145,7 +145,7 @@ const CreateUser = () => {
           <Form noValidate onSubmit={handleSubmit}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <Button
-                onClick={() => history.push('/app/sell-management/users')}
+                onClick={() => history.push('/app/configurations/users')}
                 variant="outline-primary"
                 className="mr-0"
                 style={{ marginBottom: 15 }}

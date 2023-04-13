@@ -17,7 +17,7 @@ function ListUsers() {
 
   const handleRowClick = (row) => {
     const id = row.values.id;
-    history.push(`/app/sell-management/users/${id}`);
+    history.push(`/app/configurations/users/${id}`);
   };
 
   useEffect(() => {
@@ -117,7 +117,7 @@ function ListUsers() {
           <Card>
             <Card.Header className="flex-between">
               <Card.Title as="h5">Danh sách nhân viên</Card.Title>
-              <Button style={{ marginRight: 0 }} onClick={() => history.push('/app/sell-management/users/create')}>
+              <Button style={{ marginRight: 0 }} onClick={() => history.push('/app/configurations/users/create')}>
                 <i className="feather icon-plus-circle mr-2"></i>
                 Thêm nhân viên
               </Button>{' '}

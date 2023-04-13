@@ -122,7 +122,7 @@ const UserDetail = () => {
       gender: 'staff_gender',
       dob: 'staff_birthday',
       province: 'staff_region',
-      district: 'staff_commune',
+      district: 'staff_commune'
     };
 
     const updatedProfile = {};
@@ -139,7 +139,7 @@ const UserDetail = () => {
         updatedProfileWithApiKeys[newKey] = updatedProfile[key];
       }
     }
-    
+
     try {
       services
         .patch(`/staff/update/${id}`, updatedProfileWithApiKeys)
@@ -208,7 +208,7 @@ const UserDetail = () => {
         services
           .delete(`/staff/delete-by-id/${id}`)
           .then((response) => {
-            history.push('/app/sell-management/users');
+            history.push('/app/configurations/users');
             Swal.fire('', 'Xoá nhân viên thành công', 'success');
           })
           .catch((error) => {
@@ -239,7 +239,7 @@ const UserDetail = () => {
         </Helmet>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Button
-            onClick={() => history.push('/app/sell-management/users')}
+            onClick={() => history.push('/app/configurations/users')}
             variant="outline-primary"
             className="mr-0"
             style={{ marginBottom: 15 }}
@@ -416,7 +416,13 @@ const UserDetail = () => {
         <Formik
           enableReinitialize={true}
           onSubmit={handleModalUpdateSubmit}
-          initialValues={{ ...data, gender: data.staff_gender, dob: moment(data.staff_birthday).utcOffset(7).format('YYYY-MM-DD'), province: data.staff_region, district: data.staff_commune }}
+          initialValues={{
+            ...data,
+            gender: data.staff_gender,
+            dob: moment(data.staff_birthday).utcOffset(7).format('YYYY-MM-DD'),
+            province: data.staff_region,
+            district: data.staff_commune
+          }}
           validationSchema={validateSchema}
         >
           {({ errors, dirty, setFieldValue, handleChange, handleSubmit, touched, values }) => (

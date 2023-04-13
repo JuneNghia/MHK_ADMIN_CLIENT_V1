@@ -3,6 +3,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import AllCkEditor from './AllCkEditor';
 
 const CkClassicEditor = (props) => {
+
   return (
     <React.Fragment>
       <AllCkEditor
