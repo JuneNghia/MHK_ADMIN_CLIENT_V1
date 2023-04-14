@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Card, Button } from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
 import { DropzoneComponent } from 'react-dropzone-component';
 
 const FileUpload = () => {

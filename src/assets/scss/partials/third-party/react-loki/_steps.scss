@@ -1,3 +1,5 @@
+@use "sass:math";
+
 .LokiSteps {
   width: 100%;
   position: relative;
@@ -59,7 +61,7 @@
       height: 1px;
       position: absolute;
       width: 100%;
-      top: $loki-step-width-height / 2;
+      top: math.div($loki-step-width-height, 2);
     }
 
     &:last-child {

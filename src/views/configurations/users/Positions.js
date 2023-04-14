@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import Select from 'react-select';
 import services from '../../../utils/axios';
+import { Link } from 'react-router-dom';
 
 const Positions = ({ positions, setPositions }) => {
   const [usedBranchValues, setUsedBranchValues] = useState([]);
@@ -83,7 +84,7 @@ const Positions = ({ positions, setPositions }) => {
                 onChange={(role) => handleRoleChange(role, index)}
                 placeholder="Chọn vai trò"
                 options={availableRoleOptions}
-                noOptionsMessage={()=>('Đã chọn hết vai trò')}
+                noOptionsMessage={() => 'Đã chọn hết vai trò'}
               ></Select>
             </Form.Group>
           </Col>
@@ -99,36 +100,36 @@ const Positions = ({ positions, setPositions }) => {
                 isMulti
                 formatOptionLabel={formatOptionLabel}
                 defaultValue={position.branches}
-                noOptionsMessage={()=>('Đã chọn hết chi nhánh')}
+                noOptionsMessage={() => 'Đã chọn hết chi nhánh'}
               ></Select>
             </Form.Group>
           </Col>
           <Col lg={2}>
             {index === 0 && (
-              <a className="ml-5 mr-5" href="#">
+              <Link to="#" className="ml-5 mr-5" href="#">
                 Xem chi tiết
-              </a>
+              </Link>
             )}
             {index > 0 && (
               <span>
-                <a href="#" className="ml-5 mr-5" onClick={(e) => e.preventDefault()}>
+                <Link to="#" className="ml-5 mr-5" onClick={(e) => e.preventDefault()}>
                   Xem chi tiết
-                </a>
-                <a
-                  href="#"
+                </Link>
+                <Link
+                  to="#"
                   onClick={(e) => {
                     handleRemoveRole(index);
                     e.preventDefault();
                   }}
                 >
                   Xoá
-                </a>
+                </Link>
               </span>
             )}
           </Col>
         </Row>
       ))}
-      
+
       <Row className="mt-2">
         {availableBranchOptions.length === 0 || availableRoleOptions.length === 0 ? null : (
           <Col sm={12} lg={12}>

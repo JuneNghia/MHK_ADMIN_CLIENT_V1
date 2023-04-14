@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Row, Col, Card, Form, Button, FormControl } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { ButtonLoading } from '../../../components/Button/LoadButton';
 import { Helmet } from 'react-helmet';
 import Select from 'react-select';
@@ -97,7 +97,7 @@ const CreateUser = () => {
     }
   };
 
-  const [data, setData] = useState({
+  const data = useState({
     name: '',
     phone: '',
     email: '',
@@ -322,7 +322,7 @@ const CreateUser = () => {
                     <Card>
                       <Card.Header className="flex-between">
                         <Card.Title as="h5">Vai trò nhân viên</Card.Title>
-                        <a href="#">Danh sách vai trò cửa hàng</a>
+                        <Link to="#">Danh sách vai trò cửa hàng</Link>
                       </Card.Header>
                       <Card.Body>
                         <Row>

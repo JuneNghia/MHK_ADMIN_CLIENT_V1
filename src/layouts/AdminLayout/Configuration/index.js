@@ -2,7 +2,6 @@ import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 import TabConfig from './TabConfig';
-import PreBuiltLayout from './PreBuiltLayout';
 import Layout from './Layout';
 
 import { ConfigContext } from '../../../contexts/ConfigContext';
@@ -32,7 +31,6 @@ const Configuration = () => {
           <hr />
           <div className="m-style-scroller">
             <Layout />
-            {/* <PreBuiltLayout /> */}
 
             {/* icon colored */}
             <div style={{marginBottom: '1.5rem', marginTop: '1.5rem'}} className="form-group">

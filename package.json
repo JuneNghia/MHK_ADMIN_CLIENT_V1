@@ -1,6 +1,6 @@
 {
   "name": "mhk-admin",
-  "version": "17.1.0",
+  "version": "1.0.0",
   "engines": {
     "node": "16.17.0",
     "npm": "8.15.0"
@@ -37,7 +37,6 @@
     "deni-react-treeview": "^1.1.11",
     "echarts": "^5.3.1",
     "echarts-for-react": "^3.0.2",
-    "eslint-plugin-jsx-a11y": "^6.7.1",
     "firebase": "^8.3.0",
     "formik": "^2.2.9",
     "highcharts": "^10.0.0",

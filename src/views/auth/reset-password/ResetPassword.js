@@ -21,7 +21,7 @@ const ResetPassword = () => {
             }}
           >
             <div className="col-md-8">
-              <img style={{width: "67%"}} src={logo}></img>
+              <img style={{width: "67%"}} src={logo} alt='logo'></img>
             </div>
           </div>
           <div className="col-lg-4 align-items-stret h-100 align-items-center d-flex justify-content-center">

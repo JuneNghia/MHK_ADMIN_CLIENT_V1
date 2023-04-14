@@ -3,7 +3,7 @@ import { Row, Col, Card, Form, Button, FormLabel, Badge, FormGroup, FormControl 
 import services from '../../../utils/axios';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import { useHistory, useParams } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import { ButtonLoading } from '../../../components/Button/LoadButton';
 import { Helmet } from 'react-helmet';
 import moment from 'moment';
@@ -292,9 +292,9 @@ const UserDetail = () => {
                       </span>
                     </Card.Title>
                     <small>
-                      <a onClick={(e) => handleUpdateProfile(e)} href="#">
+                      <Link to ="#" onClick={(e) => handleUpdateProfile(e)}>
                         Cập nhật thông tin nhân viên
-                      </a>
+                      </Link>
                     </small>
                   </Card.Header>
                   <Card.Body>
@@ -359,7 +359,7 @@ const UserDetail = () => {
                 <Card>
                   <Card.Header className="flex-between">
                     <Card.Title as="h5">Vai trò nhân viên</Card.Title>
-                    <a href="#">Danh sách vai trò cửa hàng</a>
+                    <Link to="#">Danh sách vai trò cửa hàng</Link>
                   </Card.Header>
                   <Card.Body>
                     <Row>

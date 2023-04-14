@@ -3,7 +3,7 @@ import { Row, Col, Card, Form, Button, FormLabel, Badge, Tabs, Tab, Tooltip, Ove
 import services from '../../../utils/axios';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import { useHistory, useParams } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import Addresses from './dataDetail/Addresses';
 
@@ -117,9 +117,9 @@ const UserDetails = () => {
                     </Card.Title>
                     <span>
                       <small>
-                        <a href="#" onClick={handleEditProfile}>
+                        <Link to="#" onClick={handleEditProfile}>
                           Cập nhật
-                        </a>
+                        </Link>
                       </small>
                     </span>
                   </Card.Header>
