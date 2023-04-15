@@ -45,7 +45,7 @@ const ProductDetails = () => {
             text={
               <span style={{ fontWeight: 600 }}>
                 <i className="feather icon-trash-2 mr-2"></i>
-                Xoá khách hàng
+                Xoá sản phẩm
               </span>
             }
             loading={showLoader}
@@ -79,7 +79,7 @@ const ProductDetails = () => {
               </Card.Header>
               <Card.Body>
                 <Row>
-                  <Col sm={12} lg={5}>
+                  <Col sm={12} lg={4}>
                     <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
                       <Form.Label column>Mã SKU</Form.Label>
                       <Col sm={10} lg={6}>
@@ -129,7 +129,7 @@ const ProductDetails = () => {
                       </Col>
                     </Form.Group>
                   </Col>
-                  <Col sm={12} lg={5}>
+                  <Col sm={12} lg={4}>
                     <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
                       <Form.Label column>Loại sản phẩm</Form.Label>
                       <Col sm={10} lg={6}>
@@ -171,7 +171,7 @@ const ProductDetails = () => {
                       </Col>
                     </Form.Group>
                   </Col>
-                  <Col className="flex-between" sm={12} lg={2}>
+                  <Col className="d-flex justify-content-center" sm={12} lg={3}>
                     <div className="text-center">
                     <i className="feather icon-image no-image"></i>
                     <p>Sản phẩm chưa có ảnh tải lên</p>
@@ -188,8 +188,6 @@ const ProductDetails = () => {
                   <Card.Header>
                     <Card.Title as="h5">
                       <span>Giá sản phẩm</span>
-                      
-                      
                     </Card.Title>
                   </Card.Header>
                   <Card.Body>

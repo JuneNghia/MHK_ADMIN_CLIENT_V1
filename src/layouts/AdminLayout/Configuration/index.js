@@ -43,7 +43,7 @@ const Configuration = () => {
                 />
                 <label htmlFor="icon-colored" className="cr" />
               </div>
-              <label>Màu sắc Icon (mặc định: <span className='text-c-red'>Bật</span>)</label>
+              <label>Màu sắc Icon</label>
             </div>
 
             <TabConfig />

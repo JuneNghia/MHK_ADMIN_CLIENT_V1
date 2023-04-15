@@ -5,32 +5,40 @@ export const generalInfo = [
     sm: 12,
     name: 'product_name',
     placeholder: 'Nhập tên sản phẩm',
+    input: "text",
     require: true
   },
   {
     label: 'Mã sản phẩm',
     lg: 6,
     sm: 12,
-    name: 'product_code'
+    name: 'product_code',
+    placeholder: 'Nhập mã sản phẩm',
+    input: "text"
   },
   {
     label: 'Khối lượng',
     lg: 6,
     sm: 12,
-    name: 'product_weight'
+    name: 'product_weight',
+    placeholder: 'Nhập khối lượng',
+    input: "text"
   },
   {
     label: 'Mã vạch/Barcode',
     lg: 6,
     sm: 12,
     name: 'product_barcode',
-    placeholder: 'Nhập tay hoặc sử dụng quét vạch để quét mã vạch (3-15 kí tự)'
+    placeholder: 'Nhập tay hoặc sử dụng quét vạch để quét mã vạch (3-15 kí tự)',
+    input: "text"
   },
   {
     label: 'Đơn vị tính',
     lg: 6,
     sm: 12,
-    name: 'product_unit_price'
+    name: 'product_unit_price',
+    placeholder: 'Nhập đơn vị tính',
+    input: "text"
   }
 ];
 
@@ -40,18 +48,21 @@ export const priceInfo = [
     lg: 6,
     sm: 12,
     name: 'price_retail',
+    input: "text"
   },
   {
     label: 'Giá bán buôn',
     lg: 6,
     sm: 12,
     name: 'price_wholesales',
+    input: "text"
   },
   {
     label: 'Giá nhập',
     lg: 6,
     sm: 12,
     name: 'price_import',
+    input: "text"
   },
 ];
 
@@ -61,34 +72,22 @@ export const additionalInfo = [
     lg: 12,
     sm: 12,
     name: 'product_type',
-    isSelect: true
+    input: "select"
   },
   {
     label: 'Chọn nhãn hiệu',
     lg: 12,
     sm: 12,
     name: 'product_brand',
-    isSelect: true
+    input: "select"
   },
   {
     label: 'Tags',
     lg: 12,
     sm: 12,
     name: 'product_tags',
-    isArea: true
-  },
-  {
-    label: 'Trạng thái',
-    lg: 12,
-    sm: 12,
-    name: 'product_status',
-    isToggle: true
-  },
-  {
-    label: 'Thuế',
-    lg: 12,
-    sm: 12,
-    name: 'product_status',
-    isToggle: true
+    input: "text"
   },
 ]
+
+

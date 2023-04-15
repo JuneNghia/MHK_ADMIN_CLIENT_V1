@@ -8,6 +8,7 @@ import GuestGuard from './components/Auth/GuestGuard';
 import AuthGuard from './components/Auth/AuthGuard';
 
 import { BASE_URL } from './config/constant';
+import NotFound404 from './views/errors/NotFound404';
 
 export const renderRoutes = (routes = []) => (
   <Suspense fallback={<Loader />}>
@@ -54,7 +55,7 @@ const routes = [
   {
     exact: true,
     path: '/maintenance/error',
-    component: lazy(() => import('./views/maintenance/Error'))
+    component: lazy(() => import('./views/errors/Error'))
   },
   {
     exact: true,
@@ -84,26 +85,6 @@ const routes = [
     component: lazy(() => import('./views/auth/ChangePassword'))
   },
   {
-    exact: true,
-    path: '/auth/profile-settings',
-    component: lazy(() => import('./views/auth/ProfileSettings'))
-  },
-  {
-    exact: true,
-    path: '/auth/tabs-auth',
-    component: lazy(() => import('./views/auth/TabsAuth'))
-  },
-  {
-    exact: true,
-    path: '/auth/map-form',
-    component: lazy(() => import('./views/auth/MapForm'))
-  },
-  {
-    exact: true,
-    path: '/auth/subscribe',
-    component: lazy(() => import('./views/auth/Subscribe'))
-  },
-  {
     path: '*',
     layout: AdminLayout,
     guard: AuthGuard,
@@ -112,6 +93,11 @@ const routes = [
         exact: true,
         path: '/app/dashboard/default',
         component: lazy(() => import('./views/dashboard/DashDefault'))
+      },
+      {
+        exact: true,
+        path: '/app/dashboard/crm',
+        component: lazy(() => import('./views/dashboard/DashCrm'))
       },
       {
         exact: true,
@@ -178,7 +164,7 @@ const routes = [
       {
         exact: true,
         path: '/app/configurations/users',
-        component: lazy(() => import('./views/configurations/users/UserList'))
+        component: lazy(() => import('./views/configurations/users'))
       },
       {
         exact: true,

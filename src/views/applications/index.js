@@ -20,7 +20,7 @@ const applicationList = [
     description: 'Quản lý và theo dõi các công việc cần làm',
     url: '/app/application/to-do',
     icon: 'feather icon-edit mr-2'
-  }
+  },
 ];
 
 export default function index() {

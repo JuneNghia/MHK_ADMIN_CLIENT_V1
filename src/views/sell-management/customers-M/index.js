@@ -5,7 +5,7 @@ import services from '../../../utils/axios';
 import moment from 'moment';
 import CustomTable from '../../../components/Table/CustomTable';
 import { useHistory } from 'react-router-dom';
-import Error from '../../maintenance/Error';
+import Error from '../../errors/Error';
 
 
 function ListCustomers() {

@@ -5,7 +5,7 @@ import services from '../../../utils/axios';
 import { Helmet } from 'react-helmet';
 import moment from 'moment';
 import CustomTable from '../../../components/Table/CustomTable';
-import Error from '../../maintenance/Error';
+import Error from '../../errors/Error';
 import NoPermission from '../../errors/NoPermission';
 
 function ListUsers() {
@@ -33,7 +33,7 @@ function ListUsers() {
           setIsLoading(false);
           if (error.response === 'You do not have permission!') {
             setIsNoPermission(error);
-          } else setIsFetched(error)
+          }
         });
     })();
   }, []);

@@ -1,19 +1,23 @@
-
-
 const menuItems = {
   items: [
     {
-      id: 'navigation',
+      id: 'dashboard',
       title: 'Tổng quan',
       type: 'group',
-      icon: 'icon-navigation',
       children: [
         {
-          id: 'dashboard',
-          title: 'Tổng quan',
+          id: 'dashboard-sell',
+          title: 'Bán hàng',
           type: 'item',
-          icon: 'feather icon-home',
+          icon: 'feather icon-database',
           url: '/app/dashboard/default'
+        },
+        {
+          id: 'dashboard-crm',
+          title: 'CRM',
+          type: 'item',
+          icon: 'feather icon-life-buoy',
+          url: '/app/dashboard/crm'
         },
       ]
     },
@@ -21,7 +25,6 @@ const menuItems = {
       id: 'sell-management',
       title: 'Quản lý bán hàng',
       type: 'group',
-      icon: 'icon-ui',
       children: [
         {
           id: 'orders',
@@ -147,7 +150,7 @@ const menuItems = {
           id: 'cash-book',
           title: 'Sổ quỹ',
           type: 'collapse',
-          icon: 'feather icon-monitor',
+          icon: 'feather icon-dollar-sign',
           children: [
             {
               id: 'alert',
@@ -173,7 +176,7 @@ const menuItems = {
           id: 'customers',
           title: 'Khách hàng',
           type: 'item',
-          icon: 'feather icon-users',
+          icon: 'feather icon-user',
           url: '/app/sell-management/customers'
         },
       ]

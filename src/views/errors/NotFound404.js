@@ -15,17 +15,12 @@ const NotFound404 = () => {
                 <img src={Background404} alt="404 - Page Not Found" />
               </div>
               <h5 className="mt-4">Trang không tồn tại</h5>
-              <p className="text-muted">
-                illustration by
-                <Button variant="link" href="https://undraw.co/search" target="_blank" className="p-1 shadow-none">
-                  undraw.co
-                </Button>
-              </p>
-              <Form>
+              
+              <Form className='mt-4'>
                 <Link to="/">
                   <Button variant="danger">
-                    <i className="feather icon-refresh-ccw mr-2" />
-                    Reload
+                    <i className="feather icon-home mr-2" />
+                    Trang chủ
                   </Button>
                 </Link>
               </Form>

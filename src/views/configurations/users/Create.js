@@ -97,7 +97,7 @@ const CreateUser = () => {
     }
   };
 
-  const data = useState({
+  const data = {
     name: '',
     phone: '',
     email: '',
@@ -111,7 +111,7 @@ const CreateUser = () => {
     note: '',
     password: '',
     positions: [{ role: '', branches: [] }]
-  });
+  };
 
   const phoneRegExp = /^(0|\+84)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0|3|4|5|7|8])+([0-9]{7})$/;
 
@@ -269,7 +269,9 @@ const CreateUser = () => {
                               </Col>
                               <Col sm={12} lg={4}>
                                 <Form.Group>
-                                  <Form.Label>Ngày sinh <span className="text-c-red">*</span></Form.Label>
+                                  <Form.Label>
+                                    Ngày sinh <span className="text-c-red">*</span>
+                                  </Form.Label>
                                   <FormControl name="dob" value={values.dob} onChange={handleChange} type="date"></FormControl>
                                   {touched.dob && errors.dob && <small class="text-danger form-text">{errors.dob}</small>}
                                 </Form.Group>

@@ -10,7 +10,7 @@ const JWTLogin = ({ className, ...rest }) => {
   const scriptedRef = useScriptRef();
 
   const handleSubmit = (values, { setErrors, setStatus, setSubmitting }) => {
-    setTimeout( async () => {
+    setTimeout(async () => {
       try {
         await login(values.phone, values.password);
 
@@ -21,12 +21,17 @@ const JWTLogin = ({ className, ...rest }) => {
       } catch (err) {
         if (scriptedRef.current) {
           setStatus({ success: false });
-          setErrors({ submit: err.message });
-          setSubmitting(false);
+          if (err.message === 'Network Error') {
+            setErrors({ submit: 'Lỗi kết nối máy chủ (500)' });
+            setSubmitting(false);
+          } else {
+            setErrors({ submit: 'Tài khoản hoặc mật khẩu không chính xác' });
+            setSubmitting(false);
+          }
         }
       }
-    }, 1000)
-  }
+    }, 1000);
+  };
 
   return (
     <Formik
@@ -45,7 +50,7 @@ const JWTLogin = ({ className, ...rest }) => {
         <form noValidate onSubmit={handleSubmit} className={className} {...rest}>
           {errors.submit && (
             <Col sm={12}>
-              <Alert className="text-c-red">Tài khoản hoặc mật khẩu không chính xác</Alert>
+              <Alert className="text-c-red">{errors.submit}</Alert>
             </Col>
           )}
           <div className="form-group mb-3">
@@ -84,7 +89,7 @@ const JWTLogin = ({ className, ...rest }) => {
           <Row>
             <Col mt={2}>
               <Button className="btn-block mb-4" color="primary" disabled={isSubmitting} size="large" type="submit" variant="primary">
-                {isSubmitting ? "Đang đăng nhập..." : "Đăng nhập"}
+                {isSubmitting ? 'Đang đăng nhập...' : 'Đăng nhập'}
               </Button>
             </Col>
           </Row>

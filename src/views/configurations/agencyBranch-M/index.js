@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 import { Formik } from 'formik';
 import ModalComponent from '../../../components/Modal/Modal';
 import CustomTable from '../../../components/Table/CustomTable';
-import Error from '../../maintenance/Error';
+import Error from '../../errors/Error';
 
 function ListBranches() {
   const columns = React.useMemo(

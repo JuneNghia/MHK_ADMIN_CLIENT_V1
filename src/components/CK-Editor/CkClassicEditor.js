@@ -15,7 +15,6 @@ const CkClassicEditor = (props) => {
             toolbarContainer.appendChild(editor.ui.view.toolbar.element);
             window.editor = editor;
           }
-          // console.log( 'Editor is ready to use!', editor );
         }}
         onChange={(event, editor) => {
           // const data = editor.getData();

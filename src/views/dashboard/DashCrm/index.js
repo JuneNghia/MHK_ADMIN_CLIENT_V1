@@ -95,13 +95,13 @@ const DashCrm = () => {
         <Col xl={4} md={6}>
           <Card>
             <Card.Header>
-              <Card.Title as="h5">Transactions</Card.Title>
-              <Card.Text className="mt-2">Jun 23 - Jul 23</Card.Text>
+              <Card.Title as="h5">Khối lượng giao dịch</Card.Title>
+              <Card.Text className="mt-2">23/6/2023 - 23/7/2023</Card.Text>
             </Card.Header>
             <Card.Body>
               <div className="row align-items-center justify-content-center">
                 <div className="col">
-                  <h3 className="f-w-300 mb-0 float-left">$59,48</h3>
+                  <h3 className="f-w-300 mb-0 float-left">10,483,482,273 VNĐ</h3>
                 </div>
                 <div className="col-auto">
                   <BarChart width={100} height={80} data={dataSaleView}>
@@ -113,13 +113,13 @@ const DashCrm = () => {
           </Card>
           <Card>
             <Card.Header>
-              <Card.Title as="h5">Project Rating</Card.Title>
+              <Card.Title as="h5">Đánh giá dự án</Card.Title>
             </Card.Header>
             <Card.Body>
               <div className="row align-items-center justify-content-center">
                 <div className="col-6">
                   <h2 className="f-w-300 d-flex align-items-center float-left">
-                    4.3 <i className="fa fa-star f-12 m-l-10 text-c-yellow" />
+                    4.7 <i className="fa fa-star f-12 m-l-10 text-c-yellow" />
                   </h2>
                 </div>
                 <div className="col-6">
@@ -134,7 +134,7 @@ const DashCrm = () => {
         <Col xl={4} md={6}>
           <Card>
             <Card.Header>
-              <Card.Title as="h5">News Statistics</Card.Title>
+              <Card.Title as="h5">Thống kê</Card.Title>
             </Card.Header>
             <Card.Body className="pl-0 pr-0 pb-2">
               <AmChartNewsStatistics height="225px" />
@@ -168,7 +168,7 @@ const DashCrm = () => {
         <Col xl={4}>
           <Card>
             <Card.Header>
-              <Card.Title as="h5">Phone Calls</Card.Title>
+              <Card.Title as="h5">Tiếp thị qua điện thoại</Card.Title>
             </Card.Header>
             <Card.Body className="p-0">
               <AmChartPhoneCalls height="380px" />
@@ -178,7 +178,7 @@ const DashCrm = () => {
         <Col xl={8} md={6}>
           <Card className="Recent-Users">
             <Card.Header>
-              <Card.Title as="h5">Recent Users</Card.Title>
+              <Card.Title as="h5">Khách hàng gần đây</Card.Title>
             </Card.Header>
             <Card.Body className="px-0 py-1">
               <Table responsive hover>
