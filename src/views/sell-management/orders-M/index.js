@@ -1,15 +1,46 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Pagination, Button, FormGroup, FormLabel, FormText, Badge, Tab, Tabs } from 'react-bootstrap';
-import BTable from 'react-bootstrap/Table';
-import { useTable, usePagination, useGlobalFilter, useRowSelect } from 'react-table';
-import GlobalFilter from '../../../components/Filter/GlobalFilter';
+import { Row, Col, Card, Button, FormGroup, FormLabel, FormText, Badge, Tab, Tabs } from 'react-bootstrap';
+
 import { useHistory } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import services from '../../../utils/axios';
-import TableInTabs from '../../../components/Table/TableInTabs'
+import TableInTabs from '../../../components/Table/TableInTabs';
 
 function ListOrders() {
   const [listOrders, setListOrders] = useState([]);
+  const [listPendingOrders, setListPendingOrders] = [
+    {
+      title: 'Chờ duyệt',
+      total: '123.456.789',
+      quantity: '4'
+    },
+    {
+      title: 'Chờ thanh toán',
+      total: '123.456.789',
+      quantity: '4'
+    },
+    {
+      title: 'Chờ đóng gói',
+      total: '123.456.789',
+      quantity: '4'
+    },
+    {
+      title: 'Chờ lấy hàng',
+      total: '123.456.789',
+      quantity: '4'
+    },
+    {
+      title: 'Đang giao hàng',
+      total: '123.456.789',
+      quantity: '4'
+    },
+    {
+      title: 'Chờ giao lại',
+      total: '123.456.789',
+      quantity: '4'
+    }
+  ];
+
   const history = useHistory();
 
   const handleRowClick = (row) => {
@@ -103,6 +134,9 @@ function ListOrders() {
 
   return (
     <React.Fragment>
+      <Helmet>
+        <title>Danh sách đơn hàng</title>
+      </Helmet>
       <Row>
         <Col sm={12} lg={12}>
           <span className="flex-between mb-3">
@@ -116,7 +150,7 @@ function ListOrders() {
                 Nhập File
               </Button>
             </span>
-            <Button style={{ marginBottom: 10, marginRight: 0 }} onClick={() => history.push("/app/sell-management/orders/create")}>
+            <Button style={{ marginBottom: 10, marginRight: 0 }} onClick={() => history.push('/app/sell-management/orders/create')}>
               <i className="feather icon-plus-circle mr-2"></i>
               Tạo đơn hàng
             </Button>{' '}
@@ -130,84 +164,21 @@ function ListOrders() {
               <Row style={{ margin: 0 }}>
                 <Col sm={12} lg={12} style={{ padding: 0 }}>
                   <Row style={{ margin: 0 }}>
-                    <Col lg={2} style={{ padding: 0 }} className="dashed-r">
-                      <FormGroup className="form-group-link" style={{ marginBottom: 0, padding: '10px 0' }}>
-                        <FormLabel style={{ padding: '0 25px' }}>
-                          Chờ duyệt
-                          <Badge variant="success" className="ml-1">
-                            4
-                          </Badge>
-                        </FormLabel>
-                        <FormText style={{ padding: '0 25px' }} className="text-normal">
-                          284.488.299
-                        </FormText>
-                      </FormGroup>
-                    </Col>
-                    <Col lg={2} style={{ padding: 0 }} className="dashed-r">
-                      <FormGroup className="form-group-link" style={{ marginBottom: 0, padding: '10px 0' }}>
-                        <FormLabel style={{ padding: '0 25px' }}>
-                          Chờ thanh toán
-                          <Badge variant="success" className="ml-1">
-                            4
-                          </Badge>
-                        </FormLabel>
-                        <FormText style={{ padding: '0 25px' }} className="text-normal">
-                          284.488.299
-                        </FormText>
-                      </FormGroup>
-                    </Col>
-                    <Col lg={2} style={{ padding: 0 }} className="dashed-r">
-                      <FormGroup className="form-group-link" style={{ marginBottom: 0, padding: '10px 0' }}>
-                        <FormLabel style={{ padding: '0 25px' }}>
-                          Chờ đóng gói
-                          <Badge variant="success" className="ml-1">
-                            4
-                          </Badge>
-                        </FormLabel>
-                        <FormText style={{ padding: '0 25px' }} className="text-normal">
-                          284.488.299
-                        </FormText>
-                      </FormGroup>
-                    </Col>
-                    <Col lg={2} style={{ padding: 0 }} className="dashed-r">
-                      <FormGroup className="form-group-link" style={{ marginBottom: 0, padding: '10px 0' }}>
-                        <FormLabel style={{ padding: '0 25px' }}>
-                          Chờ lấy hàng
-                          <Badge variant="success" className="ml-1">
-                            4
-                          </Badge>
-                        </FormLabel>
-                        <FormText style={{ padding: '0 25px' }} className="text-normal">
-                          284.488.299
-                        </FormText>
-                      </FormGroup>
-                    </Col>
-                    <Col lg={2} style={{ padding: 0 }} className="dashed-r">
-                      <FormGroup className="form-group-link" style={{ marginBottom: 0, padding: '10px 0' }}>
-                        <FormLabel style={{ padding: '0 25px' }}>
-                          Đang giao hàng
-                          <Badge variant="success" className="ml-1">
-                            4
-                          </Badge>
-                        </FormLabel>
-                        <FormText style={{ padding: '0 25px' }} className="text-normal">
-                          284.488.299
-                        </FormText>
-                      </FormGroup>
-                    </Col>
-                    <Col lg={2} style={{ padding: 0 }}>
-                      <FormGroup className="form-group-link" style={{ marginBottom: 0, padding: '10px 0' }}>
-                        <FormLabel style={{ padding: '0 25px' }}>
-                          Chờ giao lại
-                          <Badge variant="success" className="ml-1">
-                            4
-                          </Badge>
-                        </FormLabel>
-                        <FormText style={{ padding: '0 25px' }} className="text-normal">
-                          284.488.299
-                        </FormText>
-                      </FormGroup>
-                    </Col>
+                    {listPendingOrders.map((pendingOrders, index) => (
+                      <Col key={index} lg={2} style={{ padding: 0 }} className="dashed-r">
+                        <FormGroup className="form-group-link" style={{ marginBottom: 0, padding: '10px 0' }}>
+                          <FormLabel style={{ padding: '0 25px' }}>
+                            {pendingOrders.title}
+                            <Badge variant="success" className="ml-1">
+                            {pendingOrders.quantity}
+                            </Badge>
+                          </FormLabel>
+                          <FormText style={{ padding: '0 25px' }} className="text-normal">
+                          {pendingOrders.total}
+                          </FormText>
+                        </FormGroup>
+                      </Col>
+                    ))}
                   </Row>
                 </Col>
               </Row>
@@ -217,10 +188,10 @@ function ListOrders() {
         <Col>
           <Tabs variant="pills" defaultActiveKey="history" className="tabs-menu">
             <Tab eventKey="history" title="Tất cả đơn hàng">
-              <TableInTabs columns={columns} data={data} handleRowClick={handleRowClick}/>
+              <TableInTabs columns={columns} data={data} handleRowClick={handleRowClick} />
             </Tab>
             <Tab eventKey="profile" title="Đang giao dịch">
-            <TableInTabs columns={columns} data={data} handleRowClick={handleRowClick}/>
+              <TableInTabs columns={columns} data={data} handleRowClick={handleRowClick} />
             </Tab>
           </Tabs>
         </Col>

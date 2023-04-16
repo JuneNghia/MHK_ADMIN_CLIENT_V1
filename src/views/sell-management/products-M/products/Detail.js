@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Form, Button, FormLabel, Badge, Tabs, Tab, FormGroup, FormCheck } from 'react-bootstrap';
+import { Row, Col, Card, Form, Button, FormLabel, Badge, FormGroup, FormCheck } from 'react-bootstrap';
 import { ButtonLoading } from '../../../../components/Button/LoadButton';
 import { useHistory, useParams } from 'react-router-dom';
 import services from '../../../../utils/axios';

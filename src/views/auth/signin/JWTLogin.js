@@ -62,6 +62,7 @@ const JWTLogin = ({ className, ...rest }) => {
               onBlur={handleBlur}
               onChange={handleChange}
               value={values.phone}
+              autoComplete="username"
             />
             {touched.phone && errors.phone && <small class="text-danger form-text">{errors.phone}</small>}
           </div>
@@ -75,6 +76,7 @@ const JWTLogin = ({ className, ...rest }) => {
               onChange={handleChange}
               type="password"
               value={values.password}
+              autoComplete="current-password"
             />
             {touched.password && errors.password && <small class="text-danger form-text">{errors.password}</small>}
           </div>

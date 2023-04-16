@@ -1,12 +1,16 @@
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-export default function AddDescription(html) {
+export default function AddDescription({onDescriptionChange}) {
   const [isDescription, setIsDescription] = useState(false);
   const [value, setValue] = useState('');
+
+  useEffect(() => {
+    onDescriptionChange(value);
+  }, [value, onDescriptionChange]);
 
   const modules = {
     toolbar: [
@@ -30,7 +34,6 @@ export default function AddDescription(html) {
     ],
   };
 
-  
 
   return (
     <Col>

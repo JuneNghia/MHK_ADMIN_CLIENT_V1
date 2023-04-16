@@ -8,7 +8,6 @@ import GuestGuard from './components/Auth/GuestGuard';
 import AuthGuard from './components/Auth/AuthGuard';
 
 import { BASE_URL } from './config/constant';
-import NotFound404 from './views/errors/NotFound404';
 
 export const renderRoutes = (routes = []) => (
   <Suspense fallback={<Loader />}>
@@ -137,7 +136,7 @@ const routes = [
       {
         exact: true,
         path: '/app/sell-management/products/create',
-        component: lazy(() => import('./views/sell-management/products-M/products/Create'))
+        component: lazy(() => import('./views/sell-management/products-M/products/Create/index'))
       },
       {
         exact: true,

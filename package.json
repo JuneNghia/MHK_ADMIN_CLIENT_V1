@@ -9,7 +9,6 @@
   "dependencies": {
     "@amcharts/amcharts5": "^5.1.8",
     "@amcharts/amcharts5-geodata": "^5.0.2",
-    "@auth0/auth0-spa-js": "^1.20.1",
     "@ckeditor/ckeditor5-build-balloon": "33.0.0",
     "@ckeditor/ckeditor5-build-classic": "33.0.0",
     "@ckeditor/ckeditor5-build-decoupled-document": "33.0.0",
@@ -119,8 +118,8 @@
     "yup": "^0.32.9"
   },
   "scripts": {
-    "start": "node -r dotenv/config ./node_modules/react-scripts/scripts/start.js",
-    "build": "node -r dotenv/config ./node_modules/react-scripts/scripts/build.js",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
