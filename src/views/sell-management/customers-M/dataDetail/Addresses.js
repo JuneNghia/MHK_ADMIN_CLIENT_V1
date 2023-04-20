@@ -4,10 +4,10 @@ import { useParams } from 'react-router-dom';
 import services from '../../../../utils/axios';
 import ModalComponent from '../../../../components/Modal/Modal';
 import { Formik } from 'formik';
-import * as Yup from 'yup';
 import Swal from 'sweetalert2';
 import ProvinceDistrictSelect from '../../../../data/proviceSelect';
 import TableInTabs from '../../../../components/Table/TableInTabs';
+import * as Yup from 'yup';
 
 function Addresses() {
   const columns = React.useMemo(
@@ -18,15 +18,15 @@ function Addresses() {
       },
       {
         Header: 'Địa chỉ',
-        accessor: 'customer_address'
+        accessor: 'user_specific_address'
       },
       {
         Header: 'Quận - Huyện',
-        accessor: 'customer_commune'
+        accessor: 'user_district'
       },
       {
         Header: 'Tỉnh - Thành phố',
-        accessor: 'customer_region'
+        accessor: 'user_province'
       }
     ],
     []
@@ -42,14 +42,14 @@ function Addresses() {
   const { id } = useParams();
   const [idAddress, setIdAddress] = useState(0);
 
-
   useEffect(() => {
     async function fetchAddress() {
       const response = await services.get(`/customer/get-by-id/${id}`);
-      setAddressList(response.data.data.customer_addressList);
+      setAddressList(response.data.data.address_list);
     }
     fetchAddress();
   }, [id]);
+
 
   const [isLoading, setIsLoading] = useState(false);
   const [showModalAdd, setShowModalAdd] = useState(false);
@@ -67,16 +67,16 @@ function Addresses() {
     setShowModalAdd(false);
   };
 
-  const handleSubmitAdd = async (values, actions) => {
+  const handleSubmitAdd = async (values) => {
     setIsLoading(true);
     const newAddress = {
-      customer_address: values.address,
-      customer_region: values.province,
-      customer_commune: values.district
+      user_specific_address: values.address,
+      user_province: values.province,
+      user_district: values.district
     };
     try {
       await services
-        .post(`/customer/address/add/${id}`, newAddress)
+        .post(`/address/add/${id}`, newAddress)
         .then((response) => {
           setTimeout(() => {
             Swal.fire({
@@ -86,10 +86,6 @@ function Addresses() {
               icon: 'success'
             }).then((confirm) => {
               if (confirm.isConfirmed) {
-                // setIsLoading(false);
-                // setAddressList([...addressList, newAddress]);
-                // actions.resetForm();
-                // setShowModalAdd(false);
                 window.location.reload();
               }
             });
@@ -109,19 +105,14 @@ function Addresses() {
     setIsLoading(true);
     try {
       const updateAddress = {
-        customer_address: values.address,
-        customer_region: values.province,
-        customer_commune: values.district
+        user_specific_address: values.address,
+        user_province: values.province,
+        user_district: values.district
       };
+      console.log(updateAddress)
       services
-        .patch(`/customer/address/${idAddress}/update/${id}`, updateAddress)
+        .patch(`/address/update/${idAddress}`, updateAddress)
         .then((response) => {
-          const updatedAddress = addressList.map((address) => {
-            if (address.id === idAddress) {
-              return response.data;
-            }
-            return address;
-          });
           setTimeout(() => {
             Swal.fire({
               text: 'Cập nhật địa chỉ thành công',
@@ -130,9 +121,7 @@ function Addresses() {
               icon: 'success'
             }).then((confirm) => {
               if (confirm.isConfirmed) {
-                setIsLoading(false);
-                setAddressList(updatedAddress);
-                setShowModalUpdate(false);
+                window.location.reload();
               }
             });
           }, 1000);
@@ -150,9 +139,9 @@ function Addresses() {
   const handleRowClick = (row) => {
     setIdAddress(row.values.id);
     setAddressRow({
-      address: row.values.customer_address,
-      province: row.values.customer_region,
-      district: row.values.customer_commune
+      address: row.values.user_specific_address,
+      province: row.values.user_province,
+      district: row.values.user_district
     });
     handleUpdateAddress();
   };
@@ -163,13 +152,14 @@ function Addresses() {
         <i className="feather icon-plus-circle"></i>
         Thêm địa chỉ
       </Button>
-    )
+    );
   };
 
   const validateSchema = Yup.object().shape({
     address: Yup.string().required('Địa chỉ không được để trống'),
     province: Yup.string().required('Vui lòng chọn Tỉnh/Thành phố')
   });
+
 
   if (addressList.length === 0) {
     return <div className="text-center">Khách hàng chưa cập nhật địa chỉ</div>;
@@ -178,7 +168,7 @@ function Addresses() {
       <>
         <Formik onSubmit={handleSubmitAdd} initialValues={{ address: '', province: '', district: '' }} validationSchema={validateSchema}>
           {({ errors, setFieldValue, handleBlur, handleChange, handleSubmit, touched, values, dirty }) => (
-            <Form noValidate>
+            <Form noValidate >
               <ModalComponent
                 show={showModalAdd}
                 handleClose={handleCloseModal}
@@ -186,7 +176,7 @@ function Addresses() {
                 title="Thêm địa chỉ khách hàng"
                 textSubmit={isLoading ? 'Đang thêm...' : 'Thêm'}
                 size="lg"
-                disabled={ !dirty || isLoading}
+                disabled={!dirty || isLoading}
                 body={
                   <Form>
                     <Row>
@@ -282,7 +272,7 @@ function Addresses() {
           )}
         </Formik>
 
-        <TableInTabs columns={columns} data={addressList} handleRowClick={handleRowClick} ButtonAdd={ButtonAdd}/>
+        <TableInTabs columns={columns} data={addressList} handleRowClick={handleRowClick} ButtonAdd={ButtonAdd} />
       </>
     );
 }

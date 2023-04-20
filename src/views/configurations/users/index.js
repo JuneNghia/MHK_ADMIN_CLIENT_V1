@@ -53,15 +53,6 @@ function ListUsers() {
         accessor: 'staff_code'
       },
       {
-        Header: 'Vai trò',
-        accessor: 'staff_type',
-        Cell: ({ value }) => (
-          <Badge style={{ color: value === 'admin' ? 'red' : 'blue' }} className="my-badge">
-            {value}
-          </Badge>
-        )
-      },
-      {
         Header: 'Số điện thoại',
         accessor: 'staff_phone'
       },
@@ -114,13 +105,28 @@ function ListUsers() {
       </Helmet>
       <Row>
         <Col>
+          <Button variant="outline-primary" className="mb-3" onClick={() => history.push('/app/configurations')}>
+            <i className="feather icon-arrow-left"></i>
+            Quay lại cấu hình
+          </Button>
           <Card>
             <Card.Header className="flex-between">
               <Card.Title as="h5">Danh sách nhân viên</Card.Title>
-              <Button style={{ marginRight: 0 }} onClick={() => history.push('/app/configurations/users/create')}>
-                <i className="feather icon-plus-circle mr-2"></i>
-                Thêm nhân viên
-              </Button>{' '}
+              <span>
+                <Button
+                  variant="outline-primary"
+                  className="mr-2"
+                  style={{ marginRight: 0 }}
+                  onClick={() => history.push('/app/configurations/users/tenant_roles')}
+                >
+                  <i className="feather icon-git-commit mr-2"></i>
+                  Phân quyền vai trò
+                </Button>{' '}
+                <Button style={{ marginRight: 0 }} onClick={() => history.push('/app/configurations/users/create')}>
+                  <i className="feather icon-plus-circle mr-2"></i>
+                  Thêm nhân viên
+                </Button>{' '}
+              </span>
             </Card.Header>
             <Card.Body>
               <CustomTable

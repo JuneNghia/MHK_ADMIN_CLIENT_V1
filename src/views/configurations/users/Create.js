@@ -8,9 +8,8 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import ProvinceDistrictSelect from '../../../data/proviceSelect';
 import services from '../../../utils/axios';
-import moment from 'moment';
 import Swal from 'sweetalert2';
-import Positions from './Positions';
+import Positions from './RoleDelegation/Positions';
 
 const CreateUser = () => {
   const [showLoader, setShowLoader] = useState(false);
@@ -19,38 +18,42 @@ const CreateUser = () => {
   const [allowSalePrice, setAllowSalePrice] = useState(false);
 
   const gender = [
-    { label: 'Nam', value: 'male' },
-    { label: 'Nữ', value: 'female' },
-    { label: 'Khác', value: 'others' }
+    { label: 'Nam', value: true },
+    { label: 'Nữ', value: false }
   ];
 
   const handleSubmit = async (values) => {
     const position = values.positions.map((role) => ({
-      title: role.role.label,
-      agencyInChargeIDList: role.branches.map((branch) => branch.value)
+      role_id: role.role.value,
+      agencyBranches_inCharge: role.branches.map((branch) => branch.value)
     }));
+
+    const addressList = [
+      {
+        user_province: values.province,
+        user_district: values.district,
+        user_specific_address: values.address
+      }
+    ];
 
     const newStaff = {
       user_name: values.name,
-      user_code: values.code,
       user_phone: values.phone,
       user_email: values.email,
+      user_password: values.password,
       staff_gender: values.gender.value,
-      staff_region: values.province,
-      staff_commune: values.district,
-      staff_address: values.address,
-      staff_password: values.password,
-      staff_status: 'Đang làm việc',
-      staff_birthday: moment(values.dob).utcOffset(7).format('DD/MM/YYYY'),
-      note_about_staff: values.note,
+      staff_birthday: values.dob,
       isAllowViewImportNWholesalePrice: allowSalePrice,
       isAllowViewShippingPrice: allowShippingPrice,
-      positionIncludeAgencyBranchInCharge: position
+      roles : position,
+      address_list: addressList
     };
+
     try {
       await services
         .post('/staff/create', newStaff)
         .then((res) => {
+          console.log(res)
           setShowLoader(true);
           setTimeout(() => {
             setShowLoader(false);
@@ -102,7 +105,6 @@ const CreateUser = () => {
     phone: '',
     email: '',
     dob: '',
-    code: '',
     address: '',
     gender: '',
     province: '',
@@ -121,7 +123,6 @@ const CreateUser = () => {
       .matches(phoneRegExp, 'Số điện thoại không hợp lệ')
       .length(10, 'Số điện thoại phải có độ dài bằng 10')
       .required('Số điện thoại không được để trống'),
-    code: Yup.string().required('Mã nhân viên không được để trống'),
     dob: Yup.date().required('Ngày sinh không được để trống'),
     address: Yup.string().required('Địa chỉ không được để trống'),
     province: Yup.string().required('Vui lòng chọn Tỉnh/Thành phố'),
@@ -255,21 +256,6 @@ const CreateUser = () => {
                               <Col sm={12} lg={4}>
                                 <Form.Group>
                                   <Form.Label>
-                                    Mã nhân viên <span className="text-c-red">*</span>
-                                  </Form.Label>
-                                  <FormControl
-                                    name="code"
-                                    value={values.code}
-                                    onChange={handleChange}
-                                    type="text"
-                                    placeholder="Nhập mã nhân viên"
-                                  ></FormControl>
-                                  {touched.code && errors.code && <small class="text-danger form-text">{errors.code}</small>}
-                                </Form.Group>
-                              </Col>
-                              <Col sm={12} lg={4}>
-                                <Form.Group>
-                                  <Form.Label>
                                     Ngày sinh <span className="text-c-red">*</span>
                                   </Form.Label>
                                   <FormControl name="dob" value={values.dob} onChange={handleChange} type="date"></FormControl>
@@ -299,6 +285,7 @@ const CreateUser = () => {
                                     onChange={handleChange}
                                     placeholder="Nhập mật khẩu"
                                     type="password"
+                                    autoComplete="current-password"
                                   ></FormControl>
                                   {touched.password && errors.password && <small class="text-danger form-text">{errors.password}</small>}
                                 </Form.Group>

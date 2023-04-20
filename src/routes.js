@@ -144,12 +144,14 @@ const routes = [
         component: lazy(() => import('./views/sell-management/products-M/products/Detail'))
       },
 
-      //Configurations
+      //-----------BEGIN - Configurations ----------------
       {
         exact: true,
         path: '/app/configurations',
         component: lazy(() => import('./views/configurations'))
       },
+
+      //User
       {
         exact: true,
         path: '/users/user-profile',
@@ -167,6 +169,11 @@ const routes = [
       },
       {
         exact: true,
+        path: '/app/configurations/users/tenant_roles',
+        component: lazy(() => import('./views/configurations/users/RoleDelegation/'))
+      },
+      {
+        exact: true,
         path: '/app/configurations/users/create',
         component: lazy(() => import('./views/configurations/users/Create'))
       },
@@ -179,10 +186,19 @@ const routes = [
       {
         exact: true,
         path: '/app/configurations/branches',
-        component: lazy(() => import('./views/configurations/agencyBranch-M'))
+        component: lazy(() => import('./views/configurations/agencyBranch'))
       },
 
-      //APP
+      //Price
+      {
+        exact: true,
+        path: '/app/configurations/price_lists',
+        component: lazy(() => import('./views/configurations/price'))
+      },
+
+      //-----------END - Configurations ----------------
+
+      //-----------BEGIN - APP ----------------
       {
         exact: true,
         path: '/app/application',
@@ -208,6 +224,8 @@ const routes = [
         path: '/app/application/task',
         component: lazy(() => import('./views/applications/task/TaskList'))
       },
+      //-----------END - APP ----------------
+
       {
         exact: true,
         path: '*',

@@ -7,7 +7,7 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 import { ButtonLoading } from '../../../components/Button/LoadButton';
 import { Helmet } from 'react-helmet';
 import moment from 'moment';
-import Positions from './Positions';
+import Positions from './RoleDelegation/Positions';
 import { Formik } from 'formik';
 import ModalComponent from '../../../components/Modal/Modal';
 import * as Yup from 'yup';
@@ -43,13 +43,14 @@ const UserDetail = () => {
       const response = await services.get(`/staff/get-by-id/${id}`);
       setData(response.data.data);
       setPositions(
-        response.data.data.staff_position.map((position) => {
+        response.data.data.staffRoleList.map((position) => {
           return {
             id: position.id,
-            role: { label: position.staff_title, value: position.staff_title },
-            branches: position.agency_branch_name_list.map((branch) => ({
-              label: branch.agency_branch_name,
-              value: branch.agency_branch_id
+            role: {label: position.role, value: position.role},
+            branches: position.agencyBranchesInCharge.map((branch) => ({
+              id: branch.id,
+              label: branch.agency_branch_inCharge_name,
+              value: branch.agency_branch_inCharge_name
             }))
           };
         })
@@ -60,6 +61,9 @@ const UserDetail = () => {
     }
     fetchUser();
   }, [id]);
+
+
+  console.log(positions)
 
   const successUpdatePositions = () => {
     setTimeout(() => {

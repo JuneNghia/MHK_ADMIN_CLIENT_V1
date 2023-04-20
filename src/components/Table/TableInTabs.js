@@ -7,7 +7,7 @@ import BTable from 'react-bootstrap/Table';
 import services from '../../utils/axios';
 import Swal from 'sweetalert2';
 
-function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, selectedTitle, object }) {
+function TableInTabs({ columns, data, hiddenColumns = ['id'], handleRowClick, selectedTitle, object, ButtonAdd }) {
   const {
     getTableProps,
     getTableBodyProps,
@@ -101,7 +101,7 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
 
   return (
     <>
-      <Row style={{margin: "0px -3px"}} className="mb-3">
+      <Row style={{ margin: '0px -3px' }} className="mb-3">
         <Col className="d-flex align-items-center">
           Hiển thị
           <select
@@ -139,7 +139,10 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
         </Col>
 
         <Col>
-          <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
+          <Row className="justify-content-end">
+            <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
+            {ButtonAdd ? <ButtonAdd /> : <span className="mr-2"></span> }
+          </Row>
         </Col>
       </Row>
       <BTable striped bordered hover responsive {...getTableProps()}>
@@ -180,7 +183,7 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
           })}
         </tbody>
       </BTable>
-      <Row style={{margin: "0px -3px"}} className="justify-content-between mt-3">
+      <Row style={{ margin: '0px -3px' }} className="justify-content-between mt-3">
         <Col sm={12} md={6}>
           <span className="d-flex align-items-center">
             Trang{' '}
@@ -230,4 +233,4 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
   );
 }
 
-export default CustomTable;
+export default TableInTabs;

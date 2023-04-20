@@ -8,7 +8,7 @@ import TableInTabs from '../../../components/Table/TableInTabs';
 
 function ListOrders() {
   const [listOrders, setListOrders] = useState([]);
-  const [listPendingOrders, setListPendingOrders] = [
+  const listPendingOrders = [
     {
       title: 'Chờ duyệt',
       total: '123.456.789',
@@ -170,11 +170,11 @@ function ListOrders() {
                           <FormLabel style={{ padding: '0 25px' }}>
                             {pendingOrders.title}
                             <Badge variant="success" className="ml-1">
-                            {pendingOrders.quantity}
+                              {pendingOrders.quantity}
                             </Badge>
                           </FormLabel>
                           <FormText style={{ padding: '0 25px' }} className="text-normal">
-                          {pendingOrders.total}
+                            {pendingOrders.total}
                           </FormText>
                         </FormGroup>
                       </Col>

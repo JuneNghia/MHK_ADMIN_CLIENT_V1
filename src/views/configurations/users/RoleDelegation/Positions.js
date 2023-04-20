@@ -1,20 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import Select from 'react-select';
-import services from '../../../utils/axios';
+import services from '../../../../utils/axios';
 import { Link } from 'react-router-dom';
 
 const Positions = ({ positions, setPositions }) => {
   const [usedBranchValues, setUsedBranchValues] = useState([]);
   const [usedRoleValues, setUsedRoleValues] = useState([]);
   const [optionsBranch, setOptionsBranch] = useState([]);
-  const [optionsRole, setOptionsRole] = useState([
-    { label: 'Nhân viên kho', value: 'Nhân viên kho' },
-    { label: 'Nhân viên vận chuyển', value: 'Nhân viên vận chuyển' },
-    { label: 'Nhân viên bán hàng', value: 'Nhân viên bán hàng' },
-    { label: 'Nhân viên kỹ thuật', value: 'Nhân viên kỹ thuật' },
-    { label: 'Kế toán', value: 'Kế toán' }
-  ]);
+  const [optionsRole, setOptionsRole] = useState([]);
 
   useEffect(() => {
     services
@@ -23,11 +17,27 @@ const Positions = ({ positions, setPositions }) => {
         const result = res.data.data;
         const options = result.map((branch) => ({
           label: branch.agency_branch_name,
-          value: branch.id
+          value: branch.agency_branch_name
         }));
         setOptionsBranch(options);
       })
       .catch((err) => {});
+  }, []);
+
+  useEffect(() => {
+    services
+      .get('/role/get-all')
+      .then((res) => {
+        const result = res.data.data;
+        const options = result.map((role) => ({
+          label: role.role_title,
+          value: role.role_title
+        }));
+        setOptionsRole(options);
+      })
+      .catch((err) => {
+        console.log(err)
+      });
   }, []);
 
   const handleAddRole = () => {
@@ -80,7 +90,7 @@ const Positions = ({ positions, setPositions }) => {
               </Form.Label>
               <Select
                 name={`role-${index}`}
-                value={position.role}
+                defaultValue={position.role}
                 onChange={(role) => handleRoleChange(role, index)}
                 placeholder="Chọn vai trò"
                 options={availableRoleOptions}

@@ -14,9 +14,15 @@ const configsMenu = [
       },
       {
         name: 'Nhân viên và phân quyền',
-        description: 'Quản lý & phân quyền nhân viên',
+        description: 'Quản lý và phân quyền nhân viên',
         icon: 'feather icon-users',
         url: '/app/configurations/users'
+      },
+      {
+        name: 'Chính sách giá',
+        description: 'Tạo và quản lý chính sách giá cửa hàng',
+        icon: 'feather icon-users',
+        url: '/app/configurations/price_lists'
       }
     ],
   }

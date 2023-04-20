@@ -10,81 +10,93 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 import ProvinceDistrictSelect from '../../../data/proviceSelect';
 import Select from 'react-select';
+import { validationSchema } from '../../../hooks/useValidation';
 
-const FormsElements = () => {
+const CreateCustomer = () => {
   const [showLoader, setShowLoader] = useState(false);
   const history = useHistory();
   const [optionsStaff, setOptionsStaff] = useState([]);
 
-  useEffect(()=> {
-    services.get('/staff/get-all')
-    .then((res) => {
-      const result = res.data.data;
-      const options = result.map((staff) => ({
-        label: staff.staff_name,
-        value: staff.id
-      }));
-      setOptionsStaff(options);
-    })
-    .catch((err) => {});
-  }, [])
-
-  console.log(optionsStaff)
+  useEffect(() => {
+    services
+      .get('/staff/get-all')
+      .then((res) => {
+        const result = res.data.data;
+        const options = result.map((staff) => ({
+          label: staff.staff_name,
+          value: staff.id
+        }));
+        setOptionsStaff(options);
+      })
+      .catch((err) => {});
+  }, []);
 
   const gender = [
-    { label: 'Nam', value: 'male' },
-    { label: 'Nữ', value: 'female' },
-    { label: 'Khác', value: 'others' }
+    { label: 'Nam', value: true },
+    { label: 'Nữ', value: false }
   ];
 
-  const handleSubmit = (values) => {
-    const customerData = {
-      user_name: values.name,
-      user_code: values.code,
-      user_phone: values.phone,
-      user_email: values.email,
-      customer_region: values.province,
-      customer_commune: values.district,
-      customer_address: values.address,
-      note: values.note,
-      tags: values.tags,
-      staff_id: values.staff.value,
-      // staff_in_charge_note: data.staff_in_charge_note
-    };
-    console.log(customerData);
-    services
-      .post('/customer/create', customerData)
-      .then((response) => {
-        setShowLoader(true);
-        setTimeout(() => {
-          setShowLoader(false);
-          history.push('/app/sell-management/customers');
-          sweetSuccessAlert();
-        }, 1000);
-      })
-      .catch((errors) => {
-        const errorResponses = errors.response.data.message;
-        const errorMessages = errorResponses.map((error) => {
-          if (error.includes('name')) {
-            return `Tên KH: <b>${values.name}</b> đã tồn tại`;
-          } else if (error.includes('phone')) {
-            return `Số điện thoại KH: <b>${values.phone}</b> đã tồn tại`;
-          } else if (error.includes('email')) {
-            return `Email: <b>${values.email}</b> đã tồn tại`;
-          } else return `Mã KH: <b>${values.code}</b> đã tồn tại`;
-        });
+  const handleSubmit = async (values) => {
+    const addressList = [
+      {
+        user_province: values.province,
+        user_district: values.district,
+        user_specific_address: values.address
+      }
+    ];
 
-        setShowLoader(true);
-        setTimeout(() => {
-          setShowLoader(false);
-          Swal.fire({
-            title: 'Thất bại',
-            html: errorMessages.join('<br>'),
-            icon: 'warning',
-            confirmButtonText: 'Xác nhận'
+    const newCustomer = {
+      user_code: values.code,
+      user_name: values.name,
+      user_email: values.email,
+      user_phone: values.phone,
+      customer_status: 'Đang giao dịch',
+      address_list: addressList,
+      staff_id: values.staff.value,
+      staff_in_charge_note: values.note,
+      tags: values.tags
+    };
+    try {
+      await services
+        .post('/customer/create', newCustomer)
+        .then((response) => {
+          setShowLoader(true);
+          setTimeout(() => {
+            setShowLoader(false);
+            history.push('/app/sell-management/customers');
+            sweetSuccessAlert();
+          }, 1000);
+        })
+        .catch((errors) => {
+          const errorResponses = errors.response.data.message;
+          const errorMessages = errorResponses.map((error) => {
+            if (error.includes('name')) {
+              return `Tên KH: <b>${values.name}</b> đã tồn tại`;
+            } else if (error.includes('phone')) {
+              return `Số điện thoại KH: <b>${values.phone}</b> đã tồn tại`;
+            } else if (error.includes('email')) {
+              return `Email: <b>${values.email}</b> đã tồn tại`;
+            } else return `Mã KH: <b>${values.code}</b> đã tồn tại`;
           });
-        }, 1000);
-      });
+
+          setShowLoader(true);
+          setTimeout(() => {
+            setShowLoader(false);
+            Swal.fire({
+              title: 'Thất bại',
+              html: errorMessages.join('<br>'),
+              icon: 'warning',
+              confirmButtonText: 'Xác nhận'
+            });
+          }, 1000);
+        });
+    } catch (error) {
+      setShowLoader(true);
+      setTimeout(() => {
+        setShowLoader(false);
+        Swal.fire('Thất bại', 'Đã xảy ra lỗi kết nối tới máy chủ', 'error');
+      }, 1000);
+    }
   };
 
   const sweetSuccessAlert = () => {
@@ -111,17 +123,6 @@ const FormsElements = () => {
     });
   };
 
-  const phoneRegExp = /^(0|\+84)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0|3|4|5|7|8])+([0-9]{7})$/;
-
-  const validateSchema = Yup.object().shape({
-    name: Yup.string().required('Tên khách hàng không được để trống'),
-    email: Yup.string().email('Email không hợp lệ').required('Email không được để trống'),
-    phone: Yup.string().matches(phoneRegExp, 'Số điện thoại không hợp lệ').required('Số điện thoại không được để trống'),
-    code: Yup.string().required('Mã khách hàng không được để trống'),
-    address: Yup.string().required('Địa chỉ không được để trống'),
-    province: Yup.string().required('Vui lòng chọn Tỉnh/Thành phố')
-  });
-
   return (
     <React.Fragment>
       <Helmet>
@@ -141,7 +142,7 @@ const FormsElements = () => {
           note: '',
           staff: ''
         }}
-        validationSchema={validateSchema}
+        validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
         {({ errors, setFieldValue, handleBlur, handleChange, handleSubmit, touched, values, isValid }) => (
@@ -152,15 +153,17 @@ const FormsElements = () => {
                 Quay lại danh sách khách hàng
               </Button>
               <ButtonLoading
-                text={<span>
-                  <i className="feather icon-plus-circle mr-2"></i>
-                  Lưu khách hàng mới
-                </span>}
+                text={
+                  <span>
+                    <i className="feather icon-plus-circle mr-2"></i>
+                    Lưu khách hàng mới
+                  </span>
+                }
                 onSubmit={handleSubmit}
                 loading={showLoader}
                 type="submit"
                 disabled={showLoader}
-                style={{margin: "0 0 15px 0"}}
+                style={{ margin: '0 0 15px 0' }}
               ></ButtonLoading>
             </span>
 
@@ -237,10 +240,10 @@ const FormsElements = () => {
                           <Col sm={12} lg={12}>
                             <Form.Group>
                               <ProvinceDistrictSelect
-                              initialValues={{province: null, district: null}}
+                                initialValues={{ province: null, district: null }}
                                 onChange={(p, d) => {
                                   setFieldValue('province', p, true);
-                                  setFieldValue('district', d, false)
+                                  setFieldValue('district', d, false);
                                 }}
                               />
                               {touched.province && errors.province && <small class="text-danger form-text">{errors.province}</small>}
@@ -296,10 +299,10 @@ const FormsElements = () => {
                             <Form.Group controlId="sexCustomer">
                               <Form.Label>Giới tính</Form.Label>
                               <Select
-                                    name="gender"
-                                    onChange={(g) => setFieldValue('gender', g)}
-                                    options={gender}
-                                    defaultValue={gender[0]}
+                                name="gender"
+                                onChange={(g) => setFieldValue('gender', g)}
+                                options={gender}
+                                defaultValue={gender[0]}
                               ></Select>
                             </Form.Group>
                             <Form.Group controlId="taxIdCustomer">
@@ -328,14 +331,20 @@ const FormsElements = () => {
                       <Card.Body>
                         <Form.Group controlId="staffCb">
                           <Form.Label>Nhân viên phụ trách</Form.Label>
-                          <Select name="staff" options={optionsStaff} placeholder="Chọn nhân viên" defaultValue={optionsStaff[0]} onChange={(s) => setFieldValue('staff', s) }/>
+                          <Select
+                            name="staff"
+                            options={optionsStaff}
+                            placeholder="Chọn nhân viên"
+                            defaultValue={optionsStaff[0]}
+                            onChange={(s) => setFieldValue('staff', s)}
+                          />
                         </Form.Group>
                         <Form.Group controlId="description">
                           <Form.Label>Mô tả</Form.Label>
                           <Form.Control value={values.note} onChange={handleChange} name="note" as="textarea" rows="3" />
                         </Form.Group>
                         <Form.Group controlId="tag">
-                          <Form.Label>Tag</Form.Label>
+                          <Form.Label>Tags</Form.Label>
                           <Form.Control value={values.tags} onChange={handleChange} name="tags" as="textarea" rows="3" />
                         </Form.Group>
                       </Card.Body>
@@ -384,4 +393,4 @@ const FormsElements = () => {
   );
 };
 
-export default FormsElements;
+export default CreateCustomer;

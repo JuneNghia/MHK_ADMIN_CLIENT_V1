@@ -68,6 +68,7 @@ const UserDetails = () => {
     MySwal.fire('', 'Xoá khách hàng thành công', 'success');
   };
 
+
   if (!customerData) {
     return <div>ERROR</div>;
   } else
@@ -185,7 +186,7 @@ const UserDetails = () => {
                           <Form.Label column>Mã khách hàng</Form.Label>
                           <Col sm={10} lg={7}>
                             <FormLabel className="text-normal" column>
-                              : {customerData.customer_code ? customerData.customer_code : '---'}
+                              : {customerData.user_code ? customerData.user_code : '---'}
                             </FormLabel>
                           </Col>
                         </Form.Group>
@@ -217,7 +218,7 @@ const UserDetails = () => {
                           <Form.Label column>Tags</Form.Label>
                           <Col sm={10} lg={7}>
                             <FormLabel className="text-normal" column>
-                              : {customerData.tags ? customerData.tags : '---'}
+                              : {customerData.tags === undefined ? '---' : customerData.tags.map(tag => (<span><Badge style={{backgroundColor: "burlywood"}} className="ml-2 p-1">{tag.tag_title}</Badge></span>))}
                             </FormLabel>
                           </Col>
                         </Form.Group>
@@ -272,7 +273,7 @@ const UserDetails = () => {
                           <Form.Label column>Tổng SL sản phẩm hoàn trả</Form.Label>
                           <Col sm={10} lg={7}>
                             <FormLabel className="text-normal" column>
-                              : {customerData.user_code ? customerData.user_code : '---'}
+                              : {customerData.user_refund ? customerData.user_refund : '---'}
                             </FormLabel>
                           </Col>
                         </Form.Group>
