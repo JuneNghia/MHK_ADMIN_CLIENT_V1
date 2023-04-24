@@ -8,9 +8,11 @@ import { useHistory, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
+import { HashLoader } from 'react-spinners';
 
 const Edit = () => {
   const [showLoader, setShowLoader] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const history = useHistory();
   const { id } = useParams();
 
@@ -37,6 +39,7 @@ const Edit = () => {
         email: response.data.data.customer_email,
         phone: response.data.data.customer_phone
       });
+      setIsLoading(false);
     }
     fetchCustomer();
   }, [id]);
@@ -128,6 +131,8 @@ const Edit = () => {
     code: Yup.string().required('Mã khách hàng không được để trống')
   });
 
+  if (isLoading) return <HashLoader style={{ display: 'block', height: '70vh', margin: 'auto' }} size={50} color="#36d7b7" />;
+
   return (
     <React.Fragment>
       <Helmet>
@@ -135,12 +140,12 @@ const Edit = () => {
       </Helmet>
 
       <Formik enableReinitialize={true} initialValues={customer} validationSchema={validateSchema} onSubmit={handleSubmit}>
-        {({dirty, errors, handleBlur, handleChange, handleSubmit, touched, values, isValid }) => (
+        {({ dirty, errors, handleBlur, handleChange, handleSubmit, touched, values, isValid }) => (
           <Form noValidate onSubmit={handleSubmit}>
             <span className="flex-between">
               <Button onClick={sweetConfirmAlert} variant="outline-primary" className="mr-0" style={{ marginBottom: 15 }}>
                 <i className="feather icon-arrow-left"></i>
-               Quay lại
+                Quay lại
               </Button>
               <ButtonLoading
                 text={'Cập nhật'}

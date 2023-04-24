@@ -25,15 +25,12 @@ function ListCustomers() {
       .then((response) => {
         const filteredData = response.data.data.filter((user) => user !== null);
         setListCustomer(filteredData);
-        setTimeout(() => {
-          setIsLoading(false);
-          setIsFetched(true);
-        }, 1000);
+
+        setIsLoading(false);
+        setIsFetched(true);
       })
       .catch((error) => {
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 1000);
+        setIsLoading(false);
       });
   }, []);
 
@@ -88,7 +85,7 @@ function ListCustomers() {
             <Card>
               <Card.Header className="flex-between">
                 <Card.Title as="h5">Danh sách khách hàng</Card.Title>
-                <Button style={{ marginRight: 0 }} href="/app/sell-management/customers/create">
+                <Button style={{ marginRight: 0 }} onClick={() => history.push('/app/sell-management/customers/create')}>
                   <i className="feather icon-plus-circle mr-2"></i>
                   Thêm khách hàng
                 </Button>{' '}

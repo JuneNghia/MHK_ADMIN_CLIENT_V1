@@ -6,11 +6,14 @@ import withReactContent from 'sweetalert2-react-content';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import Addresses from './dataDetail/Addresses';
+import { HashLoader } from 'react-spinners';
+import Error from '../../errors/Error';
 
 const UserDetails = () => {
   const [showTooltip, setShowTooltip] = useState(false);
   const handleMouseEnter = () => setShowTooltip(true);
   const handleMouseLeave = () => setShowTooltip(false);
+  const [isLoading, setIsLoading] = useState(true);
   const history = useHistory();
 
   const { id } = useParams();
@@ -20,6 +23,7 @@ const UserDetails = () => {
     async function fetchCustomer() {
       const response = await services.get(`/customer/get-by-id/${id}`);
       setCustomer(response.data.data);
+      setIsLoading(false);
     }
     fetchCustomer();
   }, [id]);
@@ -68,9 +72,10 @@ const UserDetails = () => {
     MySwal.fire('', 'Xoá khách hàng thành công', 'success');
   };
 
+  if (isLoading) return <HashLoader style={{ display: 'block', height: '70vh', margin: 'auto' }} size={50} color="#36d7b7" />;
 
   if (!customerData) {
-    return <div>ERROR</div>;
+    return <Error />;
   } else
     return (
       <React.Fragment>
@@ -218,7 +223,16 @@ const UserDetails = () => {
                           <Form.Label column>Tags</Form.Label>
                           <Col sm={10} lg={7}>
                             <FormLabel className="text-normal" column>
-                              : {customerData.tags === undefined ? '---' : customerData.tags.map(tag => (<span><Badge style={{backgroundColor: "burlywood"}} className="ml-2 p-1">{tag.tag_title}</Badge></span>))}
+                              :{' '}
+                              {customerData.tags === undefined
+                                ? '---'
+                                : customerData.tags.map((tag) => (
+                                    <span>
+                                      <Badge style={{ backgroundColor: 'burlywood' }} className="ml-2 p-1">
+                                        {tag.tag_title}
+                                      </Badge>
+                                    </span>
+                                  ))}
                             </FormLabel>
                           </Col>
                         </Form.Group>
