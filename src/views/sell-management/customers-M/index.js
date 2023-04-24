@@ -46,7 +46,7 @@ function ListCustomers() {
       },
       {
         Header: 'Mã khách hàng',
-        accessor: 'customer_id'
+        accessor: 'user_code'
       },
       {
         Header: 'Số điện thoại',

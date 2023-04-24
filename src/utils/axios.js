@@ -3,7 +3,7 @@ import axios from 'axios';
 const token = localStorage.getItem('serviceToken');
 
 const services = axios.create({
-  baseURL: 'http://localhost:8000/mhk-api/v2/',
+  baseURL: 'https://mhk-api-v2.onrender.com/cloud-api',
   headers: {
     'token': `${token}`
   }

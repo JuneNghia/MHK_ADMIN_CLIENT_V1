@@ -39,7 +39,12 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
           id: 'selection',
           Header: ({ getToggleAllRowsSelectedProps }) => (
             <div style={{ width: '25px', textAlign: 'center' }}>
-              <input type="checkbox" {...getToggleAllRowsSelectedProps()} title="Chọn tất cả" />
+              <input
+                type="checkbox"
+                {...getToggleAllRowsSelectedProps()}
+                title="Chọn tất cả"
+                indeterminate={selectedFlatRows.length > 0 ? true : undefined}
+              />
             </div>
           )
         },
@@ -157,24 +162,28 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
             prepareRow(row);
             return (
               <tr className="row-has-detail" key={row.values.id} {...row.getRowProps()}>
-                <div style={{ display: 'contents' }}>
-                  {row.cells.map((cell) => {
-                    return cell.column.id === 'selection' ? (
-                      <td style={{ width: '50px', textAlign: 'center' }} {...cell.getCellProps()}>
-                        <input {...row.getToggleRowSelectedProps()} type="checkbox" {...cell.getCellProps()} title="" />
-                      </td>
-                    ) : (
-                      <td
-                        onClick={() => {
-                          handleRowClick(row);
-                        }}
+                {row.cells.map((cell) => {
+                  return cell.column.id === 'selection' ? (
+                    <td style={{ width: '50px', textAlign: 'center' }} {...cell.getCellProps()}>
+                      <input
+                        {...row.getToggleRowSelectedProps()}
+                        type="checkbox"
                         {...cell.getCellProps()}
-                      >
-                        {cell.render('Cell')}
-                      </td>
-                    );
-                  })}
-                </div>
+                        title=""
+                        indeterminate={selectedFlatRows.length > 0 ? true : undefined}
+                      />
+                    </td>
+                  ) : (
+                    <td
+                      onClick={() => {
+                        handleRowClick(row);
+                      }}
+                      {...cell.getCellProps()}
+                    >
+                      {cell.render('Cell')}
+                    </td>
+                  );
+                })}
               </tr>
             );
           })}
@@ -204,8 +213,8 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
                     gotoPage(page);
                     setInputGoToPage(e.target.value);
                   }}
-                  onKeyPress={(e) => {
-                    if (e.key === '-' || e.key === '+') {
+                  onKeyDown={(e) => {
+                    if (e.key === '-' || e.key === '+' || e.key === '.') {
                       e.preventDefault();
                     }
                   }}

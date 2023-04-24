@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
 function ModalComponent(props) {
-  const {size, show, handleClose, handleSubmit, title, body, textSubmit, disabled } = props;
+  const { size, show, handleClose, handleSubmit, title, body, textSubmit, disabled, handleDelete, isDelete} = props;
 
   return (
     <Modal size={size} show={show} onHide={handleClose}>
@@ -14,6 +14,11 @@ function ModalComponent(props) {
         <Button variant="secondary" onClick={handleClose}>
           Thoát
         </Button>
+        {handleDelete ? (
+          <Button disabled={isDelete} variant="outline-danger" onClick={handleDelete}>
+            {isDelete ? 'Đang xoá...' : 'Xoá'}
+          </Button>
+        ) : null}
         <Button disabled={disabled} variant="primary" onClick={handleSubmit}>
           {textSubmit}
         </Button>

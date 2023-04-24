@@ -59,31 +59,31 @@ const menuItems = {
           icon: 'feather icon-truck',
           children: [
             {
-              id: 'alert',
+              id: 'delievery-dashboard',
               title: 'Tổng quan',
               type: 'item',
               url: '/basic/alert'
             },
             {
-              id: 'alert',
+              id: 'delievery-order-management',
               title: 'Quản lý vận đơn',
               type: 'item',
               url: '/basic/alert'
             },
             {
-              id: 'alert',
+              id: 'delievery-check-cost',
               title: 'Đối soát COD và phí',
               type: 'item',
               url: '/basic/alert'
             },
             {
-              id: 'alert',
+              id: 'delievery-connect-partner',
               title: 'Kết nối đối tác',
               type: 'item',
               url: '/basic/alert'
             },
             {
-              id: 'alert',
+              id: 'delievery-config',
               title: 'Cấu hình giao hàng',
               type: 'item',
               url: '/basic/alert'
@@ -103,43 +103,43 @@ const menuItems = {
               url: '/app/sell-management/products'
             },
             {
-              id: 'alert',
+              id: 'product-inventory',
               title: 'Quản lý kho',
               type: 'item',
               url: '/app/sell-management'
             },
             {
-              id: 'alert',
+              id: 'product-import-order',
               title: 'Đặt hàng nhập',
               type: 'item',
               url: '/basic/alert'
             },
             {
-              id: 'alert',
+              id: 'product-import',
               title: 'Nhập hàng',
               type: 'item',
               url: '/basic/alert'
             },
             {
-              id: 'alert',
+              id: 'product-check',
               title: 'Kiểm hàng',
               type: 'item',
               url: '/basic/alert'
             },
             {
-              id: 'alert',
+              id: 'product-shipping',
               title: 'Chuyển hàng',
               type: 'item',
               url: '/basic/alert'
             },
             {
-              id: 'alert',
+              id: 'product-supplier',
               title: 'Nhà cung cấp',
               type: 'item',
               url: '/basic/alert'
             },
             {
-              id: 'alert',
+              id: 'product-price-adjust',
               title: 'Điều chỉnh giá vốn',
               type: 'item',
               url: '/basic/alert'
@@ -153,19 +153,19 @@ const menuItems = {
           icon: 'feather icon-dollar-sign',
           children: [
             {
-              id: 'alert',
+              id: 'receipts-bill',
               title: 'Phiếu thu',
               type: 'item',
               url: '/basic/alert'
             },
             {
-              id: 'alert',
+              id: 'payment-bill',
               title: 'Phiếu chi',
               type: 'item',
               url: '/basic/alert'
             },
             {
-              id: 'alert',
+              id: 'cashbook',
               title: 'Sổ quỹ',
               type: 'item',
               url: '/basic/alert'

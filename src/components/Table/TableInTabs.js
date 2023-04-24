@@ -141,7 +141,7 @@ function TableInTabs({ columns, data, hiddenColumns = ['id'], handleRowClick, se
         <Col>
           <Row className="justify-content-end">
             <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
-            {ButtonAdd ? <ButtonAdd /> : <span className="mr-2"></span> }
+            {ButtonAdd ? <ButtonAdd /> : <span className="mr-2"></span>}
           </Row>
         </Col>
       </Row>
@@ -160,24 +160,22 @@ function TableInTabs({ columns, data, hiddenColumns = ['id'], handleRowClick, se
             prepareRow(row);
             return (
               <tr className="row-has-detail" key={row.values.id} {...row.getRowProps()}>
-                <div style={{ display: 'contents' }}>
-                  {row.cells.map((cell) => {
-                    return cell.column.id === 'selection' ? (
-                      <td style={{ width: '50px', textAlign: 'center' }} {...cell.getCellProps()}>
-                        <input {...row.getToggleRowSelectedProps()} type="checkbox" {...cell.getCellProps()} title="" />
-                      </td>
-                    ) : (
-                      <td
-                        onClick={() => {
-                          handleRowClick(row);
-                        }}
-                        {...cell.getCellProps()}
-                      >
-                        {cell.render('Cell')}
-                      </td>
-                    );
-                  })}
-                </div>
+                {row.cells.map((cell) => {
+                  return cell.column.id === 'selection' ? (
+                    <td style={{ width: '50px', textAlign: 'center' }} {...cell.getCellProps()}>
+                      <input {...row.getToggleRowSelectedProps()} type="checkbox" {...cell.getCellProps()} title="" />
+                    </td>
+                  ) : (
+                    <td
+                      onClick={() => {
+                        handleRowClick(row);
+                      }}
+                      {...cell.getCellProps()}
+                    >
+                      {cell.render('Cell')}
+                    </td>
+                  );
+                })}
               </tr>
             );
           })}
