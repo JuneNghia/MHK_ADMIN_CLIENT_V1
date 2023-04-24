@@ -6,7 +6,7 @@ import moment from 'moment';
 import CustomTable from '../../../components/Table/CustomTable';
 import { useHistory } from 'react-router-dom';
 import Error from '../../errors/Error';
-
+import { HashLoader } from 'react-spinners';
 
 function ListCustomers() {
   const history = useHistory();
@@ -19,19 +19,22 @@ function ListCustomers() {
     history.push(`/app/sell-management/customers/${id}`);
   };
 
-  useEffect( () => {
+  useEffect(() => {
     services
-        .get('/customer/get-all')
-        .then((response) => {
-          const filteredData = response.data.data.filter((user) => user !== null);
-          setListCustomer(filteredData);
+      .get('/customer/get-all')
+      .then((response) => {
+        const filteredData = response.data.data.filter((user) => user !== null);
+        setListCustomer(filteredData);
+        setTimeout(() => {
           setIsLoading(false);
-          setIsFetched(true); 
-        })
-        .catch((error) => {
+          setIsFetched(true);
+        }, 1000);
+      })
+      .catch((error) => {
+        setTimeout(() => {
           setIsLoading(false);
-        });
-    
+        }, 1000);
+      });
   }, []);
 
   const columns = React.useMemo(
@@ -70,9 +73,9 @@ function ListCustomers() {
     []
   );
 
-  if (isLoading) return <div className="text-center h5">Đang tải...</div>;
+  if (isLoading) return <HashLoader style={{ display: 'block', height: '70vh', margin: 'auto' }} size={50} color="#36d7b7" />;
 
-  if(!isFetched) {
+  if (!isFetched) {
     return <Error />;
   } else
     return (
