@@ -20,14 +20,17 @@ const Edit = () => {
     name: '',
     code: '',
     phone: '',
-    email: ''
+    email: '',
+    note: '',
+    tags: ''
   });
 
   const keyMapping = {
     name: 'user_name',
     code: 'user_code',
     phone: 'user_phone',
-    email: 'user_email'
+    email: 'user_email',
+    note: 'staff_in_charge_note'
   };
 
   useEffect(() => {
@@ -35,16 +38,18 @@ const Edit = () => {
       const response = await services.get(`/customer/get-by-id/${id}`);
       setCustomer({
         name: response.data.data.customer_name,
-        code: response.data.data.customer_code,
+        code: response.data.data.user_code,
         email: response.data.data.customer_email,
-        phone: response.data.data.customer_phone
+        phone: response.data.data.customer_phone,
+        note: response.data.data.staff_in_charge_note
       });
       setIsLoading(false);
     }
     fetchCustomer();
   }, [id]);
 
-  const handleSubmit = (values) => {
+  const handleSubmit = async (values) => {
+    setShowLoader(true);
     //Vòng lặp for sẽ duyệt các giá trị trong values so sánh với các giá trị của Customer
     //Nếu trường nào có giá trị không thay đổi thì không được gửi lên server
     const updatedFields = {};
@@ -64,39 +69,45 @@ const Edit = () => {
       }
     }
 
-    //Cập nhật khách hàng
-    services
-      .patch(`/customer/update-personalInfo-by-id/${id}`, updatedFieldsWithApiKeys)
-      .then((response) => {
-        setShowLoader(true);
-        setTimeout(() => {
-          setShowLoader(false);
-          history.push(`/app/sell-management/customers/${id}`);
-          sweetSuccessAlert();
-        }, 1000);
-      })
-      .catch((errors) => {
-        const errorResponses = errors.response.data.message;
-        const errorMessages = errorResponses.map((error) => {
-          if (error.includes('name')) {
-            return `Tên KH: <b>${values.name}</b> đã tồn tại`;
-          } else if (error.includes('phone')) {
-            return `Số điện thoại KH: <b>${values.phone}</b> đã tồn tại`;
-          } else if (error.includes('email')) {
-            return `Email: <b>${values.email}</b> đã tồn tại`;
-          } else return `Mã KH: <b>${values.code}</b> đã tồn tại`;
-        });
-        setShowLoader(true);
-        setTimeout(() => {
-          setShowLoader(false);
-          Swal.fire({
-            title: 'Thất bại',
-            html: errorMessages.join('<br>'),
-            icon: 'warning',
-            confirmButtonText: 'Xác nhận'
-          });
-        }, 1000);
+    try {
+      //Cập nhật khách hàng
+    await services
+    .patch(`/customer/update-personalInfo-by-id/${id}`, updatedFieldsWithApiKeys)
+    .then((response) => {
+      setTimeout(() => {
+        setShowLoader(false);
+        history.push(`/app/sell-management/customers/${id}`);
+        sweetSuccessAlert();
+      }, 1000);
+    })
+    .catch((errors) => {
+      const errorResponses = errors.response.data.message;
+      const errorMessages = errorResponses.map((error) => {
+        if (error.includes('name')) {
+          return `Tên KH: <b>${values.name}</b> đã tồn tại`;
+        } else if (error.includes('phone')) {
+          return `Số điện thoại KH: <b>${values.phone}</b> đã tồn tại`;
+        } else if (error.includes('email')) {
+          return `Email: <b>${values.email}</b> đã tồn tại`;
+        } else return `Mã KH: <b>${values.code}</b> đã tồn tại`;
       });
+      setTimeout(() => {
+        setShowLoader(false);
+        Swal.fire({
+          title: 'Thất bại',
+          html: errorMessages.join('<br>'),
+          icon: 'warning',
+          confirmButtonText: 'Xác nhận'
+        });
+      }, 1000);
+    });
+    } catch (error) {
+      setTimeout(()=> {
+        setShowLoader(false);
+        Swal.fire('', 'Đã xảy ra lỗi khi kết nối tới máy chủ', 'error');
+      }, 1000)
+    }
+    
   };
 
   const sweetSuccessAlert = () => {
@@ -308,47 +319,16 @@ const Edit = () => {
                         </Form.Group>
                         <Form.Group controlId="description">
                           <Form.Label>Mô tả</Form.Label>
-                          <Form.Control value={''} onChange={handleChange} name="staff_in_charge_note" as="textarea" rows="3" />
+                          <Form.Control value={values.note} onChange={handleChange} name="note" as="textarea" rows="3" />
                         </Form.Group>
                         <Form.Group controlId="tag">
-                          <Form.Label>Tag</Form.Label>
+                          <Form.Label>Tags</Form.Label>
                           <Form.Control as="textarea" rows="3" />
                         </Form.Group>
                       </Card.Body>
                     </Card>
                   </Col>
-                  <Col sm={12} lg={12}>
-                    <Card>
-                      <Card.Header>
-                        <Card.Title as="h5">Cài đặt nâng cao</Card.Title>
-                      </Card.Header>
-                      <Card.Body>
-                        <fieldset>
-                          <Form.Group as={Row}>
-                            <Form.Label className="ml-3" sm={12}>
-                              <strong style={{ color: 'black' }}>Áp dụng ưu đãi</strong>
-                            </Form.Label>
-                            <Col sm={12}>
-                              <Form.Check
-                                className="mt-2"
-                                type="radio"
-                                label="Theo nhóm khách hàng"
-                                name="formHorizontalRadios"
-                                id="formHorizontalRadios1"
-                              />
-                              <Form.Check
-                                className="mt-2"
-                                type="radio"
-                                label="Theo khách hàng"
-                                name="formHorizontalRadios"
-                                id="formHorizontalRadios2"
-                              />
-                            </Col>
-                          </Form.Group>
-                        </fieldset>
-                      </Card.Body>
-                    </Card>
-                  </Col>
+                 
                 </Row>
               </Col>
             </Row>

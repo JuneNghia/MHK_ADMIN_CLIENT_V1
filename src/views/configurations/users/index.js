@@ -7,6 +7,7 @@ import moment from 'moment';
 import CustomTable from '../../../components/Table/CustomTable';
 import Error from '../../errors/Error';
 import NoPermission from '../../errors/NoPermission';
+import { HashLoader } from 'react-spinners';
 
 function ListUsers() {
   const [listEmployees, setListEmployees] = useState([]);
@@ -79,30 +80,25 @@ function ListUsers() {
   );
 
   if (isLoading) {
-    <Helmet>
-      <title>Danh sách nhân viên</title>
-    </Helmet>;
-    return <div className="text-center h5">Đang tải...</div>;
+    return (
+      <>
+        <Helmet>
+          <title>Danh sách nhân viên</title>
+        </Helmet>
+        <HashLoader style={{ display: 'block', height: '70vh', margin: 'auto' }} size={50} color="#36d7b7" />;
+      </>
+    );
   }
 
   if (!isFetched) {
-    <Helmet>
-      <title>Danh sách nhân viên</title>
-    </Helmet>;
     return <Error />;
   }
 
   if (isNoPermission) {
-    <Helmet>
-      <title>Danh sách nhân viên</title>
-    </Helmet>;
     return <NoPermission />;
   }
   return (
     <React.Fragment>
-      <Helmet>
-        <title>Danh sách nhân viên</title>
-      </Helmet>
       <Row>
         <Col>
           <Button variant="outline-primary" className="mb-3" onClick={() => history.push('/app/configurations')}>

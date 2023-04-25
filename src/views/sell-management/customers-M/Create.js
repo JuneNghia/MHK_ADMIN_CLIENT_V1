@@ -8,7 +8,7 @@ import { useHistory } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-import ProvinceDistrictSelect from '../../../data/proviceSelect';
+import ProvinceDistrictSelect from '../../../data/provinceSelect';
 import Select from 'react-select';
 import { validationSchema } from '../../../hooks/useValidation';
 
@@ -37,6 +37,7 @@ const CreateCustomer = () => {
   ];
 
   const handleSubmit = async (values) => {
+    setShowLoader(true);
     const addressList = [
       {
         user_province: values.province,
@@ -79,7 +80,6 @@ const CreateCustomer = () => {
             } else return `Mã KH: <b>${values.code}</b> đã tồn tại`;
           });
 
-          setShowLoader(true);
           setTimeout(() => {
             setShowLoader(false);
             Swal.fire({
@@ -91,7 +91,6 @@ const CreateCustomer = () => {
           }, 1000);
         });
     } catch (error) {
-      setShowLoader(true);
       setTimeout(() => {
         setShowLoader(false);
         Swal.fire('Thất bại', 'Đã xảy ra lỗi kết nối tới máy chủ', 'error');
@@ -145,7 +144,7 @@ const CreateCustomer = () => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ errors, setFieldValue, handleBlur, handleChange, handleSubmit, touched, values, isValid }) => (
+        {({ errors, setFieldValue, handleChange, handleSubmit, touched, values, isValid }) => (
           <Form noValidate onSubmit={handleSubmit}>
             <span className="flex-between">
               <Button onClick={sweetConfirmAlert} variant="outline-primary" className="mr-0" style={{ marginBottom: 15 }}>

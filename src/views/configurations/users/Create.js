@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet';
 import Select from 'react-select';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import ProvinceDistrictSelect from '../../../data/proviceSelect';
+import ProvinceDistrictSelect from '../../../data/provinceSelect';
 import services from '../../../utils/axios';
 import Swal from 'sweetalert2';
 import Positions from './RoleDelegation/Positions';
@@ -23,6 +23,8 @@ const CreateUser = () => {
   ];
 
   const handleSubmit = async (values) => {
+    setShowLoader(true);
+
     const position = values.positions.map((role) => ({
       role_id: role.role.value,
       agencyBranches_inCharge: role.branches.map((branch) => branch.value)
@@ -41,7 +43,7 @@ const CreateUser = () => {
       user_phone: values.phone,
       user_email: values.email,
       user_password: values.password,
-      staff_gender: values.gender.value,
+      staff_gender: values.gender,
       staff_birthday: values.dob,
       isAllowViewImportNWholesalePrice: allowSalePrice,
       isAllowViewShippingPrice: allowShippingPrice,
@@ -49,12 +51,12 @@ const CreateUser = () => {
       address_list: addressList
     };
 
+    console.log(newStaff);
+
     try {
       await services
         .post('/staff/create', newStaff)
         .then((res) => {
-          console.log(res)
-          setShowLoader(true);
           setTimeout(() => {
             setShowLoader(false);
             history.push('/app/configurations/users');
@@ -75,7 +77,6 @@ const CreateUser = () => {
               return `Email NV: <b>${values.email}</b> đã tồn tại`;
             } else return `Mã NV: <b>${values.code}</b> đã tồn tại`;
           });
-          setShowLoader(true);
           setTimeout(() => {
             setShowLoader(false);
             Swal.fire({
@@ -106,7 +107,7 @@ const CreateUser = () => {
     email: '',
     dob: '',
     address: '',
-    gender: '',
+    gender: true,
     province: '',
     district: '',
     status: '',
@@ -269,7 +270,7 @@ const CreateUser = () => {
                                     name="gender"
                                     onChange={(g) => setFieldValue('gender', g)}
                                     options={gender}
-                                    value={values.gender}
+                                    defaultValue={gender[0]}
                                     placeholder="Chọn giới tính"
                                   ></Select>
                                 </Form.Group>

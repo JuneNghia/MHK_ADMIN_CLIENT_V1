@@ -8,6 +8,7 @@ import { Formik } from 'formik';
 import ModalComponent from '../../../components/Modal/Modal';
 import CustomTable from '../../../components/Table/CustomTable';
 import Error from '../../errors/Error';
+import { HashLoader } from 'react-spinners';
 
 function ListBranches() {
   const columns = React.useMemo(
@@ -22,7 +23,7 @@ function ListBranches() {
       },
       {
         Header: 'Mã chi nhánh',
-        accessor: 'agency_branch_CN_code'
+        accessor: 'agency_branch_code'
       },
       {
         Header: 'Địa chỉ',
@@ -35,9 +36,7 @@ function ListBranches() {
       {
         Header: 'Ngày hết hạn',
         accessor: 'agency_branch_expiration_date',
-        Cell: ({value}) => (
-          <span>{value ? value : moment().add(3, 'years').utcOffset(7).format('DD/MM/YYYY')}</span>
-        )
+        Cell: ({ value }) => moment(value).utcOffset(7).format('DD/MM/YYYY')
       },
       {
         Header: 'Trạng thái',
@@ -62,11 +61,11 @@ function ListBranches() {
   const [isFetched, setIsFetched] = useState(false);
   const [showModalAdd, setShowModalAdd] = useState(false);
   const [showModalUpdate, setShowModalUpdate] = useState(false);
-  const [idBranch, setIdBranch] = useState(0);
+  const [idBranch, setIdBranch] = useState('');
 
   const keyMapping = {
     branch_name: 'agency_branch_name',
-    branch_code: 'agency_branch_CN_code',
+    branch_code: 'agency_branch_code',
     branch_phone: 'agency_branch_phone',
     branch_address: 'agency_branch_address',
     isDefaultBranch: 'isDefaultCN'
@@ -112,10 +111,12 @@ function ListBranches() {
   const handleSubmitAdd = async (values) => {
     setIsLoading(true);
     const newBranch = {
-      agency_branch_CN_code: values.branch_code,
+      agency_branch_code: values.branch_code,
       agency_branch_name: values.branch_name,
       agency_branch_phone: values.branch_phone,
       agency_branch_address: values.branch_address,
+      agency_branch_status: 'active',
+      agency_branch_expiration_date: moment().add(3, 'years').utcOffset(7).format('YYYY/MM/DD'),
       isDefaultCN: values.isDefaultBranch
     };
     try {
@@ -164,28 +165,36 @@ function ListBranches() {
         updatedFieldsWithApiKeys[newKey] = updatedFields[key];
       }
     }
-    services
-      .patch(`/agency-branch/update-by-id/${idBranch}`, updatedFieldsWithApiKeys)
-      .then((response) => {
-        setTimeout(() => {
-          setIsLoading(false);
-          Swal.fire({
-            text: 'Cập nhật thông tin chi nhánh thành công',
-            icon: 'success',
-            showConfirmButton: true
-          }).then((res) => {
-            if (res.isConfirmed) {
-              window.location.reload();
-            }
-          });
-        }, 1000);
-      })
-      .catch((error) => {
-        setTimeout(() => {
-          setIsLoading(false);
-          Swal.fire('', 'Mã chi nhánh đã tồn tại', 'error');
-        }, 1000);
-      });
+    try {
+      services
+        .patch(`/agency-branch/update-by-id/${idBranch}`, updatedFieldsWithApiKeys)
+        .then((response) => {
+          setTimeout(() => {
+            setIsLoading(false);
+            Swal.fire({
+              text: 'Cập nhật thông tin chi nhánh thành công',
+              icon: 'success',
+              showConfirmButton: true
+            }).then((res) => {
+              if (res.isConfirmed) {
+                window.location.reload();
+              }
+            });
+          }, 1000);
+        })
+        .catch((error) => {
+          console.log(error.response);
+          setTimeout(() => {
+            setIsLoading(false);
+            Swal.fire('', 'Mã chi nhánh đã tồn tại', 'error');
+          }, 1000);
+        });
+    } catch (error) {
+      setTimeout(() => {
+        setIsLoading(false);
+        Swal.fire('', 'Đã xảy ra lỗi khi kết nối tới máy chủ', 'error');
+      }, 1000);
+    }
   };
 
   const handleRowClick = (row) => {
@@ -194,22 +203,26 @@ function ListBranches() {
       branch_name: row.values.agency_branch_name,
       branch_phone: row.values.agency_branch_phone,
       branch_address: row.values.agency_branch_address,
-      branch_code: row.values.agency_branch_CN_code,
+      branch_code: row.values.agency_branch_code,
       isDefaultBranch: row.values.isDefaultCN
     });
     handleUpdateAddress();
   };
 
-  if (isloadPage) return <div className="text-center h5">Đang tải...</div>;
+  if (isloadPage)
+    return (
+      <>
+        <Helmet>
+          <title>Danh sách chi nhánh</title>
+        </Helmet>
+        <HashLoader style={{ display: 'block', height: '70vh', margin: 'auto' }} size={50} color="#36d7b7" />;
+      </>
+    );
 
   if (!isFetched) return <Error />;
 
   return (
     <>
-      <Helmet>
-        <title>Danh sách chi nhánh</title>
-      </Helmet>
-
       <Formik initialValues={branchData} onSubmit={handleSubmitAdd}>
         {({ errors, setFieldValue, dirty, handleChange, handleBlur, handleSubmit, touched, values, isValid }) => (
           <Form noValidate>
@@ -279,12 +292,6 @@ function ListBranches() {
                               name="branch_code"
                               placeholder="Nhập mã chi nhánh"
                             />
-                          </Form.Group>
-                        </Col>
-                        <Col lg={6}>
-                          <Form.Group controlId="formBasicEmail">
-                            <Form.Label>Mã bưu điện</Form.Label>
-                            <Form.Control type="text" name="recipient" placeholder="Nhập mã bưu điện" />
                           </Form.Group>
                         </Col>
                         <Col lg={12}>
@@ -377,12 +384,6 @@ function ListBranches() {
                               name="branch_code"
                               placeholder="Nhập mã chi nhánh"
                             />
-                          </Form.Group>
-                        </Col>
-                        <Col lg={6}>
-                          <Form.Group controlId="formBasicEmail">
-                            <Form.Label>Mã bưu điện</Form.Label>
-                            <Form.Control type="text" name="recipient" placeholder="Nhập mã bưu điện" />
                           </Form.Group>
                         </Col>
                         <Col lg={12}>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, Col, Row } from 'react-bootstrap';
+import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 
 const configsMenu = [
@@ -24,39 +25,46 @@ const configsMenu = [
         icon: 'feather icon-users',
         url: '/app/configurations/price_lists'
       }
-    ],
+    ]
   }
 ];
 
 export default function index() {
   return configsMenu.map((configMenu) => (
-    <Card>
-      <Card.Header>
-        <Card.Title as="h5">{configMenu.title}</Card.Title>
-      </Card.Header>
-      <Card.Body>
-        <Row>
-          {configMenu.children.map((config) => (
-            <Col lg={3}>
-              <Link to={config.url}>
-                <Card className="hover-card">
-                  <Card.Body>
-                    <Row>
-                      <Col lg={1}>
-                        <i style={{fontSize: 18}} className={config.icon}></i>
-                      </Col>
-                      <Col lg={10}>
-                        <p className="strong-title text-normal">{config.name}</p>
-                        <p style={{fontSize: 13}} className="text-normal">{config.description}</p>
-                      </Col>
-                    </Row>
-                  </Card.Body>
-                </Card>
-              </Link>
-            </Col>
-          ))}
-        </Row>
-      </Card.Body>
-    </Card>
+    <>
+      <Helmet>
+        <title>Cấu hình</title>
+      </Helmet>
+      <Card>
+        <Card.Header>
+          <Card.Title as="h5">{configMenu.title}</Card.Title>
+        </Card.Header>
+        <Card.Body>
+          <Row>
+            {configMenu.children.map((config) => (
+              <Col lg={3}>
+                <Link to={config.url}>
+                  <Card className="hover-card">
+                    <Card.Body>
+                      <Row>
+                        <Col lg={1}>
+                          <i style={{ fontSize: 18 }} className={config.icon}></i>
+                        </Col>
+                        <Col lg={10}>
+                          <p className="strong-title text-normal">{config.name}</p>
+                          <p style={{ fontSize: 13 }} className="text-normal">
+                            {config.description}
+                          </p>
+                        </Col>
+                      </Row>
+                    </Card.Body>
+                  </Card>
+                </Link>
+              </Col>
+            ))}
+          </Row>
+        </Card.Body>
+      </Card>
+    </>
   ));
 }

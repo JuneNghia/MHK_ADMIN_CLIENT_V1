@@ -25,7 +25,6 @@ function ListCustomers() {
       .then((response) => {
         const filteredData = response.data.data.filter((user) => user !== null);
         setListCustomer(filteredData);
-
         setIsLoading(false);
         setIsFetched(true);
       })
@@ -70,16 +69,21 @@ function ListCustomers() {
     []
   );
 
-  if (isLoading) return <HashLoader style={{ display: 'block', height: '70vh', margin: 'auto' }} size={50} color="#36d7b7" />;
-
-  if (!isFetched) {
-    return <Error />;
-  } else
+  if (isLoading)
     return (
-      <React.Fragment>
+      <>
         <Helmet>
           <title>Danh sách khách hàng</title>
         </Helmet>
+        <HashLoader style={{ display: 'block', height: '70vh', margin: 'auto' }} size={50} color="#36d7b7" />;
+      </>
+    );
+
+  if (!isFetched) {
+    return <Error />
+  } else
+    return (
+      <React.Fragment>
         <Row>
           <Col>
             <Card>

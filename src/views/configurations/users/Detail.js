@@ -11,18 +11,22 @@ import Positions from './RoleDelegation/Positions';
 import { Formik } from 'formik';
 import ModalComponent from '../../../components/Modal/Modal';
 import * as Yup from 'yup';
-import ProvinceDistrictSelect from '../../../data/proviceSelect';
+import ProvinceDistrictSelect from '../../../data/provinceSelect';
 import Select from 'react-select';
+import Error from '../../errors/Error';
+import { HashLoader } from 'react-spinners';
 
 const UserDetail = () => {
   const { id } = useParams();
   const [data, setData] = useState({});
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useState([]);
   const [allowShippingPrice, setAllowShippingPrice] = useState(false);
   const [allowSalePrice, setAllowSalePrice] = useState(false);
   const [positions, setPositions] = useState([]);
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
+  const [isloadPage, setIsLoadPage] = useState(true);
+  const [isFetched, setIsFetched] = useState(false);
   const [showModalUpdateProfile, setShowModalUpdateProfile] = useState(false);
   const handleUpdateProfile = (e) => {
     e.preventDefault();
@@ -39,31 +43,36 @@ const UserDetail = () => {
   ];
 
   useEffect(() => {
-    async function fetchUser() {
-      const response = await services.get(`/staff/get-by-id/${id}`);
-      setData(response.data.data);
-      setPositions(
-        response.data.data.staffRoleList.map((position) => {
-          return {
-            id: position.id,
-            role: {label: position.role, value: position.role},
-            branches: position.agencyBranchesInCharge.map((branch) => ({
-              id: branch.id,
-              label: branch.agency_branch_inCharge_name,
-              value: branch.agency_branch_inCharge_name
-            }))
-          };
-        })
-      );
-      setAllowSalePrice(response.data.data.isAllowViewImportNWholesalePrice);
-      setAllowShippingPrice(response.data.data.isAllowViewShippingPrice);
-      setAddress([response.data.data.staff_address, response.data.data.staff_commune, response.data.data.staff_region].join(', '));
-    }
-    fetchUser();
+    services
+      .get(`/staff/get-by-id/${id}`)
+      .then((response) => {
+        const data = response.data.data; 
+        setData(data);
+        setPositions(
+          data.staffRoleList.map((position) => {
+            return {
+              id: position.id,
+              role: { label: position.role, value: position.role },
+              branches: position.agencyBranchesInCharge.map((branch) => ({
+                id: branch.id,
+                label: branch.agency_branch_inCharge_name,
+                value: branch.agency_branch_inCharge_name
+              }))
+            };
+          })
+        );
+        setAllowSalePrice(response.data.data.isAllowViewImportNWholesalePrice);
+        setAllowShippingPrice(response.data.data.isAllowViewShippingPrice);
+        setAddress(data.addressList.map((address) => {
+          return `${address.user_specific_address}, ${address.user_district}, ${address.user_province}`
+        }));
+        setIsLoadPage(false);
+        setIsFetched(true);
+      })
+      .catch((error) => {
+        setIsLoadPage(false);
+      });
   }, [id]);
-
-
-  console.log(positions)
 
   const successUpdatePositions = () => {
     setTimeout(() => {
@@ -233,8 +242,20 @@ const UserDetail = () => {
     province: Yup.string().required('Vui lòng chọn Tỉnh/Thành phố và Quận/Huyện')
   });
 
-  if (!data) {
-    return <div>Lỗi : Không thể lấy dữ liệu từ server</div>;
+  if (isloadPage) {
+    return (
+      <>
+        <Helmet>
+          <title>Danh sách vai trò</title>
+        </Helmet>
+        ;
+        <HashLoader style={{ display: 'block', height: '70vh', margin: 'auto' }} size={50} color="#36d7b7" />;
+      </>
+    );
+  }
+
+  if (!isFetched) {
+    return <Error />
   } else
     return (
       <React.Fragment>
@@ -296,7 +317,7 @@ const UserDetail = () => {
                       </span>
                     </Card.Title>
                     <small>
-                      <Link to ="#" onClick={(e) => handleUpdateProfile(e)}>
+                      <Link to="#" onClick={(e) => handleUpdateProfile(e)}>
                         Cập nhật thông tin nhân viên
                       </Link>
                     </small>
@@ -344,7 +365,7 @@ const UserDetail = () => {
                               <Form.Label column>Địa chỉ</Form.Label>
                               <Col sm={12} lg={9}>
                                 <FormLabel className="text-normal" column>
-                                  : {address === ', ' ? '---' : address}
+                                  : {address === null ? '---' : address}
                                 </FormLabel>
                               </Col>
                             </Form.Group>

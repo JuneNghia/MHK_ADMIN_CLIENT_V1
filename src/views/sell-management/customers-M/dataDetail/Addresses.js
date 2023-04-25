@@ -5,9 +5,11 @@ import services from '../../../../utils/axios';
 import ModalComponent from '../../../../components/Modal/Modal';
 import { Formik } from 'formik';
 import Swal from 'sweetalert2';
-import ProvinceDistrictSelect from '../../../../data/proviceSelect';
+import ProvinceDistrictSelect from '../../../../data/provinceSelect';
 import TableInTabs from '../../../../components/Table/TableInTabs';
 import * as Yup from 'yup';
+import { HashLoader } from 'react-spinners';
+import Error from '../../../errors/Error';
 
 function Addresses() {
   const columns = React.useMemo(
@@ -43,15 +45,21 @@ function Addresses() {
   const [idAddress, setIdAddress] = useState(0);
 
   useEffect(() => {
-    async function fetchAddress() {
-      const response = await services.get(`/customer/get-by-id/${id}`);
-      setAddressList(response.data.data.address_list);
-    }
-    fetchAddress();
+    services
+      .get(`/customer/get-by-id/${id}`)
+      .then((response) => {
+        setAddressList(response.data.data.address_list);
+        setIsLoadPage(false);
+        setIsFetched(true);
+      })
+      .catch((err) => {
+        setIsLoadPage(false);
+      });
   }, [id]);
 
-
   const [isLoading, setIsLoading] = useState(false);
+  const [isloadPage, setIsLoadPage] = useState(true);
+  const [isFetched, setIsFetched] = useState(false);
   const [showModalAdd, setShowModalAdd] = useState(false);
   const [showModalUpdate, setShowModalUpdate] = useState(false);
 
@@ -109,7 +117,7 @@ function Addresses() {
         user_province: values.province,
         user_district: values.district
       };
-      console.log(updateAddress)
+      console.log(updateAddress);
       services
         .patch(`/address/update/${idAddress}`, updateAddress)
         .then((response) => {
@@ -160,6 +168,11 @@ function Addresses() {
     province: Yup.string().required('Vui lòng chọn Tỉnh/Thành phố')
   });
 
+  if (isloadPage) return <HashLoader style={{ display: 'block', height: '200px', margin: 'auto' }} size={50} color="#36d7b7" />;
+
+  if (!isFetched) {
+    return <Error />;
+  }
 
   if (addressList.length === 0) {
     return <div className="text-center">Khách hàng chưa cập nhật địa chỉ</div>;
@@ -168,7 +181,7 @@ function Addresses() {
       <>
         <Formik onSubmit={handleSubmitAdd} initialValues={{ address: '', province: '', district: '' }} validationSchema={validateSchema}>
           {({ errors, setFieldValue, handleBlur, handleChange, handleSubmit, touched, values, dirty }) => (
-            <Form noValidate >
+            <Form noValidate>
               <ModalComponent
                 show={showModalAdd}
                 handleClose={handleCloseModal}

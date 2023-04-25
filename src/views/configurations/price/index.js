@@ -8,6 +8,9 @@ import moment from 'moment';
 import { useHistory } from 'react-router-dom';
 import ModalComponent from '../../../components/Modal/Modal';
 import Swal from 'sweetalert2';
+import { Helmet } from 'react-helmet';
+import { HashLoader } from 'react-spinners';
+import Error from '../../errors/Error';
 
 const ConfigPrice = () => {
   const selectList = [
@@ -120,6 +123,8 @@ const ModalPriceBody = (props) => {
 };
 
 export default function PriceLists() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [isFetched, setIsFetched] = useState(false);
   const [showModalAdd, setShowModalAdd] = useState(false);
   const [showLoader, setShowLoader] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
@@ -135,8 +140,12 @@ export default function PriceLists() {
       .get('/price/get-all')
       .then((res) => {
         setListPrice(res.data.data);
+        setIsFetched(true);
+        setIsLoading(false);
       })
-      .catch((err) => {});
+      .catch((err) => {
+        setIsLoading(false);
+      });
   }, []);
 
   const [newPrice, setNewPrice] = useState({
@@ -302,6 +311,21 @@ export default function PriceLists() {
       body: <CustomTable handleRowClick={handleRowClick} data={listPrice} columns={columns}></CustomTable>
     }
   ];
+
+  if (isLoading) {
+    return (
+      <>
+        <Helmet>
+          <title>Quản lý chính sách giá</title>
+        </Helmet>
+        <HashLoader style={{ display: 'block', height: '70vh', margin: 'auto' }} size={50} color="#36d7b7" />;
+      </>
+    );
+  }
+
+  if (!isFetched) {
+    return <Error />
+  }
   return (
     <>
       <Button variant="outline-primary" className="mb-3" onClick={() => history.push('/app/configurations')}>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BASE_URL } from '../../config/constant';
 
 import useAuth from '../../hooks/useAuth';
@@ -10,7 +10,7 @@ const GuestGuard = ({ children }) => {
   if (isLoggedIn) {
     setTimeout(() => {
       window.location.replace(BASE_URL);
-    }, 3000);
+    }, 2000);
     return <HashLoader style={{ display: 'block', height: '100vh', margin: 'auto' }} size={50} color="#36d7b7" />;
   }
 

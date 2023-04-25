@@ -10,9 +10,12 @@ import { HashLoader } from 'react-spinners';
 import Error from '../../errors/Error';
 
 const UserDetails = () => {
-  const [showTooltip, setShowTooltip] = useState(false);
-  const handleMouseEnter = () => setShowTooltip(true);
-  const handleMouseLeave = () => setShowTooltip(false);
+  const [showTooltipEmail, setShowTooltipEmail] = useState(false);
+  const [showTooltipNote, setShowTooltipNote] = useState(false);
+  const handleMouseEnterEmail = () => setShowTooltipEmail(true);
+  const handleMouseLeaveEmail = () => setShowTooltipEmail(false);
+  const handleMouseEnterNote = () => setShowTooltipNote(true);
+  const handleMouseLeaveNote = () => setShowTooltipNote(false);
   const [isLoading, setIsLoading] = useState(true);
   const history = useHistory();
 
@@ -60,9 +63,14 @@ const UserDetails = () => {
     });
   };
 
-  const tooltip = (
-    <Tooltip id={`tooltip-${customerData.customer_email}`} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+  const tooltipEmail = (
+    <Tooltip id={`tooltip-${customerData.customer_email}`} onMouseEnter={handleMouseEnterEmail} onMouseLeave={handleMouseLeaveEmail}>
       {customerData.customer_email}
+    </Tooltip>
+  );
+  const tooltipNote = (
+    <Tooltip id={`tooltip-${customerData.staff_in_charge_note}`} onMouseEnter={handleMouseEnterNote} onMouseLeave={handleMouseLeaveNote}>
+      {customerData.staff_in_charge_note}
     </Tooltip>
   );
 
@@ -160,15 +168,15 @@ const UserDetails = () => {
                           <Form.Label column>Email</Form.Label>
                           <Col sm={10} lg={7}>
                             <OverlayTrigger
-                              overlay={tooltip}
-                              show={showTooltip}
+                              overlay={tooltipEmail}
+                              show={showTooltipEmail}
                               placement="bottom"
                               delay={{ show: 0, hide: 100000 }}
                               trigger={['hover', 'focus']}
                             >
                               <FormLabel
-                                onMouseEnter={handleMouseEnter}
-                                onMouseLeave={handleMouseLeave}
+                                onMouseEnter={handleMouseEnterEmail}
+                                onMouseLeave={handleMouseLeaveEmail}
                                 className="text-normal long-text"
                                 column
                               >
@@ -214,9 +222,22 @@ const UserDetails = () => {
                         <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
                           <Form.Label column>Mô tả</Form.Label>
                           <Col sm={10} lg={7}>
-                            <FormLabel className="text-normal" column>
-                              : {customerData.note ? customerData.note : '---'}
-                            </FormLabel>
+                          <OverlayTrigger
+                              overlay={tooltipNote}
+                              show={showTooltipNote}
+                              placement="bottom"
+                              delay={{ show: 0, hide: 100000 }}
+                              trigger={['hover', 'focus']}
+                            >
+                              <FormLabel
+                                onMouseEnter={handleMouseEnterNote}
+                                onMouseLeave={handleMouseLeaveNote}
+                                className="text-normal long-text"
+                                column
+                              >
+                                : {customerData.staff_in_charge_note ? customerData.staff_in_charge_note : '---'}
+                              </FormLabel>
+                            </OverlayTrigger>
                           </Col>
                         </Form.Group>
                         <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
@@ -394,22 +415,13 @@ const UserDetails = () => {
                 <Addresses />
               </Tab>
               <Tab eventKey="profile" title="Công nợ">
-                <p>
-                  Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit,
-                  blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth
-                  letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic,
-                  assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr, vero magna velit sapiente labore
-                  stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts beard ut DIY ethical culpa terry
-                  richardson biodiesel. Art party scenester stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.
+                <p className="text-center strong-title text-normal">
+                  Chưa có dữ liệu về công nợ khách hàng
                 </p>
               </Tab>
               <Tab eventKey="contact" title="Liên hệ">
-                <p>
-                  Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi
-                  farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard locavore carles etsy
-                  salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork. Williamsburg
-                  banh mi whatever gluten-free, carles pitchfork biodiesel fixie etsy retro mlkshk vice blog. Scenester cred you probably
-                  haven't heard of them, vinyl craft beer blog stumptown. Pitchfork sustainable tofu synth chambray yr.
+              <p className="text-center strong-title text-normal">
+                  Chưa có dữ liệu về thông tin liên hệ khách hàng
                 </p>
               </Tab>
             </Tabs>

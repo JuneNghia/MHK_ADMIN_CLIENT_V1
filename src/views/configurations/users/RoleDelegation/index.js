@@ -3,8 +3,13 @@ import { Button, Card, Tab, Tabs } from 'react-bootstrap';
 import services from '../../../../utils/axios';
 import { useHistory } from 'react-router-dom';
 import CustomTable from '../../../../components/Table/CustomTable';
+import { Helmet } from 'react-helmet';
+import { HashLoader } from 'react-spinners';
+import Error from '../../../errors/Error';
 
 function Tenant_Roles() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [isFetched, setIsFetched] = useState(false);
   const history = useHistory();
   const [listRoles, setListRoles] = useState([]);
   const columns = React.useMemo(
@@ -26,16 +31,16 @@ function Tenant_Roles() {
   );
 
   useEffect(() => {
-    (async () => {
-      await services
-        .get('/role/get-all')
-        .then((response) => {
-          setListRoles(response.data.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    })();
+    services
+      .get('/role/get-all')
+      .then((response) => {
+        setListRoles(response.data.data);
+        setIsLoading(false);
+        setIsFetched(true);
+      })
+      .catch((err) => {
+        setIsLoading(false);
+      });
   }, []);
 
   const handleRowClick = (row) => {
@@ -43,8 +48,25 @@ function Tenant_Roles() {
     history.push(`/app/sell-management/products/${id}`);
   };
 
+  if (isLoading) {
+    return (
+      <>
+        <Helmet>
+          <title>Danh sách vai trò</title>
+        </Helmet>
+        ;
+        <HashLoader style={{ display: 'block', height: '70vh', margin: 'auto' }} size={50} color="#36d7b7" />;
+      </>
+    );
+  }
+
+  if (!isFetched) {
+    return <Error />;
+  }
+
   return (
     <>
+    
       <Button variant="outline-primary" className="mb-3" onClick={() => history.push('/app/configurations/users')}>
         <i className="feather icon-arrow-left"></i>
         Quay lại danh sách nhân viên
