@@ -54,19 +54,17 @@ function Tenant_Roles() {
         <Helmet>
           <title>Danh sách vai trò</title>
         </Helmet>
-        ;
         <HashLoader style={{ display: 'block', height: '70vh', margin: 'auto' }} size={50} color="#36d7b7" />;
       </>
     );
   }
 
   if (!isFetched) {
-    return <Error />;
+    return <Error />
   }
 
   return (
     <>
-    
       <Button variant="outline-primary" className="mb-3" onClick={() => history.push('/app/configurations/users')}>
         <i className="feather icon-arrow-left"></i>
         Quay lại danh sách nhân viên

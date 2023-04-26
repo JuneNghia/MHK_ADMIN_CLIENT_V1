@@ -43,15 +43,13 @@ const CreateUser = () => {
       user_phone: values.phone,
       user_email: values.email,
       user_password: values.password,
-      staff_gender: values.gender,
+      staff_gender: values.gender.value,
       staff_birthday: values.dob,
       isAllowViewImportNWholesalePrice: allowSalePrice,
       isAllowViewShippingPrice: allowShippingPrice,
-      roles : position,
+      roles: position,
       address_list: addressList
     };
-
-    console.log(newStaff);
 
     try {
       await services
@@ -107,7 +105,7 @@ const CreateUser = () => {
     email: '',
     dob: '',
     address: '',
-    gender: true,
+    gender: { label: 'Nam', value: true },
     province: '',
     district: '',
     status: '',
@@ -143,7 +141,7 @@ const CreateUser = () => {
       </Helmet>
 
       <Formik initialValues={data} validationSchema={validateSchema} onSubmit={handleSubmit}>
-        {({ errors, setFieldValue, handleChange, handleSubmit, touched, values, isValid }) => (
+        {({ errors, setFieldValue, handleChange, handleSubmit, touched, values }) => (
           <Form noValidate onSubmit={handleSubmit}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <Button
@@ -191,13 +189,12 @@ const CreateUser = () => {
                                   </Form.Label>
                                   <FormControl
                                     name="name"
-                                    onError={errors.name}
                                     value={values.name}
                                     onChange={handleChange}
                                     type="text"
                                     placeholder="Nhập tên đầy đủ nhân viên"
                                   ></FormControl>
-                                  {touched.name && errors.name && <small class="text-danger form-text">{errors.name}</small>}
+                                  {touched.name && errors.name && <small className="text-danger form-text">{errors.name}</small>}
                                 </Form.Group>
                               </Col>
                               <Col sm={12} lg={4}>
@@ -212,7 +209,7 @@ const CreateUser = () => {
                                     type="text"
                                     placeholder="Nhập số điện thoại"
                                   ></FormControl>
-                                  {touched.phone && errors.phone && <small class="text-danger form-text">{errors.phone}</small>}
+                                  {touched.phone && errors.phone && <small className="text-danger form-text">{errors.phone}</small>}
                                 </Form.Group>
                               </Col>
                               <Col sm={12} lg={4}>
@@ -239,7 +236,7 @@ const CreateUser = () => {
                                     type="text"
                                     placeholder="Nhập địa chỉ"
                                   ></FormControl>
-                                  {touched.address && errors.address && <small class="text-danger form-text">{errors.address}</small>}
+                                  {touched.address && errors.address && <small className="text-danger form-text">{errors.address}</small>}
                                 </Form.Group>
                               </Col>
                               <Col sm={12} lg={8}>
@@ -251,7 +248,9 @@ const CreateUser = () => {
                                       setFieldValue('district', d, false);
                                     }}
                                   />
-                                  {touched.province && errors.province && <small class="text-danger form-text">{errors.province}</small>}
+                                  {touched.province && errors.province && (
+                                    <small className="text-danger form-text">{errors.province}</small>
+                                  )}
                                 </Form.Group>
                               </Col>
                               <Col sm={12} lg={4}>
@@ -260,7 +259,26 @@ const CreateUser = () => {
                                     Ngày sinh <span className="text-c-red">*</span>
                                   </Form.Label>
                                   <FormControl name="dob" value={values.dob} onChange={handleChange} type="date"></FormControl>
-                                  {touched.dob && errors.dob && <small class="text-danger form-text">{errors.dob}</small>}
+                                  {touched.dob && errors.dob && <small className="text-danger form-text">{errors.dob}</small>}
+                                </Form.Group>
+                              </Col>
+
+                              <Col sm={12} lg={4}>
+                                <Form.Group>
+                                  <Form.Label>
+                                    Mật khẩu <span className="text-c-red">*</span>
+                                  </Form.Label>
+                                  <FormControl
+                                    name="password"
+                                    value={values.password}
+                                    onChange={handleChange}
+                                    placeholder="Nhập mật khẩu"
+                                    type="password"
+                                    autoComplete="current-password"
+                                  ></FormControl>
+                                  {touched.password && errors.password && (
+                                    <small className="text-danger form-text">{errors.password}</small>
+                                  )}
                                 </Form.Group>
                               </Col>
                               <Col sm={12} lg={4}>
@@ -275,23 +293,7 @@ const CreateUser = () => {
                                   ></Select>
                                 </Form.Group>
                               </Col>
-                              <Col sm={12} lg={4}>
-                                <Form.Group>
-                                  <Form.Label>
-                                    Mật khẩu <span className="text-c-red">*</span>
-                                  </Form.Label>
-                                  <FormControl
-                                    name="password"
-                                    value={values.password}
-                                    onChange={handleChange}
-                                    placeholder="Nhập mật khẩu"
-                                    type="password"
-                                    autoComplete="current-password"
-                                  ></FormControl>
-                                  {touched.password && errors.password && <small class="text-danger form-text">{errors.password}</small>}
-                                </Form.Group>
-                              </Col>
-                              <Col sm={12} lg={4}>
+                              <Col sm={12} lg={12}>
                                 <Form.Group>
                                   <Form.Label>Ghi chú</Form.Label>
                                   <FormControl

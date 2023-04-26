@@ -15,6 +15,7 @@ import ProvinceDistrictSelect from '../../../data/provinceSelect';
 import Select from 'react-select';
 import Error from '../../errors/Error';
 import { HashLoader } from 'react-spinners';
+import Drag from '../../../components/Drag/Drag';
 
 const UserDetail = () => {
   const { id } = useParams();
@@ -22,6 +23,7 @@ const UserDetail = () => {
   const [address, setAddress] = useState([]);
   const [allowShippingPrice, setAllowShippingPrice] = useState(false);
   const [allowSalePrice, setAllowSalePrice] = useState(false);
+  const [dataGender, setDataGender] = useState(true);
   const [positions, setPositions] = useState([]);
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
@@ -37,35 +39,37 @@ const UserDetail = () => {
   };
 
   const optionsGender = [
-    { label: 'Nam', value: 'male' },
-    { label: 'Nữ', value: 'female' },
-    { label: 'Khác', value: 'others' }
+    { label: 'Nam', value: true },
+    { label: 'Nữ', value: false }
   ];
 
   useEffect(() => {
     services
       .get(`/staff/get-by-id/${id}`)
       .then((response) => {
-        const data = response.data.data; 
+        const data = response.data.data;
         setData(data);
         setPositions(
           data.staffRoleList.map((position) => {
             return {
-              id: position.id,
               role: { label: position.role, value: position.role },
               branches: position.agencyBranchesInCharge.map((branch) => ({
-                id: branch.id,
                 label: branch.agency_branch_inCharge_name,
                 value: branch.agency_branch_inCharge_name
               }))
             };
           })
         );
+        if (data.staff_gender === 'female') {
+          setDataGender(false);
+        }
         setAllowSalePrice(response.data.data.isAllowViewImportNWholesalePrice);
         setAllowShippingPrice(response.data.data.isAllowViewShippingPrice);
-        setAddress(data.addressList.map((address) => {
-          return `${address.user_specific_address}, ${address.user_district}, ${address.user_province}`
-        }));
+        setAddress(
+          data.addressList.map((address) => {
+            return `${address.user_specific_address}, ${address.user_district}, ${address.user_province}`;
+          })
+        );
         setIsLoadPage(false);
         setIsFetched(true);
       })
@@ -103,27 +107,29 @@ const UserDetail = () => {
   };
 
   const handleSaveSubmit = () => {
-    setIsLoading(true);
+    // setIsLoading(true);
     const position = positions.map((role) => ({
-      title: role.role.label,
-      agencyInChargeIDList: role.branches.map((branch) => branch.value)
+      role_id: role.role.value,
+      agencyBranches_inCharge_id_list: role.branches.map((branch) => branch.value)
     }));
-    const newPosition = {
-      positionIncludeAgencyBranchInCharge: position
-    };
-    if (position[0].agencyInChargeIDList.length === 0) {
-      setIsLoading(false);
-      Swal.fire('', 'Vui lòng chọn chi nhánh cho nhân viên trước khi lưu', 'warning');
-    } else {
-      services
-        .patch(`/staff/update-role-by-id/${id}`, newPosition)
-        .then((res) => {
-          successUpdatePositions();
-        })
-        .catch((err) => {
-          failedUpdatePositions();
-        });
-    }
+    console.log(position);
+    // const newPosition = {
+    //   roles: position
+    // };
+    // if (position[0].agencyBranches_inCharge_id_list.length === 0) {
+    //   setIsLoading(false);
+    //   Swal.fire('', 'Vui lòng chọn chi nhánh cho nhân viên trước khi lưu', 'warning');
+    // } else {
+    //   console.log(newPosition);
+    //   // services
+    //   //   .patch(`/staff/update-role-by-id/${id}`, newPosition)
+    //   //   .then((res) => {
+    //   //     successUpdatePositions();
+    //   //   })
+    //   //   .catch((err) => {
+    //   //     failedUpdatePositions();
+    //   //   });
+    // }
   };
 
   const handleModalUpdateSubmit = (values) => {
@@ -132,11 +138,17 @@ const UserDetail = () => {
       staff_name: 'user_name',
       staff_phone: 'user_phone',
       staff_email: 'user_email',
-      gender: 'staff_gender',
       dob: 'staff_birthday',
-      province: 'staff_region',
-      district: 'staff_commune'
+      gender: 'staff_gender'
     };
+
+    const address_list = [
+      {
+        user_province: values.province,
+        user_district: values.district,
+        user_specific_address: values.address
+      }
+    ];
 
     const updatedProfile = {};
     for (const key in values) {
@@ -152,15 +164,19 @@ const UserDetail = () => {
         updatedProfileWithApiKeys[newKey] = updatedProfile[key];
       }
     }
+    delete updatedProfileWithApiKeys.address;
+    delete updatedProfileWithApiKeys.province;
+    delete updatedProfileWithApiKeys.district;
+
 
     try {
       services
-        .patch(`/staff/update/${id}`, updatedProfileWithApiKeys)
+        .patch(`/staff/update-by-id/${id}`, { ...updatedProfileWithApiKeys, staff_address_list: address_list })
         .then((res) => {
           setTimeout(() => {
             setIsLoading(false);
             Swal.fire({
-              text: 'Cập nhật nhân viên thành công',
+              text: 'Cập nhật thông tin nhân viên thành công',
               showConfirmButton: true,
               showCancelButton: false,
               icon: 'success'
@@ -194,13 +210,8 @@ const UserDetail = () => {
         });
     } catch (error) {
       setTimeout(() => {
-        Swal.fire({
-          text: 'Lỗi kết nối tới máy chủ',
-          showConfirmButton: true,
-          showCancelButton: false,
-          icon: 'error'
-        });
         setIsLoading(false);
+        Swal.fire('', 'Đã xảy ra lỗi khi kết nối tới máy chủ', 'error');
       }, 1000);
     }
   };
@@ -238,30 +249,25 @@ const UserDetail = () => {
     staff_name: Yup.string().required('Tên nhân viên không được để trống'),
     staff_email: Yup.string().email('Email không hợp lệ').nullable(),
     staff_phone: Yup.string().matches(phoneRegExp, 'Số điện thoại không hợp lệ').required('Số điện thoại không được để trống'),
-    staff_address: Yup.string().required('Địa chỉ không được để trống'),
+    address: Yup.string().required('Địa chỉ không được để trống'),
     province: Yup.string().required('Vui lòng chọn Tỉnh/Thành phố và Quận/Huyện')
   });
 
-  if (isloadPage) {
+  if (isloadPage)
     return (
       <>
         <Helmet>
-          <title>Danh sách vai trò</title>
+          <title>Chi tiết nhân viên</title>
         </Helmet>
-        ;
         <HashLoader style={{ display: 'block', height: '70vh', margin: 'auto' }} size={50} color="#36d7b7" />;
       </>
     );
-  }
 
   if (!isFetched) {
-    return <Error />
+    return <Error />;
   } else
     return (
       <React.Fragment>
-        <Helmet>
-          <title>Chi tiết nhân viên</title>
-        </Helmet>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Button
             onClick={() => history.push('/app/configurations/users')}
@@ -303,7 +309,7 @@ const UserDetail = () => {
                 <Card>
                   <Card.Header className="flex-between">
                     <Card.Title as="h5">
-                      <h4 style={{ display: 'inline-block', fontWeight: 600, fontSize: 22 }}>{data.staff_name}</h4>
+                      <span style={{ display: 'inline-block', fontWeight: 600, fontSize: 22 }}>{data.staff_name}</span>
                       <span>
                         {data.staff_status === 'Đã nghỉ việc' ? (
                           <Badge style={{ fontSize: 15, marginLeft: 15, padding: 11 }} key="process" pill variant="danger">
@@ -355,7 +361,7 @@ const UserDetail = () => {
                               <Form.Label column>Giới tính</Form.Label>
                               <Col sm={10} lg={6}>
                                 <FormLabel className="text-normal" column>
-                                  : {data.staff_gender === 'male' ? 'Nam' : data.staff_gender === 'female' ? 'Nữ' : 'Khác'}
+                                  : {data.staff_gender === 'male' ? 'Nam' : 'Nữ'}
                                 </FormLabel>
                               </Col>
                             </Form.Group>
@@ -443,10 +449,11 @@ const UserDetail = () => {
           onSubmit={handleModalUpdateSubmit}
           initialValues={{
             ...data,
-            gender: data.staff_gender,
+            gender: dataGender,
             dob: moment(data.staff_birthday).utcOffset(7).format('YYYY-MM-DD'),
-            province: data.staff_region,
-            district: data.staff_commune
+            address: data.addressList.map((address) => address.user_specific_address).join(''),
+            province: data.addressList.map((address) => address.user_province).join(''),
+            district: data.addressList.map((address) => address.user_district).join('')
           }}
           validationSchema={validateSchema}
         >
@@ -485,9 +492,8 @@ const UserDetail = () => {
                               <Form.Label>Giới tính</Form.Label>
                               <Select
                                 options={optionsGender}
-                                defaultValue={optionsGender.find((option) => option.value === values.staff_gender)}
+                                defaultValue={optionsGender.find((option) => option.value === dataGender)}
                                 onChange={(g) => setFieldValue('gender', g.value)}
-                                placeholder="Chọn giới tính"
                               />
                             </Form.Group>
                           </Col>
@@ -538,14 +544,12 @@ const UserDetail = () => {
                                 Địa chỉ <span className="text-c-red">*</span>
                               </Form.Label>
                               <Form.Control
-                                value={values.staff_address}
+                                value={values.address}
                                 onChange={handleChange}
-                                name="staff_address"
+                                name="address"
                                 placeholder="Nhập địa chỉ cụ thể"
                               />
-                              {touched.staff_address && errors.staff_address && (
-                                <small class="text-danger form-text">{errors.staff_address}</small>
-                              )}
+                              {touched.address && errors.address && <small class="text-danger form-text">{errors.address}</small>}
                             </Form.Group>
                           </Col>
                           <Col lg={12}>

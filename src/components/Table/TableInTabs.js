@@ -39,7 +39,12 @@ function TableInTabs({ columns, data, hiddenColumns = ['id'], handleRowClick, se
           id: 'selection',
           Header: ({ getToggleAllRowsSelectedProps }) => (
             <div style={{ width: '25px', textAlign: 'center' }}>
-              <input type="checkbox" {...getToggleAllRowsSelectedProps()} title="Chọn tất cả" />
+              <input
+                type="checkbox"
+                {...getToggleAllRowsSelectedProps()}
+                title="Chọn tất cả"
+                indeterminate={selectedFlatRows.length > 0 ? true : undefined}
+              />
             </div>
           )
         },
@@ -163,7 +168,13 @@ function TableInTabs({ columns, data, hiddenColumns = ['id'], handleRowClick, se
                 {row.cells.map((cell) => {
                   return cell.column.id === 'selection' ? (
                     <td style={{ width: '50px', textAlign: 'center' }} {...cell.getCellProps()}>
-                      <input {...row.getToggleRowSelectedProps()} type="checkbox" {...cell.getCellProps()} title="" />
+                      <input
+                        {...row.getToggleRowSelectedProps()}
+                        type="checkbox"
+                        {...cell.getCellProps()}
+                        title=""
+                        indeterminate={selectedFlatRows.length > 0 ? true : undefined}
+                      />
                     </td>
                   ) : (
                     <td

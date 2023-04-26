@@ -17,18 +17,23 @@ const UserDetails = () => {
   const handleMouseEnterNote = () => setShowTooltipNote(true);
   const handleMouseLeaveNote = () => setShowTooltipNote(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFetched, setIsFetched] = useState(false);
   const history = useHistory();
 
   const { id } = useParams();
   const [customerData, setCustomer] = useState({});
 
   useEffect(() => {
-    async function fetchCustomer() {
-      const response = await services.get(`/customer/get-by-id/${id}`);
-      setCustomer(response.data.data);
-      setIsLoading(false);
-    }
-    fetchCustomer();
+    services
+      .get(`/customer/get-by-id/${id}`)
+      .then((response) => {
+        setCustomer(response.data.data);
+        setIsLoading(false);
+        setIsFetched(true);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+      });
   }, [id]);
 
   const handleEditProfile = (e) => {
@@ -80,10 +85,10 @@ const UserDetails = () => {
     MySwal.fire('', 'Xoá khách hàng thành công', 'success');
   };
 
-  if (isLoading) return <HashLoader style={{ display: 'block', height: '70vh', margin: 'auto' }} size={50} color="#36d7b7" />;
+  if (isLoading) return <HashLoader style={{ display: 'block', height: '70vh', margin: 'auto' }} size={50} color="#36d7b7" />
 
-  if (!customerData) {
-    return <Error />;
+  if (!isFetched) {
+    return <Error />
   } else
     return (
       <React.Fragment>
@@ -222,7 +227,7 @@ const UserDetails = () => {
                         <Form.Group className="mb-0" as={Row} controlId="formHorizontalEmail">
                           <Form.Label column>Mô tả</Form.Label>
                           <Col sm={10} lg={7}>
-                          <OverlayTrigger
+                            <OverlayTrigger
                               overlay={tooltipNote}
                               show={showTooltipNote}
                               placement="bottom"
@@ -247,8 +252,8 @@ const UserDetails = () => {
                               :{' '}
                               {customerData.tags === undefined
                                 ? '---'
-                                : customerData.tags.map((tag) => (
-                                    <span>
+                                : customerData.tags.map((tag, index) => (
+                                    <span key={`tag_${index}`}>
                                       <Badge style={{ backgroundColor: 'burlywood' }} className="ml-2 p-1">
                                         {tag.tag_title}
                                       </Badge>
@@ -415,14 +420,10 @@ const UserDetails = () => {
                 <Addresses />
               </Tab>
               <Tab eventKey="profile" title="Công nợ">
-                <p className="text-center strong-title text-normal">
-                  Chưa có dữ liệu về công nợ khách hàng
-                </p>
+                <p className="text-center strong-title text-normal">Chưa có dữ liệu về công nợ khách hàng</p>
               </Tab>
               <Tab eventKey="contact" title="Liên hệ">
-              <p className="text-center strong-title text-normal">
-                  Chưa có dữ liệu về thông tin liên hệ khách hàng
-                </p>
+                <p className="text-center strong-title text-normal">Chưa có dữ liệu về thông tin liên hệ khách hàng</p>
               </Tab>
             </Tabs>
           </Col>
