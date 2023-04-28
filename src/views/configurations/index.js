@@ -30,41 +30,43 @@ const configsMenu = [
 ];
 
 export default function index() {
-  return configsMenu.map((configMenu) => (
+  return (
     <>
       <Helmet>
         <title>Cấu hình</title>
       </Helmet>
-      <Card>
-        <Card.Header>
-          <Card.Title as="h5">{configMenu.title}</Card.Title>
-        </Card.Header>
-        <Card.Body>
-          <Row>
-            {configMenu.children.map((config) => (
-              <Col lg={3}>
-                <Link to={config.url}>
-                  <Card className="hover-card">
-                    <Card.Body>
-                      <Row>
-                        <Col lg={1}>
-                          <i style={{ fontSize: 18 }} className={config.icon}></i>
-                        </Col>
-                        <Col lg={10}>
-                          <p className="strong-title text-normal">{config.name}</p>
-                          <p style={{ fontSize: 13 }} className="text-normal">
-                            {config.description}
-                          </p>
-                        </Col>
-                      </Row>
-                    </Card.Body>
-                  </Card>
-                </Link>
-              </Col>
-            ))}
-          </Row>
-        </Card.Body>
-      </Card>
+      {configsMenu.map((configMenu, index) => (
+        <Card key={`configsMenu_${index}`}>
+          <Card.Header>
+            <Card.Title as="h5">{configMenu.title}</Card.Title>
+          </Card.Header>
+          <Card.Body>
+            <Row>
+              {configMenu.children.map((config, index) => (
+                <Col lg={3} key={index}>
+                  <Link to={config.url}>
+                    <Card className="hover-card">
+                      <Card.Body>
+                        <Row>
+                          <Col lg={1}>
+                            <i style={{ fontSize: 18 }} className={config.icon}></i>
+                          </Col>
+                          <Col lg={10}>
+                            <p className="strong-title text-normal">{config.name}</p>
+                            <p style={{ fontSize: 13 }} className="text-normal">
+                              {config.description}
+                            </p>
+                          </Col>
+                        </Row>
+                      </Card.Body>
+                    </Card>
+                  </Link>
+                </Col>
+              ))}
+            </Row>
+          </Card.Body>
+        </Card>
+      ))}
     </>
-  ));
+  );
 }

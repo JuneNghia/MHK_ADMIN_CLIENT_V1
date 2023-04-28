@@ -12,6 +12,8 @@ import Error from '../../errors/Error';
 const UserDetails = () => {
   const [showTooltipEmail, setShowTooltipEmail] = useState(false);
   const [showTooltipNote, setShowTooltipNote] = useState(false);
+  const [staffId, setStaffId] = useState(null);
+  const [staffName, setStaffName] = useState('---');
   const handleMouseEnterEmail = () => setShowTooltipEmail(true);
   const handleMouseLeaveEmail = () => setShowTooltipEmail(false);
   const handleMouseEnterNote = () => setShowTooltipNote(true);
@@ -27,14 +29,30 @@ const UserDetails = () => {
     services
       .get(`/customer/get-by-id/${id}`)
       .then((response) => {
-        setCustomer(response.data.data);
-        setIsLoading(false);
-        setIsFetched(true);
+        const result = response.data.data;
+        setCustomer(result);
+        setStaffId(result.staff_id);
       })
-      .catch((error) => {
-        setIsLoading(false);
-      });
+      .catch((error) => {});
   }, [id]);
+
+  useEffect(() => {
+    if(staffId === null) {
+      return
+    } else {
+      services
+        .get(`/staff/get-by-id/${staffId}`)
+        .then((response) => {
+          const result = response.data.data;
+          setStaffName(result.staff_name);
+        })
+        .catch((error) => {
+          console.log('Get Staff Name Error');
+          setIsLoading(false);
+          setIsFetched(true);
+        });
+    }
+  }, [staffId]);
 
   const handleEditProfile = (e) => {
     e.preventDefault();
@@ -85,10 +103,10 @@ const UserDetails = () => {
     MySwal.fire('', 'Xoá khách hàng thành công', 'success');
   };
 
-  if (isLoading) return <HashLoader style={{ display: 'block', height: '70vh', margin: 'auto' }} size={50} color="#36d7b7" />
+  if (isLoading) return <HashLoader style={{ display: 'block', height: '70vh', margin: 'auto' }} size={50} color="#36d7b7" />;
 
   if (!isFetched) {
-    return <Error />
+    return <Error />;
   } else
     return (
       <React.Fragment>
@@ -194,7 +212,7 @@ const UserDetails = () => {
                           <Form.Label column>Nhân viên phụ trách</Form.Label>
                           <Col sm={10} lg={7}>
                             <FormLabel className="text-normal" column>
-                              : {customerData.staff_id ? customerData.staff_id : '---'}
+                              : {staffName}
                             </FormLabel>
                           </Col>
                         </Form.Group>

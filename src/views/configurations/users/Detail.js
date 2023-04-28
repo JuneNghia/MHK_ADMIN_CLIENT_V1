@@ -52,10 +52,10 @@ const UserDetail = () => {
         setPositions(
           data.staffRoleList.map((position) => {
             return {
-              role: { label: position.role, value: position.role },
+              role: { label: position.role, value: position.role_id },
               branches: position.agencyBranchesInCharge.map((branch) => ({
                 label: branch.agency_branch_inCharge_name,
-                value: branch.agency_branch_inCharge_name
+                value: branch.agency_branch_id
               }))
             };
           })
@@ -107,29 +107,27 @@ const UserDetail = () => {
   };
 
   const handleSaveSubmit = () => {
-    // setIsLoading(true);
+    setIsLoading(true);
     const position = positions.map((role) => ({
       role_id: role.role.value,
       agencyBranches_inCharge_id_list: role.branches.map((branch) => branch.value)
     }));
-    console.log(position);
-    // const newPosition = {
-    //   roles: position
-    // };
-    // if (position[0].agencyBranches_inCharge_id_list.length === 0) {
-    //   setIsLoading(false);
-    //   Swal.fire('', 'Vui lòng chọn chi nhánh cho nhân viên trước khi lưu', 'warning');
-    // } else {
-    //   console.log(newPosition);
-    //   // services
-    //   //   .patch(`/staff/update-role-by-id/${id}`, newPosition)
-    //   //   .then((res) => {
-    //   //     successUpdatePositions();
-    //   //   })
-    //   //   .catch((err) => {
-    //   //     failedUpdatePositions();
-    //   //   });
-    // }
+    const newPosition = {
+      roles: position
+    };
+    if (position[0].agencyBranches_inCharge_id_list.length === 0) {
+      setIsLoading(false);
+      Swal.fire('', 'Vui lòng chọn chi nhánh cho nhân viên trước khi lưu', 'warning');
+    } else {
+      services
+        .patch(`/staff/update-role-by-id/${id}`, newPosition)
+        .then((res) => {
+          successUpdatePositions();
+        })
+        .catch((err) => {
+          failedUpdatePositions();
+        });
+    }
   };
 
   const handleModalUpdateSubmit = (values) => {
@@ -171,7 +169,7 @@ const UserDetail = () => {
 
     try {
       services
-        .patch(`/staff/update-by-id/${id}`, { ...updatedProfileWithApiKeys, staff_address_list: address_list })
+        .patch(`/staff/update-personal-by-id/${id}`, { ...updatedProfileWithApiKeys, staff_address_list: address_list })
         .then((res) => {
           setTimeout(() => {
             setIsLoading(false);
@@ -188,7 +186,7 @@ const UserDetail = () => {
           }, 1000);
         })
         .catch((errors) => {
-          const errorResponses = errors.response.data.message;
+          const errorResponses = errors.response.data;
           const errorMessages = errorResponses.map((error) => {
             if (error.includes('name')) {
               return `Tên NV: <b>${values.staff_email}</b> đã tồn tại`;
@@ -202,6 +200,7 @@ const UserDetail = () => {
             setIsLoading(false);
             Swal.fire({
               title: 'Thất bại',
+              text: 'Lỗi',
               html: errorMessages.join('<br>'),
               icon: 'warning',
               confirmButtonText: 'Xác nhận'

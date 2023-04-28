@@ -16,6 +16,8 @@ const CreateCustomer = () => {
   const [showLoader, setShowLoader] = useState(false);
   const history = useHistory();
   const [optionsStaff, setOptionsStaff] = useState([]);
+  const [optionsTag, setOptionsTag] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
 
   useEffect(() => {
     services
@@ -24,12 +26,27 @@ const CreateCustomer = () => {
         const result = res.data.data;
         const options = result.map((staff) => ({
           label: staff.staff_name,
-          value: staff.id
+          value: staff.staff_id
         }));
         setOptionsStaff(options);
       })
       .catch((err) => {});
   }, []);
+
+  useEffect(() => {
+    services
+      .get('/tag/get-all')
+      .then((res) => {
+        const result = res.data.data;
+        const options = result.map((tag) => ({
+          label: tag.tag_title,
+          value: tag.id
+        }));
+        setOptionsTag(options);
+      })
+      .catch((err) => {});
+  }, []);
+
 
   const gender = [
     { label: 'Nam', value: true },
@@ -46,6 +63,8 @@ const CreateCustomer = () => {
       }
     ];
 
+    const tags = selectedTags.map((tag) => (tag.value))
+
     const newCustomer = {
       user_code: values.code,
       user_name: values.name,
@@ -55,8 +74,11 @@ const CreateCustomer = () => {
       address_list: addressList,
       staff_id: values.staff.value,
       staff_in_charge_note: values.note,
-      tags: values.tags
+      tags: tags
     };
+
+    console.log(newCustomer)
+
     try {
       await services
         .post('/customer/create', newCustomer)
@@ -80,15 +102,19 @@ const CreateCustomer = () => {
             } else return `Mã KH: <b>${values.code}</b> đã tồn tại`;
           });
 
-          setTimeout(() => {
-            setShowLoader(false);
-            Swal.fire({
-              title: 'Thất bại',
-              html: errorMessages.join('<br>'),
-              icon: 'warning',
-              confirmButtonText: 'Xác nhận'
-            });
-          }, 1000);
+          if(errorResponses) {
+            setTimeout(() => {
+              setShowLoader(false);
+              Swal.fire({
+                title: 'Thất bại',
+                html: errorMessages.join('<br>'),
+                icon: 'warning',
+                confirmButtonText: 'Xác nhận'
+              });
+            }, 1000);
+          }else {
+            console.log("ERROR ");
+          }
         });
     } catch (error) {
       setTimeout(() => {
@@ -137,14 +163,13 @@ const CreateCustomer = () => {
           address: '',
           province: '',
           district: '',
-          tags: '',
           note: '',
           staff: ''
         }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ errors, setFieldValue, handleChange, handleSubmit, touched, values, isValid }) => (
+        {({ errors, setFieldValue, handleChange, handleSubmit, touched, values}) => (
           <Form noValidate onSubmit={handleSubmit}>
             <span className="flex-between">
               <Button onClick={sweetConfirmAlert} variant="outline-primary" className="mr-0" style={{ marginBottom: 15 }}>
@@ -342,9 +367,9 @@ const CreateCustomer = () => {
                           <Form.Label>Mô tả</Form.Label>
                           <Form.Control value={values.note} onChange={handleChange} name="note" as="textarea" rows="3" />
                         </Form.Group>
-                        <Form.Group controlId="tag">
+                        <Form.Group>
                           <Form.Label>Tags</Form.Label>
-                          <Form.Control value={values.tags} onChange={handleChange} name="tags" as="textarea" rows="3" />
+                          <Select options={optionsTag} placeholder="Chọn tags" isMulti onChange={(tag) => setSelectedTags(tag)}></Select>
                         </Form.Group>
                       </Card.Body>
                     </Card>

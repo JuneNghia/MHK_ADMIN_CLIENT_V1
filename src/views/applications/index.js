@@ -31,8 +31,8 @@ export default function index() {
         <title>Ứng dụng</title>
       </Helmet>
       <Row>
-        {applicationList.map((app) => (
-          <Col md={6} xl={4}>
+        {applicationList.map((app, index) => (
+          <Col key={index} md={6} xl={4}>
             <Card>
               {/* <Card.Img variant="top" src={app.image} /> */}
               <Card.Body>
