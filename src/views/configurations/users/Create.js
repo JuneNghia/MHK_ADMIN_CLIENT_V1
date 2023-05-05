@@ -5,11 +5,11 @@ import { ButtonLoading } from '../../../components/Button/LoadButton';
 import { Helmet } from 'react-helmet';
 import Select from 'react-select';
 import { Formik } from 'formik';
-import * as Yup from 'yup';
 import ProvinceDistrictSelect from '../../../data/provinceSelect';
 import services from '../../../utils/axios';
 import Swal from 'sweetalert2';
 import Positions from './RoleDelegation/Positions';
+import { validationSchema } from '../../../hooks/useValidation';
 
 const CreateUser = () => {
   const [showLoader, setShowLoader] = useState(false);
@@ -114,33 +114,13 @@ const CreateUser = () => {
     positions: [{ role: '', branches: [] }]
   };
 
-  const phoneRegExp = /^(0|\+84)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0|3|4|5|7|8])+([0-9]{7})$/;
-
-  const validateSchema = Yup.object().shape({
-    name: Yup.string().required('Tên khách hàng không được để trống'),
-    phone: Yup.string()
-      .matches(phoneRegExp, 'Số điện thoại không hợp lệ')
-      .length(10, 'Số điện thoại phải có độ dài bằng 10')
-      .required('Số điện thoại không được để trống'),
-    dob: Yup.date().required('Ngày sinh không được để trống'),
-    address: Yup.string().required('Địa chỉ không được để trống'),
-    province: Yup.string().required('Vui lòng chọn Tỉnh/Thành phố'),
-    password: Yup.string().required('Mật khẩu không được để trống').min(8, 'Mật khẩu phải có tối thiểu 8 kí tự'),
-    positions: Yup.array().of(
-      Yup.object().shape({
-        role: Yup.mixed().required('Vui lòng chọn ít nhất một vai trò'),
-        branches: Yup.array().min(1, 'Vui lòng chọn ít nhất một chi nhánh').required('Vui lòng chọn ít nhất một chi nhánh')
-      })
-    )
-  });
-
   return (
     <React.Fragment>
       <Helmet>
         <title>Thêm mới nhân viên</title>
       </Helmet>
 
-      <Formik initialValues={data} validationSchema={validateSchema} onSubmit={handleSubmit}>
+      <Formik initialValues={data} validationSchema={validationSchema} onSubmit={handleSubmit}>
         {({ errors, setFieldValue, handleChange, handleSubmit, touched, values }) => (
           <Form noValidate onSubmit={handleSubmit}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>

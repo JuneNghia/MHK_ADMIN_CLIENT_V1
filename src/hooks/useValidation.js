@@ -8,6 +8,12 @@ export const validationSchema = Yup.object().shape({
   phone: Yup.string().matches(phoneRegExp, 'Số điện thoại không hợp lệ').required('Số điện thoại không được để trống'),
   code: Yup.string().required('Mã khách hàng không được để trống'),
   address: Yup.string().required('Địa chỉ không được để trống'),
-  province: Yup.string().required('Vui lòng chọn Tỉnh/Thành phố')
+  province: Yup.string().required('Vui lòng chọn Tỉnh/Thành phố'),
+  password: Yup.string().required('Mật khẩu không được để trống').min(8, 'Mật khẩu phải có tối thiểu 8 kí tự'),
+  positions: Yup.array().of(
+    Yup.object().shape({
+      role: Yup.mixed().required('Vui lòng chọn ít nhất một vai trò'),
+      branches: Yup.array().min(1, 'Vui lòng chọn ít nhất một chi nhánh').required('Vui lòng chọn ít nhất một chi nhánh')
+    })
+  )
 });
-

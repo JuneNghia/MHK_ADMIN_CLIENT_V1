@@ -6,7 +6,6 @@ import withReactContent from 'sweetalert2-react-content';
 import { ButtonLoading } from '../../../components/Button/LoadButton';
 import { useHistory } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import * as Yup from 'yup';
 import { Formik } from 'formik';
 import ProvinceDistrictSelect from '../../../data/provinceSelect';
 import Select from 'react-select';
@@ -76,8 +75,6 @@ const CreateCustomer = () => {
       staff_in_charge_note: values.note,
       tags: tags
     };
-
-    console.log(newCustomer)
 
     try {
       await services
@@ -214,7 +211,7 @@ const CreateCustomer = () => {
                                 type="text"
                                 placeholder="Nhập tên khách hàng"
                               />
-                              {touched.name && errors.name && <small class="text-danger form-text">{errors.name}</small>}
+                              {touched.name && errors.name && <small className="text-danger form-text">{errors.name}</small>}
                             </Form.Group>
                             <Form.Group controlId="emailCustomer">
                               <Form.Label>
@@ -227,7 +224,7 @@ const CreateCustomer = () => {
                                 type="email"
                                 placeholder="Nhập địa chỉ email"
                               />
-                              {touched.email && errors.email && <small class="text-danger form-text">{errors.email}</small>}
+                              {touched.email && errors.email && <small className="text-danger form-text">{errors.email}</small>}
                             </Form.Group>
                           </Col>
                           <Col md={6}>
@@ -242,7 +239,7 @@ const CreateCustomer = () => {
                                 type="text"
                                 placeholder="Nhập mã khách hàng"
                               />
-                              {touched.code && errors.code && <small class="text-danger form-text">{errors.code}</small>}
+                              {touched.code && errors.code && <small className="text-danger form-text">{errors.code}</small>}
                             </Form.Group>
                             <Row></Row>{' '}
                           </Col>
@@ -258,7 +255,7 @@ const CreateCustomer = () => {
                                 type="text"
                                 placeholder="Nhập số điện thoại"
                               />
-                              {touched.phone && errors.phone && <small class="text-danger form-text">{errors.phone}</small>}
+                              {touched.phone && errors.phone && <small className="text-danger form-text">{errors.phone}</small>}
                             </Form.Group>
                           </Col>
                           <Col sm={12} lg={12}>
@@ -270,7 +267,7 @@ const CreateCustomer = () => {
                                   setFieldValue('district', d, false);
                                 }}
                               />
-                              {touched.province && errors.province && <small class="text-danger form-text">{errors.province}</small>}
+                              {touched.province && errors.province && <small className="text-danger form-text">{errors.province}</small>}
                             </Form.Group>
                           </Col>
                           <Col sm={12} lg={12}>
@@ -286,7 +283,7 @@ const CreateCustomer = () => {
                                 as="textarea"
                                 rows="3"
                               />
-                              {touched.address && errors.address && <small class="text-danger form-text">{errors.address}</small>}
+                              {touched.address && errors.address && <small className="text-danger form-text">{errors.address}</small>}
                             </Form.Group>
                           </Col>
                         </Row>

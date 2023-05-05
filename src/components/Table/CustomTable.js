@@ -53,7 +53,7 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
     }
   );
   const [showGoToPage, setShowGoToPage] = useState(false);
-  const [inputGoToPage, setInputGoToPage] = useState(0);
+  const [showErrorPage, setShowErrorPage] = useState(false);
   const [currentPage, setCurrentPage] = useState(pageIndex + 1);
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
@@ -211,11 +211,17 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
                   onChange={(e) => {
                     const page = e.target.value ? Number(e.target.value) - 1 : 0;
                     gotoPage(page);
-                    setInputGoToPage(e.target.value);
                   }}
                   onKeyDown={(e) => {
-                    if (e.key === '-' || e.key === '+' || e.key === '.') {
+                    const inputVal = parseInt(e.target.value + e.key);
+                    if ( e.key === '-' || e.key === '+' || e.key === '.' ) {
                       e.preventDefault();
+                    } else if (inputVal > pageOptions.length || inputVal === 0) {
+                      e.preventDefault();
+                      setShowErrorPage(true);
+                    }
+                    else {
+                      setShowErrorPage(false);
                     }
                   }}
                   style={{ width: '100px' }}
@@ -224,8 +230,8 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
                   title=""
                 />
                 <CloseButton onClick={() => setShowGoToPage(false)} className="ml-3" aria-label="hide" />
-                {inputGoToPage > pageOptions.length ? (
-                  <span className="text-c-red ml-3">Số trang nhập vào phải nhỏ hơn {pageOptions.length}</span>
+                {showErrorPage ? (
+                  <span className="text-c-red ml-3">Số trang hiện có : {pageOptions.length}</span>
                 ) : null}
               </span>
             ) : null}

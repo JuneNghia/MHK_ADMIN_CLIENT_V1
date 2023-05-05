@@ -75,7 +75,7 @@ function ListCustomers() {
         <Helmet>
           <title>Danh sách khách hàng</title>
         </Helmet>
-        <HashLoader style={{ display: 'block', height: '70vh', margin: 'auto' }} size={50} color="#36d7b7" />;
+        <HashLoader style={{ display: 'block', height: '70vh', margin: 'auto' }} size={50} color="#36d7b7" />
       </>
     );
 
