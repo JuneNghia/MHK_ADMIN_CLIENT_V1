@@ -54,6 +54,7 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
   );
   const [showGoToPage, setShowGoToPage] = useState(false);
   const [showErrorPage, setShowErrorPage] = useState(false);
+  const [pagePagination, setPagePagination] = useState(null);
   const [currentPage, setCurrentPage] = useState(pageIndex + 1);
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
@@ -144,7 +145,11 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
         </Col>
 
         <Col>
-          <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
+          <GlobalFilter
+            filter={globalFilter}
+            setFilter={setGlobalFilter}
+            setValueInputPagination={setPagePagination}
+          />
         </Col>
       </Row>
       <BTable striped bordered hover responsive {...getTableProps()}>
@@ -208,19 +213,19 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
                   type="number"
                   placeholder="Số trang"
                   className="form-control ml-2"
+                  value={pagePagination}
                   onChange={(e) => {
                     const page = e.target.value ? Number(e.target.value) - 1 : 0;
                     gotoPage(page);
                   }}
                   onKeyDown={(e) => {
                     const inputVal = parseInt(e.target.value + e.key);
-                    if ( e.key === '-' || e.key === '+' || e.key === '.' ) {
+                    if (e.key === '-' || e.key === '+' || e.key === '.') {
                       e.preventDefault();
                     } else if (inputVal > pageOptions.length || inputVal === 0) {
                       e.preventDefault();
                       setShowErrorPage(true);
-                    }
-                    else {
+                    } else {
                       setShowErrorPage(false);
                     }
                   }}
@@ -230,9 +235,7 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
                   title=""
                 />
                 <CloseButton onClick={() => setShowGoToPage(false)} className="ml-3" aria-label="hide" />
-                {showErrorPage ? (
-                  <span className="text-c-red ml-3">Số trang hiện có : {pageOptions.length}</span>
-                ) : null}
+                {showErrorPage ? <span className="text-c-red ml-3">Số trang hiện có : {pageOptions.length}</span> : null}
               </span>
             ) : null}
           </span>

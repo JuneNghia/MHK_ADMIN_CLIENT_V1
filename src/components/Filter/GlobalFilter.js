@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAsyncDebounce } from 'react-table';
 
-const GlobalFilter = ({ filter, setFilter }) => {
+const GlobalFilter = ({ filter, setFilter, setValueInputPagination }) => {
   const [value, setValue] = useState(filter);
   const onChange = useAsyncDebounce((value) => {
     setFilter(value || undefined);
@@ -16,6 +16,7 @@ const GlobalFilter = ({ filter, setFilter }) => {
         onChange={(e) => {
           setValue(e.target.value);
           onChange(e.target.value);
+          setValueInputPagination('');
         }}
       />
     </span>
