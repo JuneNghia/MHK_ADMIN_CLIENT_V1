@@ -31,8 +31,10 @@ const Edit = () => {
     staff: {
       label: '',
       value: ''
-    }
+    },
+    tags: []
   });
+
 
   const keyMapping = {
     name: 'user_name',
@@ -62,9 +64,11 @@ const Edit = () => {
         setSelectedTags(
           data.tags.map((tag) => ({
             label: tag.tag_title,
-            value: tag.id
+            value: tag.tag_id
           }))
         );
+        setIsLoading(false);
+        setIsFetched(true);
       })
       .catch((error) => {
         setIsLoading(false);
@@ -97,14 +101,17 @@ const Edit = () => {
           value: tag.id
         }));
         setOptionsTag(options);
-        setIsLoading(false);
-        setIsFetched(true);
       })
       .catch((err) => {
         setIsLoading(false);
       });
   }, []);
 
+  const filterSelectedOptions = (options, selectedOptions) => {
+    return options.filter(option => !selectedOptions.find(selectedOption => selectedOption.value === option.value));
+  };
+
+  const filteredOptionsTag = filterSelectedOptions(optionsTag, selectedTags);
 
   const handleSubmit = async (values) => {
     setShowLoader(true);
@@ -127,9 +134,8 @@ const Edit = () => {
       }
     }
 
-    const updateCustomer = {...updatedFieldsWithApiKeys, staff_id: values.staff.value};
-    console.log(updateCustomer)
-
+    const updateCustomer = {...updatedFieldsWithApiKeys, staff_id: values.staff.value, tags: selectedTags.map(tag => tag.value)};
+    
     try {
       //Cập nhật khách hàng
       await services
@@ -239,13 +245,12 @@ const Edit = () => {
                                 </Form.Label>
                                 <Form.Control
                                   name="name"
-                                  onError={touched.name && errors.name}
                                   onBlur={handleBlur}
                                   onChange={handleChange}
                                   placeholder="Nhập tên khách hàng"
                                   value={values.name}
                                 />
-                                {touched.name && errors.name && <small class="text-danger form-text">{errors.name}</small>}
+                                {touched.name && errors.name && <small className="text-danger form-text">{errors.name}</small>}
                               </Form.Group>
                               <Form.Group controlId="emailCustomer">
                                 <Form.Label>
@@ -253,14 +258,13 @@ const Edit = () => {
                                 </Form.Label>
                                 <Form.Control
                                   name="email"
-                                  onError={touched.email && errors.email}
                                   onBlur={handleBlur}
                                   onChange={handleChange}
                                   type="email"
                                   value={values.email}
                                   placeholder="Nhập địa chỉ email"
                                 />
-                                {touched.email && errors.email && <small class="text-danger form-text">{errors.email}</small>}
+                                {touched.email && errors.email && <small className="text-danger form-text">{errors.email}</small>}
                               </Form.Group>
                             </Col>
                             <Col md={6}>
@@ -271,13 +275,12 @@ const Edit = () => {
                                 <Form.Control
                                   name="code"
                                   onBlur={handleBlur}
-                                  onError={touched.code && errors.code}
                                   value={values.code}
                                   onChange={handleChange}
                                   type="text"
                                   placeholder="Nhập mã khách hàng"
                                 />
-                                {touched.code && errors.code && <small class="text-danger form-text">{errors.code}</small>}
+                                {touched.code && errors.code && <small className="text-danger form-text">{errors.code}</small>}
                               </Form.Group>
                               <Row></Row>{' '}
                             </Col>
@@ -288,14 +291,13 @@ const Edit = () => {
                                 </Form.Label>
                                 <Form.Control
                                   onBlur={handleBlur}
-                                  onError={touched.phone && errors.phone}
                                   value={values.phone}
                                   name="phone"
                                   onChange={handleChange}
                                   type="text"
                                   placeholder="Nhập số điện thoại"
                                 />
-                                {touched.phone && errors.phone && <small class="text-danger form-text">{errors.phone}</small>}
+                                {touched.phone && errors.phone && <small className="text-danger form-text">{errors.phone}</small>}
                               </Form.Group>
                             </Col>
                           </Row>
@@ -376,15 +378,16 @@ const Edit = () => {
                             <Form.Control value={values.note} onChange={handleChange} name="note" as="textarea" rows="3" />
                           </Form.Group>
                           <Form.Group controlId="tag">
-                            <Form.Label>Tags <small className="text-c-red ml-2">Đang bảo trì</small></Form.Label>
+                            <Form.Label>Tags</Form.Label>
                             <Select
                               name="tags"
-                              options={optionsTag}
+                              options={filteredOptionsTag}
                               value={selectedTags}
                               placeholder="Chọn tags"
                               isMulti
                               onChange={(tag) => {
-                                setSelectedTags(tag);
+                                setSelectedTags(tag)
+                                setFieldValue('tags', tag)
                               }}
                             ></Select>
                           </Form.Group>
