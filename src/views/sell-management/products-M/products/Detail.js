@@ -244,8 +244,7 @@ const ProductDetails = () => {
                                   return (
                                     <Draggable key={id} draggableId={id} index={index}>
                                       {(provided) => (
-                                        <Col
-                                          lg={12}
+                                        <div
                                           className="mb-3"
                                           ref={provided.innerRef}
                                           {...provided.draggableProps}
@@ -263,11 +262,12 @@ const ProductDetails = () => {
                                           >
                                             {index + 1}. <span>{content}</span>
                                           </Badge>
-                                        </Col>
+                                        </div>
                                       )}
                                     </Draggable>
                                   );
                                 })}
+                                {provided.placeholder}
                               </div>
                             )}
                           </Droppable>
