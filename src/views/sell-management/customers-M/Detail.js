@@ -12,7 +12,6 @@ import Error from '../../errors/Error';
 const UserDetails = () => {
   const [showTooltipEmail, setShowTooltipEmail] = useState(false);
   const [showTooltipNote, setShowTooltipNote] = useState(false);
-  const [staffId, setStaffId] = useState(null);
   const [staffName, setStaffName] = useState('---');
   const handleMouseEnterEmail = () => setShowTooltipEmail(true);
   const handleMouseLeaveEmail = () => setShowTooltipEmail(false);
@@ -31,28 +30,14 @@ const UserDetails = () => {
       .then((response) => {
         const result = response.data.data;
         setCustomer(result);
-        setStaffId(result.staff_id);
+        setStaffName(result.staff_in_charge.staff_name);
+        setIsLoading(false);
+        setIsFetched(true);
       })
-      .catch((error) => {});
+      .catch((error) => {
+        setIsLoading(false);
+      });
   }, [id]);
-
-  useEffect(() => {
-    if(staffId === null) {
-      return
-    } else {
-      services
-        .get(`/staff/get-by-id/${staffId}`)
-        .then((response) => {
-          const result = response.data.data;
-          setStaffName(result.staff_name);
-        })
-        .catch((error) => {
-          console.log('Get Staff Name Error');
-          setIsLoading(false);
-          setIsFetched(true);
-        });
-    }
-  }, [staffId]);
 
   const handleEditProfile = (e) => {
     e.preventDefault();

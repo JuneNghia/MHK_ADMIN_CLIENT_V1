@@ -58,10 +58,6 @@ function ListUsers() {
         accessor: 'staff_phone'
       },
       {
-        Header: 'Email',
-        accessor: 'staff_email'
-      },
-      {
         Header: 'Trạng thái',
         accessor: 'staff_status',
         Cell: ({ value }) => (

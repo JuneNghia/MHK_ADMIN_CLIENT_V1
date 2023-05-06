@@ -6,13 +6,19 @@ import withReactContent from 'sweetalert2-react-content';
 import { ButtonLoading } from '../../../components/Button/LoadButton';
 import { useHistory, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { HashLoader } from 'react-spinners';
+import Select from 'react-select';
+import Error from '../../errors/Error';
+import { validationSchemaCustomerEdit } from '../../../hooks/useValidation';
 
 const Edit = () => {
+  const [optionsStaff, setOptionsStaff] = useState([]);
+  const [optionsTag, setOptionsTag] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
   const [showLoader, setShowLoader] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFetched, setIsFetched] = useState(false);
   const history = useHistory();
   const { id } = useParams();
 
@@ -22,7 +28,10 @@ const Edit = () => {
     phone: '',
     email: '',
     note: '',
-    tags: ''
+    staff: {
+      label: '',
+      value: ''
+    }
   });
 
   const keyMapping = {
@@ -30,23 +39,72 @@ const Edit = () => {
     code: 'user_code',
     phone: 'user_phone',
     email: 'user_email',
-    note: 'staff_in_charge_note'
+    note: 'staff_in_charge_note',
+    staff: 'staff_id'
   };
 
   useEffect(() => {
-    async function fetchCustomer() {
-      const response = await services.get(`/customer/get-by-id/${id}`);
-      setCustomer({
-        name: response.data.data.customer_name,
-        code: response.data.data.user_code,
-        email: response.data.data.customer_email,
-        phone: response.data.data.customer_phone,
-        note: response.data.data.staff_in_charge_note
+    services
+      .get(`/customer/get-by-id/${id}`)
+      .then((response) => {
+        const data = response.data.data;
+        setCustomer({
+          name: data.customer_name,
+          code: data.user_code,
+          email: data.customer_email,
+          phone: data.customer_phone,
+          note: data.staff_in_charge_note,
+          staff: {
+            label: data.staff_in_charge.staff_name,
+            value: data.staff_in_charge.staff_id
+          }
+        });
+        setSelectedTags(
+          data.tags.map((tag) => ({
+            label: tag.tag_title,
+            value: tag.id
+          }))
+        );
+      })
+      .catch((error) => {
+        setIsLoading(false);
       });
-      setIsLoading(false);
-    }
-    fetchCustomer();
   }, [id]);
+
+  useEffect(() => {
+    services
+      .get('/staff/get-all')
+      .then((res) => {
+        const result = res.data.data;
+        const options = result.map((staff) => ({
+          label: staff.staff_name,
+          value: staff.staff_id
+        }));
+        setOptionsStaff(options);
+      })
+      .catch((err) => {
+        setIsLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    services
+      .get('/tag/get-all')
+      .then((res) => {
+        const result = res.data.data;
+        const options = result.map((tag) => ({
+          label: tag.tag_title,
+          value: tag.id
+        }));
+        setOptionsTag(options);
+        setIsLoading(false);
+        setIsFetched(true);
+      })
+      .catch((err) => {
+        setIsLoading(false);
+      });
+  }, []);
+
 
   const handleSubmit = async (values) => {
     setShowLoader(true);
@@ -69,45 +127,47 @@ const Edit = () => {
       }
     }
 
+    const updateCustomer = {...updatedFieldsWithApiKeys, staff_id: values.staff.value};
+    console.log(updateCustomer)
+
     try {
       //Cập nhật khách hàng
-    await services
-    .patch(`/customer/update-personalInfo-by-id/${id}`, updatedFieldsWithApiKeys)
-    .then((response) => {
-      setTimeout(() => {
-        setShowLoader(false);
-        history.push(`/app/sell-management/customers/${id}`);
-        sweetSuccessAlert();
-      }, 1000);
-    })
-    .catch((errors) => {
-      const errorResponses = errors.response.data.message;
-      const errorMessages = errorResponses.map((error) => {
-        if (error.includes('name')) {
-          return `Tên KH: <b>${values.name}</b> đã tồn tại`;
-        } else if (error.includes('phone')) {
-          return `Số điện thoại KH: <b>${values.phone}</b> đã tồn tại`;
-        } else if (error.includes('email')) {
-          return `Email: <b>${values.email}</b> đã tồn tại`;
-        } else return `Mã KH: <b>${values.code}</b> đã tồn tại`;
-      });
-      setTimeout(() => {
-        setShowLoader(false);
-        Swal.fire({
-          title: 'Thất bại',
-          html: errorMessages.join('<br>'),
-          icon: 'warning',
-          confirmButtonText: 'Xác nhận'
+      await services
+        .patch(`/customer/update-personalInfo-by-id/${id}`, updateCustomer)
+        .then((response) => {
+          setTimeout(() => {
+            setShowLoader(false);
+            history.push(`/app/sell-management/customers/${id}`);
+            sweetSuccessAlert();
+          }, 1000);
+        })
+        .catch((errors) => {
+          const errorResponses = errors.response.data.message;
+          const errorMessages = errorResponses.map((error) => {
+            if (error.includes('name')) {
+              return `Tên KH: <b>${values.name}</b> đã tồn tại`;
+            } else if (error.includes('phone')) {
+              return `Số điện thoại KH: <b>${values.phone}</b> đã tồn tại`;
+            } else if (error.includes('email')) {
+              return `Email: <b>${values.email}</b> đã tồn tại`;
+            } else return `Mã KH: <b>${values.code}</b> đã tồn tại`;
+          });
+          setTimeout(() => {
+            setShowLoader(false);
+            Swal.fire({
+              title: 'Thất bại',
+              html: errorMessages.join('<br>'),
+              icon: 'warning',
+              confirmButtonText: 'Xác nhận'
+            });
+          }, 1000);
         });
-      }, 1000);
-    });
     } catch (error) {
-      setTimeout(()=> {
+      setTimeout(() => {
         setShowLoader(false);
         Swal.fire('', 'Đã xảy ra lỗi khi kết nối tới máy chủ', 'error');
-      }, 1000)
+      }, 1000);
     }
-    
   };
 
   const sweetSuccessAlert = () => {
@@ -134,122 +194,116 @@ const Edit = () => {
     });
   };
 
-  const phoneRegExp = /^(0|\+84)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0|3|4|5|7|8])+([0-9]{7})$/;
-  const validateSchema = Yup.object().shape({
-    name: Yup.string().required('Tên khách hàng không được để trống'),
-    email: Yup.string().email('Email không hợp lệ').required('Email không được để trống'),
-    phone: Yup.string().matches(phoneRegExp, 'Số điện thoại không hợp lệ').required('Số điện thoại không được để trống'),
-    code: Yup.string().required('Mã khách hàng không được để trống')
-  });
-
   if (isLoading) return <HashLoader style={{ display: 'block', height: '70vh', margin: 'auto' }} size={50} color="#36d7b7" />;
+  if (!isFetched) {
+    return <Error />;
+  } else
+    return (
+      <React.Fragment>
+        <Helmet>
+          <title>Cập nhật thông tin khách hàng</title>
+        </Helmet>
 
-  return (
-    <React.Fragment>
-      <Helmet>
-        <title>Cập nhật thông tin khách hàng</title>
-      </Helmet>
+        <Formik enableReinitialize={true} initialValues={customer} validationSchema={validationSchemaCustomerEdit} onSubmit={handleSubmit}>
+          {({ dirty, errors, handleBlur, handleChange, handleSubmit, touched, values, setFieldValue }) => (
+            <Form noValidate onSubmit={handleSubmit}>
+              <span className="flex-between">
+                <Button onClick={sweetConfirmAlert} variant="outline-primary" className="mr-0" style={{ marginBottom: 15 }}>
+                  <i className="feather icon-arrow-left"></i>
+                  Quay lại
+                </Button>
+                <ButtonLoading
+                  text={'Cập nhật'}
+                  onSubmit={handleSubmit}
+                  loading={showLoader}
+                  type="submit"
+                  disabled={!dirty || showLoader}
+                  style={{ margin: 0, marginBottom: 15 }}
+                ></ButtonLoading>
+              </span>
 
-      <Formik enableReinitialize={true} initialValues={customer} validationSchema={validateSchema} onSubmit={handleSubmit}>
-        {({ dirty, errors, handleBlur, handleChange, handleSubmit, touched, values, isValid }) => (
-          <Form noValidate onSubmit={handleSubmit}>
-            <span className="flex-between">
-              <Button onClick={sweetConfirmAlert} variant="outline-primary" className="mr-0" style={{ marginBottom: 15 }}>
-                <i className="feather icon-arrow-left"></i>
-                Quay lại
-              </Button>
-              <ButtonLoading
-                text={'Cập nhật'}
-                onSubmit={handleSubmit}
-                loading={showLoader}
-                type="submit"
-                disabled={!dirty || showLoader}
-                style={{ margin: 0, marginBottom: 15 }}
-              ></ButtonLoading>
-            </span>
+              <Row>
+                <Col sm={12} lg={8}>
+                  <Row>
+                    <Col sm={12} lg={12}>
+                      <Card>
+                        <Card.Header>
+                          <Card.Title as="h5">Thông tin chung</Card.Title>
+                        </Card.Header>
+                        <Card.Body>
+                          <Row>
+                            <Col md={12}>
+                              <Form.Group controlId="formName">
+                                <Form.Label>
+                                  Tên khách hàng <span className="text-c-red">*</span>
+                                </Form.Label>
+                                <Form.Control
+                                  name="name"
+                                  onError={touched.name && errors.name}
+                                  onBlur={handleBlur}
+                                  onChange={handleChange}
+                                  placeholder="Nhập tên khách hàng"
+                                  value={values.name}
+                                />
+                                {touched.name && errors.name && <small class="text-danger form-text">{errors.name}</small>}
+                              </Form.Group>
+                              <Form.Group controlId="emailCustomer">
+                                <Form.Label>
+                                  Email <span className="text-c-red">*</span>
+                                </Form.Label>
+                                <Form.Control
+                                  name="email"
+                                  onError={touched.email && errors.email}
+                                  onBlur={handleBlur}
+                                  onChange={handleChange}
+                                  type="email"
+                                  value={values.email}
+                                  placeholder="Nhập địa chỉ email"
+                                />
+                                {touched.email && errors.email && <small class="text-danger form-text">{errors.email}</small>}
+                              </Form.Group>
+                            </Col>
+                            <Col md={6}>
+                              <Form.Group controlId="idCustomer">
+                                <Form.Label>
+                                  Mã khách hàng <span className="text-c-red">*</span>
+                                </Form.Label>
+                                <Form.Control
+                                  name="code"
+                                  onBlur={handleBlur}
+                                  onError={touched.code && errors.code}
+                                  value={values.code}
+                                  onChange={handleChange}
+                                  type="text"
+                                  placeholder="Nhập mã khách hàng"
+                                />
+                                {touched.code && errors.code && <small class="text-danger form-text">{errors.code}</small>}
+                              </Form.Group>
+                              <Row></Row>{' '}
+                            </Col>
+                            <Col md={6}>
+                              <Form.Group controlId="phoneCustomer">
+                                <Form.Label>
+                                  Số điện thoại <span className="text-c-red">*</span>
+                                </Form.Label>
+                                <Form.Control
+                                  onBlur={handleBlur}
+                                  onError={touched.phone && errors.phone}
+                                  value={values.phone}
+                                  name="phone"
+                                  onChange={handleChange}
+                                  type="text"
+                                  placeholder="Nhập số điện thoại"
+                                />
+                                {touched.phone && errors.phone && <small class="text-danger form-text">{errors.phone}</small>}
+                              </Form.Group>
+                            </Col>
+                          </Row>
+                        </Card.Body>
+                      </Card>
+                    </Col>
 
-            <Row>
-              <Col sm={12} lg={8}>
-                <Row>
-                  <Col sm={12} lg={12}>
-                    <Card>
-                      <Card.Header>
-                        <Card.Title as="h5">Thông tin chung</Card.Title>
-                      </Card.Header>
-                      <Card.Body>
-                        <Row>
-                          <Col md={12}>
-                            <Form.Group controlId="formName">
-                              <Form.Label>
-                                Tên khách hàng <span className="text-c-red">*</span>
-                              </Form.Label>
-                              <Form.Control
-                                name="name"
-                                onError={touched.name && errors.name}
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                placeholder="Nhập tên khách hàng"
-                                value={values.name}
-                              />
-                              {touched.name && errors.name && <small class="text-danger form-text">{errors.name}</small>}
-                            </Form.Group>
-                            <Form.Group controlId="emailCustomer">
-                              <Form.Label>
-                                Email <span className="text-c-red">*</span>
-                              </Form.Label>
-                              <Form.Control
-                                name="email"
-                                onError={touched.email && errors.email}
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                type="email"
-                                value={values.email}
-                                placeholder="Nhập địa chỉ email"
-                              />
-                              {touched.email && errors.email && <small class="text-danger form-text">{errors.email}</small>}
-                            </Form.Group>
-                          </Col>
-                          <Col md={6}>
-                            <Form.Group controlId="idCustomer">
-                              <Form.Label>
-                                Mã khách hàng <span className="text-c-red">*</span>
-                              </Form.Label>
-                              <Form.Control
-                                name="code"
-                                onBlur={handleBlur}
-                                onError={touched.code && errors.code}
-                                value={values.code}
-                                onChange={handleChange}
-                                type="text"
-                                placeholder="Nhập mã khách hàng"
-                              />
-                              {touched.code && errors.code && <small class="text-danger form-text">{errors.code}</small>}
-                            </Form.Group>
-                            <Row></Row>{' '}
-                          </Col>
-                          <Col md={6}>
-                            <Form.Group controlId="phoneCustomer">
-                              <Form.Label>
-                                Số điện thoại <span className="text-c-red">*</span>
-                              </Form.Label>
-                              <Form.Control
-                                onBlur={handleBlur}
-                                onError={touched.phone && errors.phone}
-                                value={values.phone}
-                                name="phone"
-                                onChange={handleChange}
-                                type="text"
-                                placeholder="Nhập số điện thoại"
-                              />
-                              {touched.phone && errors.phone && <small class="text-danger form-text">{errors.phone}</small>}
-                            </Form.Group>
-                          </Col>
-                        </Row>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-
-                  <Col sm={12} lg={12}>
+                    {/* <Col sm={12} lg={12}>
                     <Card>
                       <Card.Header>
                         <Card.Title as="h5">Thông tin bổ sung</Card.Title>
@@ -295,48 +349,56 @@ const Edit = () => {
                         </Row>
                       </Card.Body>
                     </Card>
-                  </Col>
-                </Row>
-              </Col>
+                  </Col> */}
+                  </Row>
+                </Col>
 
-              <Col sm={12} lg={4}>
-                <Row>
-                  <Col sm={12} lg={12}>
-                    <Card>
-                      <Card.Header>
-                        <Card.Title as="h5">Thông tin khác</Card.Title>
-                      </Card.Header>
-                      <Card.Body>
-                        <Form.Group controlId="staffCb">
-                          <Form.Label>Nhân viên phụ trách</Form.Label>
-                          <Form.Control value={''} onChange={handleChange} name="staff_id" as="select">
-                            <option>Nghĩa</option>
-                            <option>Tuấn</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                          </Form.Control>
-                        </Form.Group>
-                        <Form.Group controlId="description">
-                          <Form.Label>Mô tả</Form.Label>
-                          <Form.Control value={values.note} onChange={handleChange} name="note" as="textarea" rows="3" />
-                        </Form.Group>
-                        <Form.Group controlId="tag">
-                          <Form.Label>Tags</Form.Label>
-                          <Form.Control as="textarea" rows="3" />
-                        </Form.Group>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                 
-                </Row>
-              </Col>
-            </Row>
-          </Form>
-        )}
-      </Formik>
-    </React.Fragment>
-  );
+                <Col sm={12} lg={4}>
+                  <Row>
+                    <Col sm={12} lg={12}>
+                      <Card>
+                        <Card.Header>
+                          <Card.Title as="h5">Thông tin khác</Card.Title>
+                        </Card.Header>
+                        <Card.Body>
+                          <Form.Group controlId="staffCb">
+                            <Form.Label>Nhân viên phụ trách</Form.Label>
+                            <Select
+                              name="staff"
+                              options={optionsStaff}
+                              placeholder="Chọn nhân viên"
+                              value={values.staff}
+                              onChange={(s) => setFieldValue('staff', s)}
+                            />
+                          </Form.Group>
+                          <Form.Group controlId="description">
+                            <Form.Label>Mô tả</Form.Label>
+                            <Form.Control value={values.note} onChange={handleChange} name="note" as="textarea" rows="3" />
+                          </Form.Group>
+                          <Form.Group controlId="tag">
+                            <Form.Label>Tags <small className="text-c-red ml-2">Đang bảo trì</small></Form.Label>
+                            <Select
+                              name="tags"
+                              options={optionsTag}
+                              value={selectedTags}
+                              placeholder="Chọn tags"
+                              isMulti
+                              onChange={(tag) => {
+                                setSelectedTags(tag);
+                              }}
+                            ></Select>
+                          </Form.Group>
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+            </Form>
+          )}
+        </Formik>
+      </React.Fragment>
+    );
 };
 
 export default Edit;

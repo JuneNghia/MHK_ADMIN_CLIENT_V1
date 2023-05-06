@@ -9,7 +9,7 @@ import ProvinceDistrictSelect from '../../../data/provinceSelect';
 import services from '../../../utils/axios';
 import Swal from 'sweetalert2';
 import Positions from './RoleDelegation/Positions';
-import { validationSchema } from '../../../hooks/useValidation';
+import { validationSchemaStaff } from '../../../hooks/useValidation';
 
 const CreateUser = () => {
   const [showLoader, setShowLoader] = useState(false);
@@ -120,7 +120,7 @@ const CreateUser = () => {
         <title>Thêm mới nhân viên</title>
       </Helmet>
 
-      <Formik initialValues={data} validationSchema={validationSchema} onSubmit={handleSubmit}>
+      <Formik initialValues={data} validationSchema={validationSchemaStaff} onSubmit={handleSubmit}>
         {({ errors, setFieldValue, handleChange, handleSubmit, touched, values }) => (
           <Form noValidate onSubmit={handleSubmit}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>

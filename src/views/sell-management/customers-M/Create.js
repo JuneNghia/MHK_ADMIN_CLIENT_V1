@@ -9,7 +9,7 @@ import { Helmet } from 'react-helmet';
 import { Formik } from 'formik';
 import ProvinceDistrictSelect from '../../../data/provinceSelect';
 import Select from 'react-select';
-import { validationSchema } from '../../../hooks/useValidation';
+import { validationSchemaCustomerCreate } from '../../../hooks/useValidation';
 
 const CreateCustomer = () => {
   const [showLoader, setShowLoader] = useState(false);
@@ -163,7 +163,7 @@ const CreateCustomer = () => {
           note: '',
           staff: ''
         }}
-        validationSchema={validationSchema}
+        validationSchema={validationSchemaCustomerCreate}
         onSubmit={handleSubmit}
       >
         {({ errors, setFieldValue, handleChange, handleSubmit, touched, values}) => (
@@ -291,7 +291,7 @@ const CreateCustomer = () => {
                     </Card>
                   </Col>
 
-                  <Col sm={12} lg={12}>
+                  {/* <Col sm={12} lg={12}>
                     <Card>
                       <Card.Header>
                         <Card.Title as="h5">Thông tin bổ sung</Card.Title>
@@ -338,7 +338,7 @@ const CreateCustomer = () => {
                         </Row>
                       </Card.Body>
                     </Card>
-                  </Col>
+                  </Col> */}
                 </Row>
               </Col>
 
