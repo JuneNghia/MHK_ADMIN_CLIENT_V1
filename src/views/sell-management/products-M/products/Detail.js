@@ -219,6 +219,7 @@ const ProductDetails = () => {
                   <Card.Title as="h5">Giá sản phẩm</Card.Title>
                   {isSorting ? (
                     <span>
+                      <span className="text-normal" style={{marginRight: 200, color: "#122ee2"}}>Sắp xếp theo thứ tự vị trí ưu tiên từ trên xuống dưới</span>
                       <Button variant="danger" onClick={handleCancelSortClick} className="strong-title mr-2" size="sm">
                         Huỷ
                       </Button>
@@ -257,7 +258,9 @@ const ProductDetails = () => {
                                               color: 'white',
                                               width: 200,
                                               padding: 14,
-                                              backgroundColor: rgb(79, 101, 241)
+                                              backgroundColor: rgb(79, 101, 241),
+                                              backgroundImage:
+                                                'linear-gradient(90deg, rgb(111, 137, 251) 0%, rgb(97, 109, 245) 33%, rgb(92, 82, 235) 100%)'
                                             }}
                                           >
                                             {index + 1}. <span>{content}</span>
