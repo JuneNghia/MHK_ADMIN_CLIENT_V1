@@ -5,6 +5,7 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 import services from '../../../../utils/axios';
 import { Helmet } from 'react-helmet';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { rgb } from 'chroma-js';
 
 const ProductDetails = () => {
   const [showLoader, setShowLoader] = useState(false);
@@ -14,8 +15,10 @@ const ProductDetails = () => {
   const { id } = useParams();
   const [data, setData] = useState({});
 
+  const initalItems = JSON.parse(localStorage.getItem('items'));
+
   const [items, setItems] = useState(() => {
-    const storedItems = JSON.parse(localStorage.getItem('items'));
+    const storedItems = initalItems;
     return (
       storedItems || [
         { id: 'item-1', content: 'Giá bán lẻ', value: '123.584đ' },
@@ -30,13 +33,12 @@ const ProductDetails = () => {
     );
   });
 
-  console.log(items);
-
   const handleSortClick = () => {
     setIsSorting(true);
   };
 
   const handleCancelSortClick = () => {
+    setItems([...initalItems]);
     setIsSorting(false);
   };
 
@@ -237,26 +239,36 @@ const ProductDetails = () => {
                         <DragDropContext onDragEnd={handleOnDragEnd}>
                           <Droppable droppableId="items">
                             {(provided) => (
-                              <Row {...provided.droppableProps} ref={provided.innerRef}>
+                              <div className="text-center" {...provided.droppableProps} ref={provided.innerRef}>
                                 {items.map(({ id, content, value }, index) => {
                                   return (
                                     <Draggable key={id} draggableId={id} index={index}>
                                       {(provided) => (
-                                        <Col lg={6} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                                          <Row>
-                                            <Col lg={6}>
-                                              <FormLabel>{content}</FormLabel>
-                                            </Col>
-                                            <Col lg={6}>
-                                              <span className="text-normal">: {value}</span>
-                                            </Col>
-                                          </Row>
+                                        <Col
+                                          lg={12}
+                                          className="mb-3"
+                                          ref={provided.innerRef}
+                                          {...provided.draggableProps}
+                                          {...provided.dragHandleProps}
+                                        >
+                                          <Badge
+                                            style={{
+                                              fontWeight: 400,
+                                              fontSize: 15,
+                                              color: 'white',
+                                              width: 200,
+                                              padding: 14,
+                                              backgroundColor: rgb(79, 101, 241)
+                                            }}
+                                          >
+                                            {index + 1}. <span>{content}</span>
+                                          </Badge>
                                         </Col>
                                       )}
                                     </Draggable>
                                   );
                                 })}
-                              </Row>
+                              </div>
                             )}
                           </Droppable>
                         </DragDropContext>
