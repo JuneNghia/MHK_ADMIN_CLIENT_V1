@@ -56,11 +56,13 @@ const Edit = () => {
           email: data.customer_email,
           phone: data.customer_phone,
           note: data.staff_in_charge_note,
-          staff: {
+        });
+        if(data.staff_in_charge) {
+          setCustomer({
             label: data.staff_in_charge.staff_name,
             value: data.staff_in_charge.staff_id
-          }
-        });
+          })
+        }
         setSelectedTags(
           data.tags.map((tag) => ({
             label: tag.tag_title,

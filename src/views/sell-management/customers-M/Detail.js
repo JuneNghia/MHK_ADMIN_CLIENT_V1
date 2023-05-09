@@ -30,7 +30,9 @@ const UserDetails = () => {
       .then((response) => {
         const result = response.data.data;
         setCustomer(result);
-        setStaffName(result.staff_in_charge.staff_name);
+        if(result.staff_in_charge) {
+          setStaffName(result.staff_in_charge.staff_name);
+        }
         setIsLoading(false);
         setIsFetched(true);
       })
