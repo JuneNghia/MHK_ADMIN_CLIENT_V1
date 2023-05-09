@@ -19,6 +19,7 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
     setGlobalFilter,
     pageOptions,
     selectedFlatRows,
+    preGlobalFilteredRows,
     pageCount,
     gotoPage,
     setPageSize,
@@ -122,7 +123,7 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
                 {pageSize}
               </option>
             ))}
-          </select>
+          </select><span className='strong-title text-normal mr-1'>/ {preGlobalFilteredRows.length} </span>
           kết quả
           {selectedCount === 0 ? null : (
             <span className="flex-between">
@@ -145,11 +146,7 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
         </Col>
 
         <Col>
-          <GlobalFilter
-            filter={globalFilter}
-            setFilter={setGlobalFilter}
-            setValueInputPagination={setPagePagination}
-          />
+          <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} setValueInputPagination={setPagePagination} />
         </Col>
       </Row>
       <BTable striped bordered hover responsive {...getTableProps()}>
