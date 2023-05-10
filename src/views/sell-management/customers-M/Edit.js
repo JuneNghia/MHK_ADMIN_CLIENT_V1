@@ -16,6 +16,10 @@ const Edit = () => {
   const [optionsStaff, setOptionsStaff] = useState([]);
   const [optionsTag, setOptionsTag] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedStaff, setSelectedStaff] = useState({
+    label: 'Chọn nhân viên',
+    value: ''
+  });
   const [showLoader, setShowLoader] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isFetched, setIsFetched] = useState(false);
@@ -34,7 +38,6 @@ const Edit = () => {
     },
     tags: []
   });
-
 
   const keyMapping = {
     name: 'user_name',
@@ -55,13 +58,13 @@ const Edit = () => {
           code: data.user_code,
           email: data.customer_email,
           phone: data.customer_phone,
-          note: data.staff_in_charge_note,
+          note: data.staff_in_charge_note
         });
-        if(data.staff_in_charge) {
-          setCustomer({
+        if (data.staff_in_charge) {
+          setSelectedStaff({
             label: data.staff_in_charge.staff_name,
             value: data.staff_in_charge.staff_id
-          })
+          });
         }
         setSelectedTags(
           data.tags.map((tag) => ({
@@ -110,7 +113,7 @@ const Edit = () => {
   }, []);
 
   const filterSelectedOptions = (options, selectedOptions) => {
-    return options.filter(option => !selectedOptions.find(selectedOption => selectedOption.value === option.value));
+    return options.filter((option) => !selectedOptions.find((selectedOption) => selectedOption.value === option.value));
   };
 
   const filteredOptionsTag = filterSelectedOptions(optionsTag, selectedTags);
@@ -136,8 +139,8 @@ const Edit = () => {
       }
     }
 
-    const updateCustomer = {...updatedFieldsWithApiKeys, staff_id: values.staff.value, tags: selectedTags.map(tag => tag.value)};
-    
+    const updateCustomer = { ...updatedFieldsWithApiKeys, staff_id: selectedStaff.value, tags: selectedTags.map((tag) => tag.value) };
+
     try {
       //Cập nhật khách hàng
       await services
@@ -371,8 +374,11 @@ const Edit = () => {
                               name="staff"
                               options={optionsStaff}
                               placeholder="Chọn nhân viên"
-                              value={values.staff}
-                              onChange={(s) => setFieldValue('staff', s)}
+                              value={selectedStaff}
+                              onChange={(staff) => {
+                                setSelectedStaff(staff)
+                                setFieldValue('staff', staff)
+                              }}
                             />
                           </Form.Group>
                           <Form.Group controlId="description">
@@ -388,8 +394,8 @@ const Edit = () => {
                               placeholder="Chọn tags"
                               isMulti
                               onChange={(tag) => {
-                                setSelectedTags(tag)
-                                setFieldValue('tags', tag)
+                                setFieldValue('tags', tag);
+                                setSelectedTags(tag);
                               }}
                             ></Select>
                           </Form.Group>
