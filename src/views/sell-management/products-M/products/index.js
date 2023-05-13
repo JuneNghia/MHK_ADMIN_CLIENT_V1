@@ -1,53 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Button } from 'react-bootstrap';
 import CustomTable from '../../../../components/Table/CustomTable';
 import { useHistory } from 'react-router-dom';
+import services from '../../../../utils/axios';
+import moment from 'moment';
+import { Helmet } from 'react-helmet';
+import Error from '../../../errors/Error';
+import PageLoader from '../../../../components/Loader/PageLoader';
 
-function ListProducts() {
+function GetListProducts() {
   const history = useHistory();
+  const [listProducts, setListProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isFetched, setIsFetched] = useState(false);
 
-  const data = [
-    {
-      id: 1,
-      image: '/url',
-      name: 'MÀN HÌNH FULL HD',
-      type: 'Màn hình',
-      brand: 'SAMSUNG',
-      can_sell: 23,
-      inventory: 33,
-      createdAt: '20/06/2001'
-    },
-    {
-      id: 2,
-      image: '/url',
-      name: 'MÀN HÌNH FULL HD',
-      type: 'Màn hình',
-      brand: 'SAMSUNG',
-      can_sell: 23,
-      inventory: 33,
-      createdAt: '20/06/2001'
-    },
-    {
-      id: 3,
-      image: '/url',
-      name: 'MÀN HÌNH FULL HD',
-      type: 'Màn hình',
-      brand: 'SAMSUNG',
-      can_sell: 23,
-      inventory: 33,
-      createdAt: '20/06/2001'
-    },
-    {
-      id: 4,
-      image: '/url',
-      name: 'MÀN HÌNH FULL HD',
-      type: 'Màn hình',
-      brand: 'SAMSUNG',
-      can_sell: 23,
-      inventory: 33,
-      createdAt: '20/06/2001'
-    }
-  ];
+  useEffect(() => {
+    services
+      .get('/product/get-all')
+      .then((response) => {
+        const dataListProducts = response.data.data;
+        setListProducts(dataListProducts);
+        setIsLoading(false);
+        setIsFetched(true);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+      });
+  }, []);
+
+  console.log(listProducts);
 
   const columns = React.useMemo(
     () => [
@@ -55,21 +36,17 @@ function ListProducts() {
         Header: 'ID',
         accessor: 'id'
       },
-      { 
+      {
         Header: 'Tên sản phẩm',
         accessor: 'product_name'
       },
       {
-        Header: 'Sản phẩm',
-        accessor: 'name'
-      },
-      {
         Header: 'Loại',
-        accessor: 'type'
+        accessor: 'productAdditionInformation.type.type_title'
       },
       {
         Header: 'Nhãn hiệu',
-        accessor: 'brand'
+        accessor: 'productAdditionInformation.brand.brand_title'
       },
       {
         Header: 'Có thể bán',
@@ -77,7 +54,8 @@ function ListProducts() {
       },
       {
         Header: 'Ngày khởi tạo',
-        accessor: 'createdAt'
+        accessor: 'createdAt',
+        Cell: ({ value }) => moment(value).utcOffset(7).format('DD/MM/YYYY - HH:mm:ss')
       }
     ],
     []
@@ -85,9 +63,22 @@ function ListProducts() {
 
   const handleRowClick = (row) => {
     const id = row.values.id;
-    history.push(`/app/sell-management/products/${id}`)
-  }
+    history.push(`/app/sell-management/products/${id}`);
+  };
 
+  if (isLoading)
+    return (
+      <>
+        <Helmet>
+          <title>Danh sách sản phẩm</title>
+        </Helmet>
+        <PageLoader />
+      </>
+    );
+
+  if (!isFetched) {
+    return <Error />;
+  }
   return (
     <React.Fragment>
       <Row>
@@ -101,7 +92,7 @@ function ListProducts() {
               </Button>{' '}
             </Card.Header>
             <Card.Body>
-              <CustomTable columns={columns} data={data} handleRowClick={handleRowClick}/>
+              <CustomTable columns={columns} data={listProducts} handleRowClick={handleRowClick} />
             </Card.Body>
           </Card>
         </Col>
@@ -110,4 +101,4 @@ function ListProducts() {
   );
 }
 
-export default ListProducts;
+export default GetListProducts;

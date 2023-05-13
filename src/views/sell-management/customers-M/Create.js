@@ -46,7 +46,6 @@ const CreateCustomer = () => {
       .catch((err) => {});
   }, []);
 
-
   const gender = [
     { label: 'Nam', value: true },
     { label: 'Nữ', value: false }
@@ -62,7 +61,7 @@ const CreateCustomer = () => {
       }
     ];
 
-    const tags = selectedTags.map((tag) => (tag.value))
+    const tags = selectedTags.map((tag) => tag.value);
 
     const newCustomer = {
       user_code: values.code,
@@ -99,7 +98,7 @@ const CreateCustomer = () => {
             } else return `Mã KH: <b>${values.code}</b> đã tồn tại`;
           });
 
-          if(errorResponses) {
+          if (errorResponses) {
             setTimeout(() => {
               setShowLoader(false);
               Swal.fire({
@@ -109,8 +108,8 @@ const CreateCustomer = () => {
                 confirmButtonText: 'Xác nhận'
               });
             }, 1000);
-          }else {
-            console.log("ERROR ");
+          } else {
+            console.log('ERROR ');
           }
         });
     } catch (error) {
@@ -166,7 +165,7 @@ const CreateCustomer = () => {
         validationSchema={validationSchemaCustomerCreate}
         onSubmit={handleSubmit}
       >
-        {({ errors, setFieldValue, handleChange, handleSubmit, touched, values}) => (
+        {({ errors, setFieldValue, handleChange, handleSubmit, touched, values }) => (
           <Form noValidate onSubmit={handleSubmit}>
             <span className="flex-between">
               <Button onClick={sweetConfirmAlert} variant="outline-primary" className="mr-0" style={{ marginBottom: 15 }}>
@@ -252,7 +251,8 @@ const CreateCustomer = () => {
                                 value={values.phone}
                                 name="phone"
                                 onChange={handleChange}
-                                type="text"
+                                pattern="[\d]{9}"
+                                inputMode="numeric"
                                 placeholder="Nhập số điện thoại"
                               />
                               {touched.phone && errors.phone && <small className="text-danger form-text">{errors.phone}</small>}

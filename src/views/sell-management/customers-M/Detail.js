@@ -6,8 +6,8 @@ import withReactContent from 'sweetalert2-react-content';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import Addresses from './dataDetail/Addresses';
-import { HashLoader } from 'react-spinners';
 import Error from '../../errors/Error';
+import PageLoader from '../../../components/Loader/PageLoader';
 
 const UserDetails = () => {
   const [showTooltipEmail, setShowTooltipEmail] = useState(false);
@@ -90,7 +90,7 @@ const UserDetails = () => {
     MySwal.fire('', 'Xoá khách hàng thành công', 'success');
   };
 
-  if (isLoading) return <HashLoader style={{ display: 'block', height: '70vh', margin: 'auto' }} size={50} color="#36d7b7" />;
+  if (isLoading) return <PageLoader />
 
   if (!isFetched) {
     return <Error />;
@@ -422,7 +422,9 @@ const UserDetails = () => {
           <Col sm={12} lg={12}>
             <Tabs variant="pills" defaultActiveKey="addresses" className="tabs-menu">
               <Tab eventKey="addresses" title="Địa chỉ">
+                <div className="px-3">
                 <Addresses />
+                </div>
               </Tab>
               <Tab eventKey="profile" title="Công nợ">
                 <p className="text-center strong-title text-normal">Chưa có dữ liệu về công nợ khách hàng</p>

@@ -6,10 +6,10 @@ import ModalComponent from '../../../../components/Modal/Modal';
 import { Formik } from 'formik';
 import Swal from 'sweetalert2';
 import ProvinceDistrictSelect from '../../../../data/provinceSelect';
-import TableInTabs from '../../../../components/Table/TableInTabs';
 import * as Yup from 'yup';
 import { HashLoader } from 'react-spinners';
 import Error from '../../../errors/Error';
+import CustomTable from '../../../../components/Table/CustomTable';
 
 function Addresses() {
   const columns = React.useMemo(
@@ -156,7 +156,7 @@ function Addresses() {
 
   const ButtonAdd = () => {
     return (
-      <Button onClick={handleAddAddress} style={{ padding: '8px 15px', margin: '0px 15px 0px 15px' }} variant="primary">
+      <Button onClick={handleAddAddress} className="m-0 py-2" variant="primary">
         <i className="feather icon-plus-circle"></i>
         Thêm địa chỉ
       </Button>
@@ -285,7 +285,7 @@ function Addresses() {
           )}
         </Formik>
 
-        <TableInTabs columns={columns} data={addressList} handleRowClick={handleRowClick} ButtonAdd={ButtonAdd} />
+        <CustomTable columns={columns} data={addressList} handleRowClick={handleRowClick} ButtonAdd={ButtonAdd} />
       </>
     );
 }

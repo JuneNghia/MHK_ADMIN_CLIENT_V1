@@ -4,7 +4,7 @@ import { Row, Col, Card, Button, FormGroup, FormLabel, FormText, Badge, Tab, Tab
 import { useHistory } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import services from '../../../utils/axios';
-import TableInTabs from '../../../components/Table/TableInTabs';
+import CustomTable from '../../../components/Table/CustomTable';
 
 function ListOrders() {
   const [listOrders, setListOrders] = useState([]);
@@ -188,10 +188,10 @@ function ListOrders() {
         <Col>
           <Tabs variant="pills" defaultActiveKey="history" className="tabs-menu">
             <Tab eventKey="history" title="Tất cả đơn hàng">
-              <TableInTabs columns={columns} data={data} handleRowClick={handleRowClick} />
+              <CustomTable columns={columns} data={data} handleRowClick={handleRowClick} />
             </Tab>
             <Tab eventKey="profile" title="Đang giao dịch">
-              <TableInTabs columns={columns} data={data} handleRowClick={handleRowClick} />
+              <CustomTable columns={columns} data={data} handleRowClick={handleRowClick} />
             </Tab>
           </Tabs>
         </Col>

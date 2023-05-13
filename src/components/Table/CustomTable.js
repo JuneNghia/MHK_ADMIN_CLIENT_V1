@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useTable, usePagination, useGlobalFilter, useRowSelect, useSortBy } from 'react-table';
-import { Row, Col, CloseButton, Dropdown, DropdownButton } from 'react-bootstrap';
+import { Row, Col, CloseButton, Dropdown, DropdownButton, Button } from 'react-bootstrap';
 import MyPagination from '../Pagination/PaginationComponent';
 import GlobalFilter from '../Filter/GlobalFilter';
 import BTable from 'react-bootstrap/Table';
 import services from '../../utils/axios';
 import Swal from 'sweetalert2';
 
-function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, selectedTitle, object }) {
+function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, selectedTitle, object, ButtonAdd }) {
   const {
     getTableProps,
     getTableBodyProps,
@@ -145,8 +145,9 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
           )}
         </Col>
 
-        <Col>
+        <Col className="d-flex justify-content-end align-items-center">
           <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} setValueInputPagination={setPagePagination} />
+          {ButtonAdd ? <span className="ml-2"><ButtonAdd /></span> : null}
         </Col>
       </Row>
       <BTable striped bordered hover responsive {...getTableProps()}>
