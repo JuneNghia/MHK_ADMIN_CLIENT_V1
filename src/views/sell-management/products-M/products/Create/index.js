@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, Col, Row, Button, FormLabel } from 'react-bootstrap';
+import { Card, Col, Row, Button, FormLabel, FormControl } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
 import { useHistory } from 'react-router-dom';
 import { generalInfo, priceInfo, additionalInfo } from './InfoProduct';
@@ -19,6 +19,7 @@ function FormCreateProducts() {
   const [toggleAllowSell, setToggleAllowSale] = useState(false);
   const [description, setDescription] = useState('');
   const [showLoader, setShowLoader] = useState(false);
+  const [inputProperty, setInputProterty] = useState(['Kích thước', 'Màu sắc', 'Chất liệu']);
   const history = useHistory();
 
   const [data, setData] = useState({
@@ -211,6 +212,16 @@ function FormCreateProducts() {
                 <p className="strong-title text-normal">Giá trị</p>
               </Col>
             </Row>
+            {inputProperty.map((property) => (
+              <Row>
+                <Col className="mb-3" lg={5}>
+                  <FormControl value={property}></FormControl>
+                </Col>
+                <Col className="mb-3" lg={7}>
+                  <FormControl></FormControl>
+                </Col>
+              </Row>
+            ))}
           </Col>
         </>
       )
@@ -225,7 +236,7 @@ function FormCreateProducts() {
     }
   ];
 
-  const sweetConfirmAlert = () => {
+  const handleExitBtn = () => {
     Swal.fire({
       title: 'Bạn có chắc chắn muốn thoát ?',
       text: 'Mọi dữ liệu của bạn sẽ không được thay đổi',
@@ -249,7 +260,7 @@ function FormCreateProducts() {
         <title>Thêm sản phẩm</title>
       </Helmet>
       <span className="flex-between">
-        <Button onClick={sweetConfirmAlert} variant="outline-primary" className="mr-0" style={{ marginBottom: 15 }}>
+        <Button onClick={handleExitBtn} variant="outline-primary" className="mr-0 mb-3">
           <i className="feather icon-arrow-left"></i>
           Quay lại danh sách sản phẩm
         </Button>
@@ -264,7 +275,7 @@ function FormCreateProducts() {
           type="submit"
           onSubmit={handleSubmit}
           disabled={showLoader}
-          style={{ margin: '0 0 15px 0' }}
+          className="mx-0 my-0 mb-3"
         ></ButtonLoading>
       </span>
       <Row>

@@ -8,9 +8,9 @@ export const Loader = () => {
   );
 };
 
-export const ButtonLoading = ({ onSubmit, text, loading, disabled, style, variant }) => {
+export const ButtonLoading = ({ onSubmit, text, loading, disabled, className, variant }) => {
   return (
-    <Button onClick={onSubmit} disabled={disabled} style={style} variant={variant}>
+    <Button onClick={onSubmit} disabled={disabled} className={className} variant={variant}>
       {!loading ? text : <Loader />}
     </Button>
   );

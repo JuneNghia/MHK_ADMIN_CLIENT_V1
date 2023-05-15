@@ -102,6 +102,12 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
     });
   };
 
+  const handleCloseBtn = () => {
+    setShowGoToPage(false);
+    setPagePagination(null);
+    setShowErrorPage(false);
+  }
+
   useEffect(() => {
     setCurrentPage(pageIndex + 1);
   }, [pageIndex]);
@@ -230,9 +236,9 @@ function CustomTable({ columns, data, hiddenColumns = ['id'], handleRowClick, se
                   style={{ width: '100px' }}
                   min="1"
                   max={pageOptions.length}
-                  title=""
+                  title="Nhập số trang"
                 />
-                <CloseButton onClick={() => setShowGoToPage(false)} className="ml-3" aria-label="hide" />
+                <CloseButton onClick={handleCloseBtn} className="ml-3" aria-label="hide" />
                 {showErrorPage ? <span className="text-c-red ml-3">Số trang hiện có : {pageOptions.length}</span> : null}
               </span>
             ) : null}

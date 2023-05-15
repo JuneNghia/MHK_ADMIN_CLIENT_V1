@@ -49,10 +49,6 @@ function GetListProducts() {
         accessor: 'productAdditionInformation.brand.brand_title'
       },
       {
-        Header: 'Có thể bán',
-        accessor: 'can_sell'
-      },
-      {
         Header: 'Ngày khởi tạo',
         accessor: 'createdAt',
         Cell: ({ value }) => moment(value).utcOffset(7).format('DD/MM/YYYY - HH:mm:ss')
