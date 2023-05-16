@@ -3,7 +3,6 @@ import { Row, Col, Form, Button } from 'react-bootstrap';
 import Select from 'react-select';
 import services from '../../../../utils/axios';
 import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 import { HashLoader } from 'react-spinners';
 import Error from '../../../errors/Error';
 

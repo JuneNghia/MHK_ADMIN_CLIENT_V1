@@ -42,29 +42,6 @@ export const generalInfo = [
   }
 ];
 
-export const priceInfo = [
-  {
-    label: 'Giá bán lẻ',
-    lg: 6,
-    sm: 12,
-    name: 'price_retail',
-    input: "text"
-  },
-  {
-    label: 'Giá bán buôn',
-    lg: 6,
-    sm: 12,
-    name: 'price_wholesales',
-    input: "text"
-  },
-  {
-    label: 'Giá nhập',
-    lg: 6,
-    sm: 12,
-    name: 'price_import',
-    input: "text"
-  },
-];
 
 export const additionalInfo = [
   {

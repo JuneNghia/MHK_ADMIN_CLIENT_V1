@@ -8,14 +8,14 @@ export const validationSchemaCustomerCreate = Yup.object().shape({
   phone: Yup.string().matches(phoneRegExp, 'Số điện thoại không hợp lệ').required('Số điện thoại không được để trống'),
   code: Yup.string().required('Mã khách hàng không được để trống'),
   address: Yup.string().required('Địa chỉ không được để trống'),
-  province: Yup.string().required('Vui lòng chọn Tỉnh/Thành phố'),
+  province: Yup.string().required('Vui lòng chọn Tỉnh/Thành phố')
 });
 
 export const validationSchemaCustomerEdit = Yup.object().shape({
   name: Yup.string().required('Tên khách hàng không được để trống'),
   email: Yup.string().email('Email không hợp lệ').required('Email không được để trống'),
   phone: Yup.string().matches(phoneRegExp, 'Số điện thoại không hợp lệ').required('Số điện thoại không được để trống'),
-  code: Yup.string().required('Mã khách hàng không được để trống'),
+  code: Yup.string().required('Mã khách hàng không được để trống')
 });
 
 export const validationSchemaStaff = Yup.object().shape({
@@ -33,4 +33,29 @@ export const validationSchemaStaff = Yup.object().shape({
   )
 });
 
-
+export const validationProperty = Yup.object().shape({
+  property1: Yup.string()
+    .required('Tên thuộc tính không được để trống')
+    .matches(/^[a-zA-ZÀ-Ỹà-ỹ\s]+$/, 'Chỉ được nhập chữ vào tên thuộc tính'),
+  property2: Yup.string()
+    .required('Tên thuộc tính không được để trống')
+    .test('notOneOf', 'Tên các thuộc tính không được trùng nhau', function (value) {
+      const property1 = this.resolve(Yup.ref('property1'));
+      return !value || !property1 || value.toLowerCase() !== property1.toLowerCase();
+    })
+    .matches(/^[a-zA-ZÀ-Ỹà-ỹ\s]+$/, 'Chỉ được nhập chữ vào tên thuộc tính'),
+  property3: Yup.string()
+    .required('Tên thuộc tính không được để trống')
+    .test('notOneOf', 'Tên các thuộc tính không được trùng nhau', function (value) {
+      const property1 = this.resolve(Yup.ref('property1'));
+      const property2 = this.resolve(Yup.ref('property2'));
+      return (
+        !value ||
+        !property1 ||
+        !property2 ||
+        (value.toLowerCase() !== property1.toLowerCase() &&
+          value.toLowerCase() !== property2.toLowerCase())
+      );
+    })
+    .matches(/^[a-zA-ZÀ-Ỹà-ỹ\s]+$/, 'Chỉ được nhập chữ vào tên thuộc tính')
+});

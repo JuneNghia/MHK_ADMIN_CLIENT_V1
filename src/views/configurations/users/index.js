@@ -7,7 +7,7 @@ import moment from 'moment';
 import CustomTable from '../../../components/Table/CustomTable';
 import Error from '../../errors/Error';
 import NoPermission from '../../errors/NoPermission';
-import { HashLoader } from 'react-spinners';
+import PageLoader from '../../../components/Loader/PageLoader';
 
 function ListUsers() {
   const [listEmployees, setListEmployees] = useState([]);
@@ -81,7 +81,7 @@ function ListUsers() {
         <Helmet>
           <title>Danh sách nhân viên</title>
         </Helmet>
-        <HashLoader style={{ display: 'block', height: '70vh', margin: 'auto' }} size={50} color="#36d7b7" />
+        <PageLoader />
       </>
     );
   }

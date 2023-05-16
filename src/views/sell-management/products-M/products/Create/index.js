@@ -1,16 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Col, Row, Button, FormLabel, FormControl } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
 import { useHistory } from 'react-router-dom';
-import { generalInfo, priceInfo, additionalInfo } from './InfoProduct';
+import { generalInfo, additionalInfo } from './InfoProduct';
 import ToggleSwitch from '../../../../../components/Toggle/ToggleSwitch';
-// import service from '../../../../utils/axios';
 import { ButtonLoading } from '../../../../../components/Button/LoadButton';
 import Swal from 'sweetalert2';
 import AddDescription from './AddDescription';
 import CreateInfoProduct from './CreateInfoProduct';
+import services from '../../../../../utils/axios';
+import AddProperty from './AddProperty';
+import PageLoader from '../../../../../components/Loader/PageLoader';
+import Error from '../../../../errors/Error';
 
-function FormCreateProducts() {
+function CreateProducts() {
   // const [toggleWareHouse, setToggleWareHouse] = useState(false);
   // const [toggleTax, setToggleTax] = useState(false);
   // const [listBranches, setListBranches] = useState([]);
@@ -19,7 +22,10 @@ function FormCreateProducts() {
   const [toggleAllowSell, setToggleAllowSale] = useState(false);
   const [description, setDescription] = useState('');
   const [showLoader, setShowLoader] = useState(false);
-  const [inputProperty, setInputProterty] = useState(['Kích thước', 'Màu sắc', 'Chất liệu']);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isFetched, setIsFetched] = useState(false);
+
+  const [priceVariantsList, setPriceVariantsList] = useState([]);
   const history = useHistory();
 
   const [data, setData] = useState({
@@ -44,6 +50,28 @@ function FormCreateProducts() {
     }));
   };
 
+  useEffect(() => {
+    services
+      .get('/price/get-all')
+      .then((response) => {
+        const data = response.data.data;
+        setIsLoading(false);
+        setPriceVariantsList(
+          data.map((price) => ({
+            name: price.price_type,
+            label: price.price_type,
+            lg: 6,
+            sm: 12,
+            input: 'text'
+          }))
+        );
+        setIsFetched(true);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+      });
+  }, []);
+
   // useEffect(() => {
   //   service
   //     .get('/agency-branch/get-all')
@@ -57,7 +85,7 @@ function FormCreateProducts() {
 
   const handleSubmit = () => {
     const submitData = { ...data, description: description, isAllowSell: toggleAllowSell };
-    console.log(submitData);
+    alert(1)
   };
 
   const cardInfo = [
@@ -135,7 +163,7 @@ function FormCreateProducts() {
       sm: 12,
       body: (
         <>
-          {priceInfo.map((info, index) => (
+          {priceVariantsList.map((info, index) => (
             <CreateInfoProduct
               key={info.name}
               lg={info.lg}
@@ -201,30 +229,7 @@ function FormCreateProducts() {
       sm: 12,
       subTitle: 'Thêm mới thuộc tính giúp sản phẩm có nhiều lựa chọn, như kích cỡ hay màu sắc',
       isToggleOn: toggleProperty,
-      body: (
-        <>
-          <Col>
-            <Row>
-              <Col lg={5}>
-                <p className="strong-title text-normal">Tên thuộc tính</p>
-              </Col>
-              <Col lg={7}>
-                <p className="strong-title text-normal">Giá trị</p>
-              </Col>
-            </Row>
-            {inputProperty.map((property) => (
-              <Row>
-                <Col className="mb-3" lg={5}>
-                  <FormControl value={property}></FormControl>
-                </Col>
-                <Col className="mb-3" lg={7}>
-                  <FormControl></FormControl>
-                </Col>
-              </Row>
-            ))}
-          </Col>
-        </>
-      )
+      body: <AddProperty />
     },
     {
       title: 'Thêm đơn vị quy đổi',
@@ -254,11 +259,23 @@ function FormCreateProducts() {
     });
   };
 
+  if (isLoading) {
+    return (
+      <>
+        <Helmet>
+          <title>Thêm sản phẩm</title>
+        </Helmet>
+        <PageLoader />
+      </>
+    );
+  }
+
+  if (!isFetched) {
+    return <Error />;
+  }
+
   return (
     <>
-      <Helmet>
-        <title>Thêm sản phẩm</title>
-      </Helmet>
       <span className="flex-between">
         <Button onClick={handleExitBtn} variant="outline-primary" className="mr-0 mb-3">
           <i className="feather icon-arrow-left"></i>
@@ -283,7 +300,7 @@ function FormCreateProducts() {
           <Row>
             <Col lg={12}>
               {cardInfo.map((card, index) => (
-                <>
+                <span key={`cardInfo_lg8${index}`}>
                   {card.lg === 8 ? (
                     <Card key={index}>
                       <Card.Header>
@@ -306,7 +323,7 @@ function FormCreateProducts() {
                       )}
                     </Card>
                   ) : null}
-                </>
+                </span>
               ))}
             </Col>
           </Row>
@@ -316,7 +333,7 @@ function FormCreateProducts() {
           <Row>
             <Col lg={12}>
               {cardInfo.map((card, index) => (
-                <>
+                <span key={`cardInfo_lg4${index}`}>
                   {card.lg === 4 ? (
                     <Card key={index}>
                       <Card.Header>
@@ -336,7 +353,7 @@ function FormCreateProducts() {
                       )}
                     </Card>
                   ) : null}
-                </>
+                </span>
               ))}
             </Col>
           </Row>
@@ -346,4 +363,4 @@ function FormCreateProducts() {
   );
 }
 
-export default FormCreateProducts;
+export default CreateProducts;

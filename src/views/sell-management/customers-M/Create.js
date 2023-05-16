@@ -204,7 +204,6 @@ const CreateCustomer = () => {
                               </Form.Label>
                               <Form.Control
                                 name="name"
-                                onError={errors.name}
                                 value={values.name}
                                 onChange={handleChange}
                                 type="text"
@@ -282,6 +281,7 @@ const CreateCustomer = () => {
                                 onChange={handleChange}
                                 as="textarea"
                                 rows="3"
+                              
                               />
                               {touched.address && errors.address && <small className="text-danger form-text">{errors.address}</small>}
                             </Form.Group>
