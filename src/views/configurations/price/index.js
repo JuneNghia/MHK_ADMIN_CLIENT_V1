@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Card, Col, FormCheck, FormControl, FormGroup, FormLabel, Row } from 'react-bootstrap';
-import Select from 'react-select';
-import { ButtonLoading } from '../../../components/Button/LoadButton';
+import { Button, Card, Col, Row } from 'react-bootstrap';
 import CustomTable from '../../../components/Table/CustomTable';
 import services from '../../../utils/axios';
 import moment from 'moment';
@@ -11,118 +9,10 @@ import Swal from 'sweetalert2';
 import { Helmet } from 'react-helmet';
 import { HashLoader } from 'react-spinners';
 import Error from '../../errors/Error';
+import ModalPrice from './ModalPrice';
+import PriceDefault from './PriceDefault';
 
-const ConfigPrice = () => {
-  const selectList = [
-    {
-      title: 'Sửa giá khi bán hàng',
-      input: <Select className="text-normal"></Select>,
-      lg: 12
-    },
-    {
-      title: 'Giá bán hàng mặc định',
-      input: <Select className="text-normal"></Select>,
-      lg: 6
-    },
-    {
-      title: 'Giá nhập hàng mặc định',
-      input: <Select className="text-normal"></Select>,
-      lg: 6
-    }
-  ];
-  return (
-    <Row>
-      {selectList.map((select) => (
-        <Col key={select.title} lg={select.lg}>
-          <FormGroup>
-            <FormLabel>{select.title}</FormLabel>
-            {select.input}
-          </FormGroup>
-        </Col>
-      ))}
-
-      <Col lg={12}>
-        <span className="d-flex mt-2 mb-2">
-          <FormCheck id="recommend_last_price" className="text-normal"></FormCheck>
-          <FormLabel className="text-normal" htmlFor="recommend_last_price">
-            Sử dụng chức năng gợi ý giá bán gần nhất
-          </FormLabel>
-        </span>
-      </Col>
-
-      <Col lg={12}>
-        <span className="d-flex justify-content-end">
-          <Button variant="outline-primary">Huỷ</Button>
-          <ButtonLoading text="Lưu"></ButtonLoading>
-        </span>
-      </Col>
-    </Row>
-  );
-};
-
-const ModalPriceBody = (props) => {
-  return (
-    <Row>
-      <Col lg={6}>
-        <FormGroup>
-          <FormLabel>
-            Tên chính sách giá <span className="text-c-red">*</span>
-          </FormLabel>
-          <FormControl
-            name="price_type"
-            placeholder="Nhập tên chính sách giá"
-            onChange={props.onChange}
-            value={props.price_type_value}
-          ></FormControl>
-        </FormGroup>
-      </Col>
-      <Col lg={6}>
-        <FormGroup>
-          <FormLabel>
-            Mô tả chính sách giá <span className="text-c-red">*</span>
-          </FormLabel>
-          <FormControl
-            name="price_description"
-            placeholder="Nhập mô tả chính sách giá"
-            onChange={props.onChange}
-            value={props.price_description}
-          ></FormControl>
-        </FormGroup>
-      </Col>
-      <Col>
-        <span className="d-flex text-normal">
-          <span className="strong-title ">
-            Áp dụng cho: <span className="text-c-red">*</span>
-          </span>
-          <FormCheck
-            className="ml-3"
-            name="isImportDefault"
-            id="selectImportDefault"
-            label="Nhập hàng"
-            value={props.isImportDefault}
-            onChange={(event) => {
-              props.onChange(event);
-              props.setIsImportDefault(event.target.checked);
-            }}
-          ></FormCheck>
-          <FormCheck
-            className="ml-3"
-            id="selectSellDefault"
-            name="isSellDefault"
-            label="Bán hàng"
-            value={props.isSellDefault}
-            onChange={(event) => {
-              props.onChange(event);
-              props.setIsImportDefault(event.target.checked);
-            }}
-          ></FormCheck>
-        </span>
-      </Col>
-    </Row>
-  );
-};
-
-export default function PriceLists() {
+export default function ConfigPrice() {
   const [isLoading, setIsLoading] = useState(true);
   const [isFetched, setIsFetched] = useState(false);
   const [showModalAdd, setShowModalAdd] = useState(false);
@@ -139,9 +29,9 @@ export default function PriceLists() {
     services
       .get('/price/get-all')
       .then((res) => {
+        setIsLoading(false);
         setListPrice(res.data.data);
         setIsFetched(true);
-        setIsLoading(false);
       })
       .catch((err) => {
         setIsLoading(false);
@@ -301,14 +191,14 @@ export default function PriceLists() {
     {
       title: 'Thiết lập giá',
       description: 'Thông tin được sử dụng để MHK và khách hàng liên hệ đến bạn',
-      body: <ConfigPrice />
+      body: <PriceDefault />
     },
     {
       title: 'Quản lý chính sách giá',
       description:
         'Bên cạnh 3 chính sách giá mặc định được áp dụng khi bán hàng và nhập hàng, bạn có thể bổ sung thêm các giá phù hợp với nhu cầu kinh doanh của cửa hàng.',
       btnAdd: true,
-      body: <CustomTable handleRowClick={handleRowClick} data={listPrice} columns={columns}></CustomTable>
+      body: <CustomTable handleRowClick={handleRowClick} data={listPrice} columns={columns} />
     }
   ];
 
@@ -341,7 +231,7 @@ export default function PriceLists() {
         disabled={showLoader}
         handleSubmit={handleAddPrice}
         body={
-          <ModalPriceBody
+          <ModalPrice
             onChange={handleChange}
             price_type_value={newPrice.price_type}
             price_description={newPrice.price_description}
@@ -362,7 +252,7 @@ export default function PriceLists() {
         handleDelete={handleDelete}
         isDelete={isDelete}
         body={
-          <ModalPriceBody
+          <ModalPrice
             onChange={handleChange}
             price_type_value={newPrice.price_type}
             price_description={newPrice.price_description}

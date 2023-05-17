@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Col, Row, Button, FormLabel, FormControl } from 'react-bootstrap';
+import { Card, Col, Row, Button, FormLabel } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
 import { useHistory } from 'react-router-dom';
 import { generalInfo, additionalInfo } from './InfoProduct';
@@ -12,6 +12,7 @@ import services from '../../../../../utils/axios';
 import AddProperty from './AddProperty';
 import PageLoader from '../../../../../components/Loader/PageLoader';
 import Error from '../../../../errors/Error';
+import AddPriceVariants from './AddPriceVariants';
 
 function CreateProducts() {
   // const [toggleWareHouse, setToggleWareHouse] = useState(false);
@@ -24,8 +25,10 @@ function CreateProducts() {
   const [showLoader, setShowLoader] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isFetched, setIsFetched] = useState(false);
+  const [showModalAdd, setShowModalAdd] = useState(false);
 
   const [priceVariantsList, setPriceVariantsList] = useState([]);
+  console.log(priceVariantsList)
   const history = useHistory();
 
   const [data, setData] = useState({
@@ -85,7 +88,7 @@ function CreateProducts() {
 
   const handleSubmit = () => {
     const submitData = { ...data, description: description, isAllowSell: toggleAllowSell };
-    alert(1)
+    alert(1);
   };
 
   const cardInfo = [
@@ -161,6 +164,8 @@ function CreateProducts() {
       title: 'Giá sản phẩm',
       lg: 8,
       sm: 12,
+      btnAdd: true,
+      textBtnAdd: 'Thêm chính sách giá',
       body: (
         <>
           {priceVariantsList.map((info, index) => (
@@ -304,15 +309,20 @@ function CreateProducts() {
                   {card.lg === 8 ? (
                     <Card key={index}>
                       <Card.Header>
-                        <Card.Title as="h5">
-                          <span className="item-center">
-                            <span>{card.title}</span>
-                            <span className="ml-3">{card.toggleTitle ? card.toggleTitle : null}</span>
+                        <Card.Title as="h5" className="d-flex justify-content-between align-items-center m-0">
+                          <span>
+                            <span className="item-center">
+                              <span>{card.title}</span>
+                              <span className="ml-3">{card.toggleTitle ? card.toggleTitle : null}</span>
+                            </span>
+                            {card.subTitle ? <p className="mt-2 text-muted m-0 block">{card.subTitle}</p> : null}
                           </span>
-                          {card.subTitle ? (
-                            <p style={{ margin: 0 }} className="mt-2 text-muted">
-                              {card.subTitle}
-                            </p>
+
+                          {card.btnAdd ? (
+                            <Button onClick={() => setShowModalAdd(true)} className="strong-title mx-0 my-0" size="sm">
+                              <i className="feather icon-plus-circle mr-2"></i>
+                              {card.textBtnAdd}
+                            </Button>
                           ) : null}
                         </Card.Title>
                       </Card.Header>
@@ -359,6 +369,8 @@ function CreateProducts() {
           </Row>
         </Col>
       </Row>
+
+      <AddPriceVariants showModalAdd={showModalAdd} setShowModalAdd={setShowModalAdd} />
     </>
   );
 }

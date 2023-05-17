@@ -62,15 +62,15 @@ const Positions = ({ positions, setPositions }) => {
   };
 
   useEffect(() => {
-    const selectedRoleValues = positions.map((item) => item.role.label);
+    const selectedRoleValues = positions.map((item) => item.role.value);
     setUsedRoleValues(selectedRoleValues);
 
-    const selectedBranchValues = positions.flatMap((item) => item.branches.map((branch) => branch.label));
+    const selectedBranchValues = positions.flatMap((item) => item.branches.map((branch) => branch.value));
     setUsedBranchValues(selectedBranchValues);
   }, [positions]);
 
-  const availableRoleOptions = optionsRole.filter((option) => !usedRoleValues.includes(option.label));
-  const availableBranchOptions = optionsBranch.filter((option) => !usedBranchValues.includes(option.label));
+  const availableRoleOptions = optionsRole.filter((option) => !usedRoleValues.includes(option.value));
+  const availableBranchOptions = optionsBranch.filter((option) => !usedBranchValues.includes(option.value));
 
   const handleRemoveRole = (index) => {
     setPositions([...positions.slice(0, index), ...positions.slice(index + 1)]);

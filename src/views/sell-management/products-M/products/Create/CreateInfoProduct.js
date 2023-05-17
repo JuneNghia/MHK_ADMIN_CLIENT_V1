@@ -1,6 +1,6 @@
 import React from 'react';
 import { Col, Form, FormControl, FormGroup } from 'react-bootstrap';
-import Select from 'react-select'
+import Select from 'react-select';
 
 export default function CreateInfoProduct(props) {
   return (

@@ -11,13 +11,15 @@ export default function AddProperty() {
       name: `property${idProperty}`
     }
   ]);
-
+  
   const handleAddProperty = () => {
     setIdProperty((prev) => prev + 1);
     setListProterty([...listProperty, { name: `property${idProperty + 1}` }]);
   };
 
   const handleRemoveProperty = (index) => {
+    
+      
     setListProterty([...listProperty.slice(0, index), ...listProperty.slice(index + 1)]);
   };
 
@@ -42,7 +44,7 @@ export default function AddProperty() {
           {listProperty.map((property, index) => (
             <Row className="mb-3" key={property.name}>
               <Col lg={5}>
-                <FormControl onChange={handleChange} onBlur={handleBlur} name={property.name} value={values[property.name]}></FormControl>
+                <FormControl onChange={handleChange} onBlur={handleBlur} name={property.name} value={values[property.name]} />
                 {touched[property.name] && errors[property.name] && (
                   <small className="text-danger form-text">{errors[property.name]}</small>
                 )}

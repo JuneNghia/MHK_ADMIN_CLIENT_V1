@@ -18,17 +18,15 @@ function GetListProducts() {
     services
       .get('/product/get-all')
       .then((response) => {
+        setIsLoading(false);
         const dataListProducts = response.data.data;
         setListProducts(dataListProducts);
-        setIsLoading(false);
         setIsFetched(true);
       })
       .catch((error) => {
         setIsLoading(false);
       });
   }, []);
-
-  console.log(listProducts);
 
   const columns = React.useMemo(
     () => [

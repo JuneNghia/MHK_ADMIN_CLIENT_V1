@@ -1,44 +1,72 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Form, Button, FormLabel, Badge, FormGroup, FormCheck } from 'react-bootstrap';
 import { ButtonLoading } from '../../../../components/Button/LoadButton';
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import services from '../../../../utils/axios';
 import { Helmet } from 'react-helmet';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { rgb } from 'chroma-js';
+import PageLoader from '../../../../components/Loader/PageLoader';
+import Error from '../../../errors/Error';
+import AddPriceVariants from './Create/AddPriceVariants';
 
 const ProductDetails = () => {
   const [showLoader, setShowLoader] = useState(false);
-  const history = useHistory();
   const [isSorting, setIsSorting] = useState(false);
-
-  const { id } = useParams();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isFetched, setIsFetched] = useState(true);
+  const [showModalAdd, setShowModalAdd] = useState(false);
   const [data, setData] = useState({});
+  const initialItems = JSON.parse(localStorage.getItem('items'));
+  const [items, setItems] = useState([]);
 
-  const initalItems = JSON.parse(localStorage.getItem('items'));
+  const history = useHistory();
 
-  const [items, setItems] = useState(() => {
-    const storedItems = initalItems;
-    return (
-      storedItems || [
-        { id: 'item-1', content: 'Giá bán lẻ', value: '123.584đ' },
-        { id: 'item-2', content: 'Giá Shopee', value: '127.572đ' },
-        { id: 'item-3', content: 'Bán trên 10 triệu', value: '179.304đ' },
-        { id: 'item-8', content: 'Bán dưới 10 triệu', value: '118.472đ' },
-        { id: 'item-4', content: 'Giá nhập', value: '124.892đ' },
-        { id: 'item-5', content: 'Nhập bảo hành', value: '120.947đ' },
-        { id: 'item-6', content: 'Giá bán buôn', value: '115.294đ' },
-        { id: 'item-9', content: 'Nhập Shopee', value: '119.994đ' }
-      ]
-    );
-  });
+  useEffect(() => {
+    services
+      .get('/price/get-all')
+      .then((response) => {
+        const data = response.data.data;
+        setIsLoading(false);
+        const newPriceVariantsList = data.map((price, index) => ({
+          id: `item-${index + 1}`,
+          content: price.price_type,
+          value: (Math.random() * 10000).toFixed(3)
+        }));
+
+        if (initialItems) {
+          const updatedItems = [...initialItems];
+
+          newPriceVariantsList.forEach((newItem) => {
+            const existingItemIndex = updatedItems.findIndex((item) => item.id === newItem.id);
+            if (existingItemIndex !== -1) {
+              // Nếu đã tồn tại một phần tử có cùng id, cập nhật giá trị của phần tử đó
+              updatedItems[existingItemIndex].value = newItem.value;
+            } else {
+              // Nếu không tồn tại phần tử có cùng id, thêm phần tử mới vào mảng
+              updatedItems.push(newItem);
+            }
+          });
+          localStorage.setItem('items', JSON.stringify(updatedItems));
+          setItems(updatedItems);
+        } else {
+          localStorage.setItem('items', JSON.stringify(newPriceVariantsList));
+          setItems(newPriceVariantsList);
+        }
+
+        setIsFetched(true);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+      });
+  }, []);
 
   const handleSortClick = () => {
     setIsSorting(true);
   };
 
   const handleCancelSortClick = () => {
-    setItems([...initalItems]);
+    setItems([...initialItems]);
     setIsSorting(false);
   };
 
@@ -55,25 +83,34 @@ const ProductDetails = () => {
     setItems(itemsCopy);
   };
 
+  if (isLoading) {
+    return (
+      <>
+        <Helmet>
+          <title>Thêm sản phẩm</title>
+        </Helmet>
+        <PageLoader />
+      </>
+    );
+  }
+
+  if (!isFetched) {
+    return <Error />;
+  }
+
   return (
     <React.Fragment>
       <Helmet>
         <title>Chi tiết sản phẩm</title>
       </Helmet>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Button
-          onClick={() => history.push('/app/sell-management/products')}
-          variant="outline-primary"
-          className="mr-0"
-          style={{ marginBottom: 15 }}
-        >
+      <div className="d-flex justify-content-between">
+        <Button className="mb-3" onClick={() => history.push('/app/sell-management/products')} variant="outline-primary">
           <i className="feather icon-arrow-left"></i>
           Quay lại danh sách sản phẩm
         </Button>
 
         <ButtonLoading
-          style={{ margin: '0 0 15px 0' }}
           text={
             <span style={{ fontWeight: 600 }}>
               <i className="feather icon-trash-2 mr-2"></i>
@@ -82,6 +119,7 @@ const ProductDetails = () => {
           }
           loading={showLoader}
           type="submit"
+          className="mx-0 my-0 mb-3"
           disabled={showLoader}
           variant="outline-danger"
         ></ButtonLoading>
@@ -219,7 +257,9 @@ const ProductDetails = () => {
                   <Card.Title as="h5">Giá sản phẩm</Card.Title>
                   {isSorting ? (
                     <span>
-                      <span className="text-normal" style={{marginRight: 200, color: "#122ee2"}}>Sắp xếp theo thứ tự vị trí ưu tiên từ trên xuống dưới</span>
+                      <span className="text-normal" style={{ marginRight: 200, color: '#122ee2' }}>
+                        Sắp xếp theo thứ tự vị trí ưu tiên từ trên xuống dưới
+                      </span>
                       <Button variant="danger" onClick={handleCancelSortClick} className="strong-title mr-2" size="sm">
                         Huỷ
                       </Button>
@@ -228,9 +268,13 @@ const ProductDetails = () => {
                       </Button>
                     </span>
                   ) : (
-                    <Button onClick={handleSortClick} className="strong-title" size="sm">
-                      Sắp xếp
-                    </Button>
+                    
+                      
+
+                      <Button onClick={handleSortClick} className="strong-title" size="sm">
+                        Sắp xếp
+                      </Button>
+                  
                   )}
                 </Card.Header>
                 <Card.Body>
@@ -277,9 +321,9 @@ const ProductDetails = () => {
                         </DragDropContext>
                       ) : (
                         <Row>
-                          {items.map(({ id, content, value }, index) => {
+                          {items.map(({ content, value }, index) => {
                             return (
-                              <Col lg={6}>
+                              <Col key={`priceProductVariants_${index}`} lg={6}>
                                 <Row>
                                   <Col lg={6}>
                                     <FormLabel>{content}</FormLabel>
@@ -320,6 +364,8 @@ const ProductDetails = () => {
           </Row>
         </Col>
       </Row>
+
+      <AddPriceVariants showModalAdd={showModalAdd} setShowModalAdd={setShowModalAdd} />
     </React.Fragment>
   );
 };
