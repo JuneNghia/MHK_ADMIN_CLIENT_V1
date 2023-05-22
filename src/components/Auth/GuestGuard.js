@@ -1,8 +1,7 @@
 import React from 'react';
 import { BASE_URL } from '../../config/constant';
-
 import useAuth from '../../hooks/useAuth';
-import { HashLoader } from 'react-spinners';
+import PageLoader from '../Loader/PageLoader';
 
 const GuestGuard = ({ children }) => {
   const { isLoggedIn } = useAuth();
@@ -11,7 +10,7 @@ const GuestGuard = ({ children }) => {
     setTimeout(() => {
       window.location.replace(BASE_URL);
     }, 2000);
-    return <HashLoader style={{ display: 'block', height: '100vh', margin: 'auto' }} size={50} color="#36d7b7" />;
+    return <PageLoader />;
   }
 
   return <React.Fragment>{children}</React.Fragment>;

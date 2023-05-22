@@ -183,7 +183,7 @@ const CreateCustomer = () => {
                 loading={showLoader}
                 type="submit"
                 disabled={showLoader}
-                style={{ margin: '0 0 15px 0' }}
+                className="mx-0 my-0 mb-3"
               ></ButtonLoading>
             </span>
 

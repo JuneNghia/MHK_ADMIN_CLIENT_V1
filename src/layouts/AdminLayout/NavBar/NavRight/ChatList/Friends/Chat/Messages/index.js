@@ -4,6 +4,7 @@ import { Media } from 'react-bootstrap';
 
 const images = require.context('../../../../../../../../assets/images/user', true);
 
+
 const Messages = ({ message, photo, name }) => {
   let image = '';
   if (message.type) {
