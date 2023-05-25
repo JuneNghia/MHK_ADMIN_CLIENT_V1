@@ -15,7 +15,6 @@ import ProvinceDistrictSelect from '../../../data/provinceSelect';
 import Select from 'react-select';
 import Error from '../../errors/Error';
 import { HashLoader } from 'react-spinners';
-import Drag from '../../../components/Drag/Drag';
 
 const UserDetail = () => {
   const { id } = useParams();
