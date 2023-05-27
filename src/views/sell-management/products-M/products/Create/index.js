@@ -28,7 +28,6 @@ function CreateProducts() {
   const [showModalAdd, setShowModalAdd] = useState(false);
 
   const [priceVariantsList, setPriceVariantsList] = useState([]);
-  console.log(priceVariantsList)
   const history = useHistory();
 
   const [data, setData] = useState({

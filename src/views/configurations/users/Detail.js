@@ -25,7 +25,7 @@ const UserDetail = () => {
   const [dataGender, setDataGender] = useState(true);
   const [positions, setPositions] = useState([]);
   const history = useHistory();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isloadPage, setIsLoadPage] = useState(true);
   const [isFetched, setIsFetched] = useState(false);
   const [showModalUpdateProfile, setShowModalUpdateProfile] = useState(false);
